@@ -56,6 +56,16 @@
     s += tile(7.75, 4.8, 0.7, 0.2, 0, PATH);
     // zebra crossing at the foot of the slope
     for (let i = 0; i < 4; i++) s += tile(1.62 + i * 0.22, 5.08, 0.12, 0.84, 0, "#ffffff");
+    // tunnel portal where the tram line comes out of the hill
+    s += box({ x: -0.05, y: 4.85, w: 0.4, d: 1.3, z: 0, h: 24, left: "#b9c7a4", right: "#cfd7c0", top: "#a9d494" });
+    s += onR(0.35, 4.95, 6.05, 0, 21, "#bfc6b6");
+    { const a = P(0.35, 5.12, 0), b = P(0.35, 5.88, 0), c = P(0.35, 5.5, 18), ctl = P(0.35, 5.5, 24);
+      s += `<path d="M${a[0]} ${a[1]} L${a[0]} ${a[1] - 11} Q${ctl[0]} ${ctl[1] - 6} ${b[0]} ${b[1] - 11} L${b[0]} ${b[1]} Z" fill="#33405e"/>`; }
+    // little terminal station + buffer stop before the sea
+    s += box({ x: 7.9, y: 6.0, w: 1.75, d: 0.32, z: 0, h: 2.2, left: "#e9dfcf", right: "#d9ccb6", top: "#f6efe2" });
+    for (const x of [8.05, 9.5]) { const q = P(x, 6.2, 2.2); s += `<line x1="${q[0]}" y1="${q[1]}" x2="${q[0]}" y2="${q[1] - 12}" stroke="#8a90a8" stroke-width="1"/>`; }
+    s += box({ x: 7.95, y: 6.02, w: 1.65, d: 0.3, z: 14, h: 1.2, left: "#5cb58e", right: "#3f9572", top: "#7cc9a6" });
+    s += box({ x: 9.68, y: 5.22, w: 0.1, d: 0.56, z: 0, h: 4, left: "#ef6f6f", right: "#d65a5a", top: "#f4a0a0" });
     return s;
   }
 
@@ -242,7 +252,7 @@
     objects.length = 0;
     build();
     const sorted = sortObjects(objects);
-    const clip = convexHull([0, 10].flatMap(x => [5.0, 6.0].flatMap(y => [-1, 34].map(z => P(x, y, z)))));
+    const clip = convexHull([0.35, 9.68].flatMap(x => [5.0, 6.0].flatMap(y => [-1, 34].map(z => P(x, y, z)))));
     let s = `<defs><clipPath id="kgTramClip"><polygon points="${pts(clip)}"/></clipPath></defs>`;
     s += `<g id="kgGround">${ground()}</g><g id="kgObjs">`;
     sorted.forEach((o, i) => {

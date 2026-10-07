@@ -399,10 +399,13 @@
     const el = $("#kgTram"); if (!el) return;
     const place = u => el.setAttribute("transform", `translate(${(u * T.iso.hw).toFixed(1)},${(u * T.iso.hh).toFixed(1)})`);
     if (STILL) { place(6.3); return; }
-    const A = -2.6, B = 10.4, V = 0.85, PAUSE = 3;
-    const cycle = (B - A) / V + PAUSE;
+    // out of the tunnel -> slow into the terminal -> dwell -> back into the tunnel
+    const A = -2.0, B = 7.3, RUN = 9, DWELL = 4, HIDE = 3;
+    const cycle = HIDE + RUN + DWELL + RUN;
+    const ease = k => k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
+    const at = s => s < HIDE ? A : (s -= HIDE) < RUN ? A + (B - A) * ease(s / RUN) : (s -= RUN) < DWELL ? B : B - (B - A) * ease((s - DWELL) / RUN);
     const f = ts => {
-      if (!document.hidden) { const s = (ts / 1000) % cycle; place(s < PAUSE ? A : A + (s - PAUSE) * V); }
+      if (!document.hidden) place(at((ts / 1000) % cycle));
       requestAnimationFrame(f);
     };
     requestAnimationFrame(f);
