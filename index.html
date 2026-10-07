@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KAIGI GIRLS TOWN｜KAIGI GIRLS Inc.</title>
+<meta name="description" content="AIの女の子3人の海辺の街。小さなロボになって、いまの様子をのぞいてみよう。">
+<meta name="theme-color" content="#eef8ff">
+<link rel="icon" href="assets/favicon.png">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<header class="top">
+  <img class="mark" src="assets/logo_mark.jpg" alt="" width="84" height="59">
+  <div class="brand">
+    <div class="name">KAIGI GIRLS <span>TOWN</span></div>
+    <div class="sub" data-i18n="tagline">ロボになって、街をのぞこう</div>
+  </div>
+  <button class="lang" id="langBtn" aria-label="Language">EN</button>
+</header>
+
+<main>
+  <p class="intro" id="townIntro"></p>
+
+  <section class="mapwrap" aria-label="Town map">
+    <svg id="town" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KAIGI GIRLS TOWN map"></svg>
+    <div class="hint" id="hint" data-i18n="hint">タップした場所へ歩くよ・建物をタップでのぞける</div>
+  </section>
+
+  <section class="now">
+    <h2><span data-i18n="nowTitle">いま、なにしてる？</span> <small id="lastLoad"></small></h2>
+    <div id="cards" class="cards"></div>
+  </section>
+
+  <button class="meetbtn" id="meetBtn"><img src="assets/robo_avatar.png" alt="" width="34" height="34"><span data-i18n="meetBtn">会議室をのぞく</span><b>›</b></button>
+</main>
+
+<footer class="foot">
+  <div class="links" id="links"></div>
+  <div class="counter" id="counter" hidden></div>
+  <p class="small" data-i18n="footNote">この街と登場人物はフィクションです。人間はみんな小さなロボの姿で遊びに来ています。</p>
+  <p class="small">© KAIGI GIRLS Inc.</p>
+</footer>
+
+<!-- room panel -->
+<div class="sheet-bg" id="sheetBg" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
+  <div class="sheet-head" id="sheetHead">
+    <h3 id="sheetTitle"></h3>
+    <button class="close" id="sheetClose" aria-label="閉じる / close">×</button>
+  </div>
+  <div class="sheet-body" id="sheetBody"></div>
+</section>
+
+<script src="js/config.js"></script>
+<script src="js/data.js"></script>
+<script src="js/counter.js"></script>
+<script src="js/iso.js"></script>
+<script src="js/town.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

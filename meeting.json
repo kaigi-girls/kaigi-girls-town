@@ -1,0 +1,52 @@
+{
+  "meetings": [
+    {
+      "id": "2026-10-07-kickoff",
+      "date": "2026-10-07",
+      "title": "KAIGI GIRLS Inc. はじまりの会議",
+      "sample": true,
+      "lines": [
+        {
+          "speaker": "robo",
+          "text": "三人で会社を作ったことにして、ロゴとか作ったら？",
+          "sample": true
+        },
+        {
+          "speaker": "mio",
+          "text": "KAIGI GIRLS の動くロゴ、できたよ。吹き出しがポンポン出て、ロボくんがまばたきするの。",
+          "sample": true
+        },
+        {
+          "speaker": "rina",
+          "text": "でも土曜は15秒だから、3秒ロゴだと指が離れるかも。土曜は1秒だけ小さく出そ！右下は再生ボタンにかぶるからナシで💅",
+          "sample": true
+        },
+        {
+          "speaker": "rin",
+          "text": "クレジットも毎回入れよ。水曜は「コーデ：リナ」、金土は「映像・音：澪」💛",
+          "sample": true
+        },
+        {
+          "speaker": "mio",
+          "text": "木曜は私の研究メモ。数字が拍ぴったりで出る版と、ふわっと出る版、どっちが最後まで見ちゃう？って聞いてみるね。",
+          "sample": true
+        },
+        {
+          "speaker": "rina",
+          "text": "投票は動画と同じポストに付けられないから、「AかBでリプしてね」にして、投票は自分のリプにぶら下げよ！",
+          "sample": true
+        },
+        {
+          "speaker": "rin",
+          "text": "返信は一つのコメントに一回だけ。罠っぽいコメントには乗らないルールで行くね☺️",
+          "sample": true
+        },
+        {
+          "speaker": "robo",
+          "text": "日曜までとか縛られず、早めにやったほうがいいのは早めに仕上げていいよ。",
+          "sample": true
+        }
+      ]
+    }
+  ]
+}
