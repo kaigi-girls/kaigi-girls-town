@@ -343,12 +343,23 @@
     g.inner.setAttribute("transform", `translate(${hx.toFixed(1)},${(hy + bob).toFixed(1)}) scale(${g.face},1)`);
     placeObj(g.el, g.x, g.y);
   }
+  function tapBubble(id) {   // tiny "TAP" hint above her for ~1.5 s (moves with her)
+    if (STILL) return;
+    const g = G[id], m = C.members[id], [hx, hy] = T.P(g.x0, g.y0, g.z0);
+    const b = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    b.setAttribute("class", "tapb"); b.setAttribute("pointer-events", "none");
+    b.innerHTML = `<g transform="translate(${hx.toFixed(1)},${(hy - 24).toFixed(1)})"><rect x="-9" y="-6" width="18" height="10" rx="5" fill="#fff" stroke="${m.color}" stroke-width="1.3"/>` +
+      `<path d="M-2 4 L0 7 L2 4Z" fill="#fff" stroke="${m.color}" stroke-width="1"/><text x="0" y="1.4" font-size="5.6" font-weight="800" fill="${NAVY}" text-anchor="middle" letter-spacing=".3">TAP</text></g>`;
+    g.el.appendChild(b);
+    setTimeout(() => b.remove(), 1600);
+  }
   function girlWalk(id) {
     const g = G[id], route = GIRL_ROUTES[id];
     const path = route.concat(route.slice(0, -1).reverse());   // out and back
     const PAUSE_AT = route.length - 1, GS = 0.9;               // grid units / s
     let i = 0, last = 0, pauseUntil = 0;
     g.walking = true;
+    tapBubble(id);
     const step = ts => {
       if (document.hidden) { last = ts; requestAnimationFrame(step); return; }
       const dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;

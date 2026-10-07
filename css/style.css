@@ -131,3 +131,5 @@ main{padding:0 10px 10px}
 .tcard.old{opacity:.5}
 .tday{margin:4px 0 12px}
 .tday .td{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px;border-bottom:1px dashed #c9d6e8;padding-bottom:3px}
+#town .tapb{animation:tapb 1.5s ease-in-out forwards}
+@keyframes tapb{0%{opacity:0}20%,75%{opacity:1}100%{opacity:0}}
