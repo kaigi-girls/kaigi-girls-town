@@ -139,3 +139,36 @@ main{padding:0 10px 10px}
 .news ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
 .news li{display:flex;gap:10px;align-items:baseline;background:var(--card);border-radius:12px;padding:8px 12px;font-size:13px;box-shadow:0 2px 8px rgba(17,46,88,.05)}
 .news time{flex:none;font-weight:800;font-size:12px;color:var(--navy);border-left:4px solid;padding-left:6px}
+
+/* ---------- time of day (Asia/Tokyo) — html[data-phase] is set by js/app.js ----------
+   Day = the original look. Other phases recolour the sky gradient, lay a multiply
+   wash (#kgTint) over the art and show #kgNight bits (stars, moon, lamp glows, Zzz).
+   Signs/labels live above all of this, so they never get tinted. */
+:root{--sky1:#eef8ff;--sky2:#d4eefc;--sky3:#a9dcf5;--sky4:#8fd0f1;--tint:#ffffff;--tint-o:0;--map-bg:#d4eefc}
+html[data-phase=morning]{--sky1:#fff1e6;--sky2:#ffe2d6;--sky3:#b4e0f6;--sky4:#98d4f3;--tint:#ffe0cc;--tint-o:.32;--map-bg:#ffe8dc}
+html[data-phase=evening]{--sky1:#ffd9b4;--sky2:#ffbfae;--sky3:#eaa5c0;--sky4:#b9a2dc;--tint:#ffc2a2;--tint-o:.45;--map-bg:#ffc9b4}
+html[data-phase=night]{--sky1:#3c4f8f;--sky2:#4b60a2;--sky3:#4266aa;--sky4:#3b5ea2;--tint:#7c88c9;--tint-o:1;--map-bg:#1e2a62}
+.mapwrap{background:var(--map-bg);transition:background 1.5s}
+#kgSky stop:nth-child(1){stop-color:var(--sky1)}
+#kgSky stop:nth-child(2){stop-color:var(--sky2)}
+#kgSky stop:nth-child(3){stop-color:var(--sky3)}
+#kgSky stop:nth-child(4){stop-color:var(--sky4)}
+#town #kgTint{fill:var(--tint);opacity:var(--tint-o);mix-blend-mode:multiply;transition:fill 1.5s,opacity 1.5s}
+#town #kgNight>g{opacity:0;transition:opacity 1.5s}
+html[data-phase=evening] #town #kgNight>.glows{opacity:.6}
+html[data-phase=night] #town #kgNight>g{opacity:1}
+#town .win{transition:fill 1.5s}
+html[data-phase=night] #town .win{fill:#56638f}
+html[data-phase=night] #town .glare{opacity:0}
+#town #kgLit polygon{fill:#ffd27e;opacity:.92}
+html[data-phase=evening] #town .bulb, html[data-phase=night] #town .bulb{fill:#fff1a8}
+/* night: the girls are inside, asleep (no walking; see girlsInit) */
+#town .girl{transition:opacity .8s}
+html[data-phase=night] #town .girl{opacity:0;pointer-events:none}
+#town .zzz text{font-family:inherit}
+#town .sleep .zzz text{animation:zzz 3.6s ease-in-out infinite}
+#town .sleep .zzz .z1{animation-delay:.5s}#town .sleep .zzz .z2{animation-delay:1s}
+@keyframes zzz{0%,100%{opacity:.35}50%{opacity:1}}
+#town .stars .tw{animation:twinkle 2.8s ease-in-out infinite}
+#town .stars .t1{animation-delay:-.9s}#town .stars .t2{animation-delay:-1.8s}
+@keyframes twinkle{0%,100%{opacity:1}50%{opacity:.45}}

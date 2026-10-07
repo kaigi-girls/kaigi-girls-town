@@ -72,6 +72,15 @@
   // ---------- objects (sortable) ----------
   const objects = [];   // {id, x, y, w, d, svg, room?}
   const add = (o) => objects.push(o);
+  // little street lamps (always drawn; they only glow at evening/night, see nightLayer())
+  const LAMPS = [[1.35, 4.88, 0], [3.25, 6.14, 0], [6.2, 6.14, 0], [5.2, 2.0, HILL]];
+  function lamp(gx, gy, z) {
+    const b = P(gx, gy, z), t = P(gx, gy, z + 15);
+    return `<g><ellipse cx="${b[0]}" cy="${b[1]}" rx="3" ry="1.2" fill="${NAVY}" opacity=".12"/>` +
+      `<line x1="${b[0]}" y1="${b[1]}" x2="${t[0]}" y2="${t[1]}" stroke="#7d86a3" stroke-width="1.1" stroke-linecap="round"/>` +
+      `<path d="M${t[0] - 2.8} ${t[1] + 0.2} Q${t[0]} ${t[1] - 3.6} ${t[0] + 2.8} ${t[1] + 0.2}Z" fill="#55627f"/>` +
+      `<circle class="bulb" cx="${t[0]}" cy="${t[1] + 1}" r="1.5" fill="#fff4cf" stroke="${NAVY}" stroke-opacity=".3" stroke-width=".4"/></g>`;
+  }
   const W1 = "#fffaf2", W2 = "#f1e6d6";
 
   function build() {
@@ -89,13 +98,13 @@
     let s = "";
     const cf = { x: 0.95, y: 0.35, w: 2.2, d: 1.4, z: HILL };
     s += box({ ...cf, h: 13, left: W1, right: W2, top: null });
-    s += onL(cf.y + cf.d, 1.25, 1.75, HILL + 1, HILL + 9, "#bfe0f6"); s += onL(cf.y + cf.d, 2.35, 2.75, HILL, HILL + 9, "#c7a77f");
+    s += onL(cf.y + cf.d, 1.25, 1.75, HILL + 1, HILL + 9, "#bfe0f6", "none", 'class="win"'); s += onL(cf.y + cf.d, 2.35, 2.75, HILL, HILL + 9, "#c7a77f");
     // tricolor awning
     const aw = [["#fbabb6", 1.05, 1.75], ["#bfa6dd", 1.75, 2.45], ["#e7b66a", 2.45, 3.15]];
     aw.forEach(([c, a, b]) => s += poly([P(a, cf.y + cf.d, HILL + 13), P(b, cf.y + cf.d, HILL + 13), P(b, cf.y + cf.d + 0.35, HILL + 9.5), P(a, cf.y + cf.d + 0.35, HILL + 9.5)], c, "none"));
     s += box({ ...cf, z: HILL + 13, h: 12, left: "#ffffff", right: "#eef3fa", top: null });
-    for (let i = 0; i < 3; i++) s += onL(cf.y + cf.d, 1.1 + i * 0.68, 1.62 + i * 0.68, HILL + 16, HILL + 23, "#a9d6f5");
-    s += onR(cf.x + cf.w, 0.55, 1.55, HILL + 16, HILL + 23, "#93c6ec");
+    for (let i = 0; i < 3; i++) s += onL(cf.y + cf.d, 1.1 + i * 0.68, 1.62 + i * 0.68, HILL + 16, HILL + 23, "#a9d6f5", "none", 'class="win"');
+    s += onR(cf.x + cf.w, 0.55, 1.55, HILL + 16, HILL + 23, "#93c6ec", "none", 'class="win"');
     s += gable({ ...cf, z: HILL + 25, h: 8, roof: "#7d93c2", back: "#6d82b0", wall: "#eef3fa", ridge: "#5d6f99" });
     add({ id: "meeting", room: "meeting", ...cf, svg: s, top: HILL + 33 });
     add({ x: 0.45, y: 1.75, w: .2, d: .2, svg: tree(0.55, 1.85, HILL, 0.8, "#9ad48f") });
@@ -104,9 +113,9 @@
     s = "";
     const pr = { x: 6.7, y: 0.45, w: 1.9, d: 1.3, z: HILL };
     s += box({ ...pr, h: 20, left: "#d9eefc", right: "#bcdcf3", top: "#a8d1f2" });
-    s += onL(pr.y + pr.d, 6.9, 7.85, HILL + 6, HILL + 17, "#ffffff"); s += onL(pr.y + pr.d, 6.97, 7.78, HILL + 7, HILL + 16, "#7fc0ef");
+    s += onL(pr.y + pr.d, 6.9, 7.85, HILL + 6, HILL + 17, "#ffffff"); s += onL(pr.y + pr.d, 6.97, 7.78, HILL + 7, HILL + 16, "#7fc0ef", "none", 'class="win"');
     s += onL(pr.y + pr.d, 8.05, 8.45, HILL, HILL + 11, NAVY, "none", 'opacity=".85"');
-    s += onR(pr.x + pr.w, 0.7, 1.5, HILL + 8, HILL + 16, "#7fc0ef");
+    s += onR(pr.x + pr.w, 0.7, 1.5, HILL + 8, HILL + 16, "#7fc0ef", "none", 'class="win lit"');   // Robo-kun works late: lit at night
     // roof rim + antenna like the logo robot
     s += tile(pr.x, pr.y, pr.w, 0.08, HILL + 20, "#8cbfe8"); 
     { const a = P(7.65, 1.1, HILL + 20), b = P(7.65, 1.1, HILL + 30); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${NAVY}" stroke-width="1.4"/><circle cx="${b[0]}" cy="${b[1]}" r="2.6" fill="${NAVY}"/>`; }
@@ -132,11 +141,11 @@
     add({ id: "studio", room: "studio", ...st, svg: s, top: 26 });
     // alley houses
     s = box({ x: 3.15, y: 4.15, w: 1.3, d: 0.8, h: 8, left: "#fff4ee", right: "#f1e0d6", top: null });
-    s += onL(4.95, 3.4, 3.75, 2.5, 6, "#bfe0f6"); s += onL(4.95, 3.95, 4.25, 0, 6, "#d8b58e");
+    s += onL(4.95, 3.4, 3.75, 2.5, 6, "#bfe0f6", "none", 'class="win lit"'); s += onL(4.95, 3.95, 4.25, 0, 6, "#d8b58e");
     s += gable({ x: 3.15, y: 4.15, w: 1.3, d: 0.8, z: 8, h: 6, roof: "#eaa298", back: "#d98e84", wall: "#f1e0d6" });
     add({ x: 3.15, y: 4.15, w: 1.3, d: 0.8, svg: s });
     s = box({ x: 5.1, y: 4.15, w: 1.15, d: 0.8, h: 8, left: "#f3f8ff", right: "#dfe9f6", top: null });
-    s += onL(4.95, 5.3, 5.65, 2.5, 6, "#bfe0f6"); s += onR(6.25, 4.35, 4.75, 2.5, 6, "#a9cfee");
+    s += onL(4.95, 5.3, 5.65, 2.5, 6, "#bfe0f6", "none", 'class="win"'); s += onR(6.25, 4.35, 4.75, 2.5, 6, "#a9cfee", "none", 'class="win"');
     s += gable({ x: 5.1, y: 4.15, w: 1.15, d: 0.8, z: 8, h: 5, roof: "#8fb3d9", back: "#7ea2c9", wall: "#dfe9f6" });
     add({ x: 5.1, y: 4.15, w: 1.15, d: 0.8, svg: s });
 
@@ -144,11 +153,11 @@
     s = "";
     const ed = { x: 7.0, y: 3.5, w: 2.3, d: 1.2, z: 0 };
     s += box({ ...ed, h: 17, left: "#fffaf0", right: "#f4dde1", top: "#fdd0d7" });
-    s += onL(ed.y + ed.d, 7.2, 8.4, 2, 10, "#bfe0f6"); s += onL(ed.y + ed.d, 7.25, 7.7, 7.5, 9.5, "#fff", "none", 'opacity=".6"');
+    s += onL(ed.y + ed.d, 7.2, 8.4, 2, 10, "#bfe0f6", "none", 'class="win"'); s += onL(ed.y + ed.d, 7.25, 7.7, 7.5, 9.5, "#fff", "none", 'class="glare" opacity=".6"');
     s += onL(ed.y + ed.d, 8.65, 9.05, 0, 9, "#e0607a");
     s += poly([P(7.1, 4.7, 12.5), P(9.2, 4.7, 12.5), P(9.2, 5.0, 10), P(7.1, 5.0, 10)], "#fbabb6", "none");
-    for (let i = 0; i < 4; i++) s += onL(ed.y + ed.d, 7.2 + i * 0.52, 7.55 + i * 0.52, 13.5, 16, "#bfe0f6");
-    s += onR(ed.x + ed.w, 3.7, 4.5, 4, 14, "#a9cfee");
+    for (let i = 0; i < 4; i++) s += onL(ed.y + ed.d, 7.2 + i * 0.52, 7.55 + i * 0.52, 13.5, 16, "#bfe0f6", "none", 'class="win"');
+    s += onR(ed.x + ed.w, 3.7, 4.5, 4, 14, "#a9cfee", "none", 'class="win"');
     s += tile(ed.x, ed.y, ed.w, ed.d, 17, "#fbabb6", "none", 'opacity=".55"');
     add({ id: "editorial", room: "editorial", ...ed, svg: s, top: 17 });
     // trend board (掲示板)
@@ -185,6 +194,8 @@
     add({ girl: "rin", gx: 2.4, gy: 6.6, gz: 0.2, x: 2.35, y: 6.55, w: .1, d: .1, svg: girl(2.4, 6.6, 0.2, "#e7b66a", "#4a3a3a", 0.85, true) });      // 凛 inside the glass gym
     add({ girl: "mio", gx: 4.77, gy: 4.6, gz: 0, x: 4.72, y: 4.55, w: .1, d: .1, svg: girl(4.77, 4.6, 0, "#bfa6dd", "#22243a", 0.8) });              // 澪 in the alley
     add({ girl: "rina", gx: 8.8, gy: 4.87, gz: 0, x: 8.75, y: 4.82, w: .1, d: .1, svg: girl(8.8, 4.87, 0, "#fbabb6", "#9a6a3a", 0.85) });            // リナ by the tracks
+
+    LAMPS.forEach(([x, y, z]) => add({ x: x - 0.05, y: y - 0.05, w: 0.1, d: 0.1, svg: lamp(x, y, z) }));
 
     // promenade pines, bench
     add({ x: 3.9, y: 6.6, w: .2, d: .2, svg: pine(4.0, 6.7, 0, 1.05) });
@@ -247,6 +258,45 @@
     return lo.slice(0, -1).concat(up.slice(0, -1));
   }
 
+  // ---------- time-of-day layer (drawn above the art, below the signs) ----------
+  // #kgTint = full-map colour wash (mix-blend multiply, colour/opacity from CSS vars per phase).
+  // #kgNight = things that ignore the wash: stars, moon, lamp glows, lit windows, Zzz.
+  // Visibility is driven purely by CSS (html[data-phase=...]); see css/style.css.
+  function nightLayer() {
+    const C = window.KG_CONFIG || { members: {} };
+    let s = `<defs>
+      <radialGradient id="kgGlow"><stop offset="0" stop-color="#fff6c8" stop-opacity=".95"/><stop offset=".35" stop-color="#ffd98a" stop-opacity=".55"/><stop offset="1" stop-color="#ffd98a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="kgMoonGlow"><stop offset="0" stop-color="#fff3c4" stop-opacity=".55"/><stop offset="1" stop-color="#fff3c4" stop-opacity="0"/></radialGradient>
+      <mask id="kgMoonCut" maskUnits="userSpaceOnUse" x="320" y="0" width="80" height="70"><rect x="320" y="0" width="80" height="70" fill="#fff"/><circle cx="364" cy="26" r="9.5" fill="#000"/></mask>
+    </defs>`;
+    s += `<rect id="kgTint" x="0" y="0" width="${VB.w}" height="${VB.h}" pointer-events="none"/>`;
+    s += `<g id="kgNight" pointer-events="none">`;
+    // stars (only in open sky: above the hills and around the meeting-room sign)
+    const star = (x, y, r) => `<path d="M${x} ${y - r} Q${x} ${y} ${x + r} ${y} Q${x} ${y} ${x} ${y + r} Q${x} ${y} ${x - r} ${y} Q${x} ${y} ${x} ${y - r}Z"/>`;
+    s += `<g class="stars" fill="#fff7d6">` +
+      [[20, 24, 3], [52, 50, 2.2], [78, 16, 2.6], [108, 40, 3], [118, 64, 1.8], [152, 14, 2.2], [292, 14, 2.4], [312, 44, 3], [388, 54, 2.2]].map(([x, y, r], i) => `<g class="tw t${i % 3}">${star(x, y, r)}</g>`).join("") +
+      [[36, 36], [92, 60], [134, 28], [182, 26], [236, 20], [268, 32], [300, 64], [384, 18]].map(([x, y]) => `<circle cx="${x}" cy="${y}" r=".9"/>`).join("") + `</g>`;
+    // crescent moon
+    s += `<g class="moon"><circle cx="358" cy="30" r="22" fill="url(#kgMoonGlow)"/><circle cx="358" cy="30" r="11" fill="#fff3c4" mask="url(#kgMoonCut)"/></g>`;
+    // lamp glows (+ lighthouse)
+    s += `<g class="glows">`;
+    LAMPS.forEach(([x, y, z]) => {
+      const b = P(x, y, z), t = P(x, y, z + 15);
+      s += `<ellipse class="pool" cx="${b[0]}" cy="${b[1]}" rx="15" ry="6" fill="url(#kgGlow)" opacity=".55"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="9" fill="url(#kgGlow)"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="1.6" fill="#fff6c8"/>`;
+    });
+    { const l = P(7.85, 12.25, 32); s += `<g class="lighthouse"><circle cx="${l[0]}" cy="${l[1]}" r="13" fill="url(#kgGlow)"/><circle cx="${l[0]}" cy="${l[1]}" r="2" fill="#fff6c8"/></g>`; }
+    s += `</g><g id="kgLit"></g>`;
+    // sleepy Zzz above each girl's building
+    const zz = (id, who, gx, gy, z) => {
+      const [x, y] = P(gx, gy, z), m = C.members[who] || {}, col = m.deep || NAVY;
+      return `<g class="zzz" data-zzz="${who}" transform="translate(${x},${y})" fill="${col}" stroke="#fff" stroke-width="2.2" stroke-linejoin="round" paint-order="stroke" font-weight="800">` +
+        `<text class="z0" x="0" y="0" font-size="7">z</text><text class="z1" x="5" y="-6" font-size="9">z</text><text class="z2" x="11" y="-13" font-size="11">Z</text></g>`;
+    };
+    s += `<g class="sleep">` + zz("gym", "rin", 2.0, 6.4, 22) + zz("studio", "mio", 5.55, 3.3, 28) + zz("editorial", "rina", 9.3, 3.5, 20) + `</g>`;
+    s += `</g>`;
+    return s;
+  }
+
   // ---------- public: render ----------
   function render(svgEl) {
     objects.length = 0;
@@ -259,9 +309,12 @@
       const attrs = o.room ? ` data-room="${o.room}" class="obj room-hit" role="button" tabindex="0"` : o.girl ? ` class="obj girl" data-girl="${o.girl}"` : ` class="obj"`;
       s += `<g data-i="${i}" data-x="${o.x}" data-y="${o.y}" data-w="${o.w}" data-d="${o.d}"${attrs}>${o.svg}</g>`;
     });
-    s += `</g><g id="kgSigns"></g>`;
+    s += `</g>${nightLayer()}<g id="kgSigns"></g>`;
     svgEl.setAttribute("viewBox", `0 0 ${VB.w} ${VB.h}`);
     svgEl.innerHTML = s;
+    // windows that stay lit at night: copy them above the colour wash so they glow warm
+    const lit = svgEl.querySelector("#kgLit");
+    svgEl.querySelectorAll("#kgObjs .win.lit").forEach(p => { const c = p.cloneNode(); c.removeAttribute("class"); lit.appendChild(c); });
     return sorted;
   }
 

@@ -316,6 +316,29 @@
   addEventListener("keyup", e => R.keys.delete(e.key));
   addEventListener("blur", () => R.keys.clear());
 
+  // ---------- time of day (Asia/Tokyo, not the viewer's clock) ----------
+  // morning 5–9, day 9–16, evening 16–19, night 19–5. Rechecked every minute.
+  // ?phase=morning|day|evening|night forces one (screenshots/tests).
+  // The look is pure CSS on html[data-phase]; here we only gate the girls' walks and the tram.
+  const PHASES = ["morning", "day", "evening", "night"];
+  const FORCED = PHASES.includes(params.get("phase")) ? params.get("phase") : null;
+  const jstFmt = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Tokyo", hour: "numeric", minute: "numeric", hourCycle: "h23" });
+  function jstHour(d = new Date()) {
+    const parts = jstFmt.formatToParts(d), get = t => +((parts.find(p => p.type === t) || {}).value || 0);
+    return (get("hour") % 24) + get("minute") / 60;
+  }
+  const phaseAt = h => h >= 5 && h < 9 ? "morning" : h >= 9 && h < 16 ? "day" : h >= 16 && h < 19 ? "evening" : "night";
+  let phase = null;
+  const isNight = () => phase === "night";
+  const phaseHooks = [];
+  function applyPhase() {
+    const p = FORCED || phaseAt(jstHour());
+    if (p === phase) return;
+    phase = p;
+    document.documentElement.dataset.phase = p;
+    phaseHooks.forEach(f => f(p));
+  }
+
   // ---------- girls' little walks ----------
   // Every 20–40 s one girl steps out of her place, walks a short route on open ground,
   // pauses, and walks back. Routes are grid waypoints (first = her home spot).
@@ -354,6 +377,7 @@
     setTimeout(() => b.remove(), 1600);
   }
   function girlWalk(id) {
+    if (isNight()) return;                                     // asleep at home
     const g = G[id], route = GIRL_ROUTES[id];
     const path = route.concat(route.slice(0, -1).reverse());   // out and back
     const PAUSE_AT = route.length - 1, GS = 0.9;               // grid units / s
@@ -361,6 +385,10 @@
     g.walking = true;
     tapBubble(id);
     const step = ts => {
+      if (g.abort) {                                           // night fell mid-walk: back home at once
+        g.abort = false; g.x = g.x0; g.y = g.y0; g.face = 1; g.home = true; placeGirl(g, 0); g.walking = false;
+        g.el.querySelectorAll(".tapb").forEach(n => n.remove()); return;
+      }
       if (document.hidden) { last = ts; requestAnimationFrame(step); return; }
       const dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
       if (ts < pauseUntil) { placeGirl(g, 0); requestAnimationFrame(step); return; }
@@ -385,10 +413,11 @@
       const inner = el.firstElementChild;
       G[o.girl] = { el, inner, x0: o.gx, y0: o.gy, z0: o.gz, x: o.gx, y: o.gy, face: 1, home: true, walking: false };
     });
+    phaseHooks.push(p => { if (p === "night") Object.values(G).forEach(g => { if (g.walking) g.abort = true; }); });
     if (STILL) return;
     const next = () => setTimeout(() => {
       const free = Object.keys(G).filter(id => !G[id].walking && GIRL_ROUTES[id]);
-      if (free.length && !document.hidden) girlWalk(free[Math.floor(Math.random() * free.length)]);
+      if (free.length && !document.hidden && !isNight()) girlWalk(free[Math.floor(Math.random() * free.length)]);
       next();
     }, 20000 + Math.random() * 20000);
     next();
@@ -398,14 +427,23 @@
   function tramLoop() {
     const el = $("#kgTram"); if (!el) return;
     const place = u => el.setAttribute("transform", `translate(${(u * T.iso.hw).toFixed(1)},${(u * T.iso.hh).toFixed(1)})`);
-    if (STILL) { place(6.3); return; }
     // out of the tunnel -> slow into the terminal -> dwell -> back into the tunnel
+    // Night: it finishes its run, then rests at the end station (B) until morning.
     const A = -2.0, B = 7.3, RUN = 9, DWELL = 4, HIDE = 3;
-    const cycle = HIDE + RUN + DWELL + RUN;
+    if (STILL) { const still = () => place(isNight() ? B : 6.3); still(); phaseHooks.push(still); return; }
+    const cycle = HIDE + RUN + DWELL + RUN, DWELL_AT = HIDE + RUN, DEPART_AT = HIDE + RUN + DWELL;
     const ease = k => k < 0.5 ? 2 * k * k : 1 - Math.pow(-2 * k + 2, 2) / 2;
     const at = s => s < HIDE ? A : (s -= HIDE) < RUN ? A + (B - A) * ease(s / RUN) : (s -= RUN) < DWELL ? B : B - (B - A) * ease((s - DWELL) / RUN);
+    let t0 = null, resting = isNight();
+    if (resting) place(B);
     const f = ts => {
-      if (!document.hidden) place(at((ts / 1000) % cycle));
+      if (t0 == null) t0 = ts;
+      if (resting && !isNight()) { resting = false; t0 = ts - (DEPART_AT - 1.5) * 1000; }   // morning: leave after 1.5 s
+      if (!resting && !document.hidden) {
+        const s = ((ts - t0) / 1000) % cycle;
+        if (isNight() && s >= DWELL_AT && s < DEPART_AT) { resting = true; place(B); }
+        else place(at(s));
+      }
       requestAnimationFrame(f);
     };
     requestAnimationFrame(f);
@@ -457,12 +495,14 @@
 
   // ---------- boot ----------
   drawMap();
+  applyPhase();
   tramLoop();
   girlsInit();
+  setInterval(applyPhase, 60 * 1000);
   refresh();
   initCounter();
   setInterval(refresh, (C.data.refreshSeconds || 60) * 1000);
-  document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
+  document.addEventListener("visibilitychange", () => { if (!document.hidden) { applyPhase(); refresh(); } });
   if (params.get("open")) setTimeout(() => openRoom(params.get("open")), 400);
-  window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding };
+  window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding, phaseAt, jstHour, get phase() { return phase; } };
 })();
