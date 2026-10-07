@@ -109,3 +109,7 @@ English intro…
 ## Privacy
 
 Fictional town and characters only. No personal information about real people. Meeting lines are hand-picked before they go in.
+
+## trends.csv (trend board / 掲示板)
+
+**How to add a trend line:** append one line per member per day to `trends.csv` — `date,who,trend,comment,next_post` — e.g. `2026-10-08,rin,秋のストレッチ,朝5分だけでも体がぽかぽか,1`. `date` is the JST day (`YYYY-MM-DD`), `who` is `rin` / `mio` / `rina`, `trend` is a few topic words only (no links, no other people's posts or names), `comment` is a one-line hitokoto, and `next_post` is `1` to show the 「次で使うかも👀」 badge (else `0`). The newest date shows as 今日のトレンド on the board; older dates move into トレンドの記録 / Trend archive automatically (newest first), and rows older than 7 days fade (`trendFadeDays` in `js/config.js`). Lines starting with `#` are ignored. Icons: `assets/{rin,mio,rina}_avatar.png` (256px, metadata stripped).

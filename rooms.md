@@ -26,6 +26,6 @@ Robo-kun's office, with a view of the sea and the island.
 凛たちの作品や、応援の入口ができる予定🛍️
 Our beach shop is coming soon.
 
-## 編集部の掲示板（COMING SOON）
-リナの誌面が貼られていく予定📌
-Rina's magazine pages will be posted here soon.
+## トレンド掲示板
+メンバーが毎日ピックした気になる話題を、ひとことと一緒に貼っています📌
+Each day the girls pin a topic they're into, with a one-line comment.

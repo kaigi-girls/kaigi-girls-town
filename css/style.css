@@ -115,3 +115,19 @@ main{padding:0 10px 10px}
   .meetbtn{grid-column:2;grid-row:3;align-self:start}
 }
 [hidden]{display:none!important}
+
+/* trend board */
+.th{font-size:14px;margin:14px 0 6px}
+.tlist{display:flex;flex-direction:column;gap:10px}
+.tcard{display:flex;gap:8px;align-items:flex-start}
+.tcard .av{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:14px}
+.tcard .av img{width:38px;height:38px;border-radius:50%;background:#fff;object-fit:cover}
+.tbub{flex:1;min-width:0;border:2px solid;border-radius:6px 18px 18px 18px;padding:8px 12px;background:#fff}
+.tbub .nm{display:flex;justify-content:space-between;gap:6px;font-size:11px;color:var(--muted)}
+.tbub .nm b{color:var(--navy);font-size:12px}
+.tbub .tr{font-weight:800;font-size:15px;margin-top:2px}
+.tbub .cm{font-size:13px;line-height:1.5;margin-top:2px}
+.tbub .eyes{display:inline-block;margin-top:5px;font-size:11px;font-weight:800;border-radius:99px;padding:2px 9px}
+.tcard.old{opacity:.5}
+.tday{margin:4px 0 12px}
+.tday .td{font-size:12px;font-weight:700;color:var(--muted);margin:0 0 6px;border-bottom:1px dashed #c9d6e8;padding-bottom:3px}

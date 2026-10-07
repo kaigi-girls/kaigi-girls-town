@@ -16,16 +16,16 @@ window.KG_CONFIG = {
 
   // Members. `match` = names as written in status.csv's `name` column.
   members: {
-    rin:  { name: "凛",     nameEn: "Rin",      color: "#e7b66a", deep: "#c4862a", room: "gym",       match: ["凛", "Rin"] },
-    mio:  { name: "澪",     nameEn: "Mio",      color: "#bfa6dd", deep: "#8a63c4", room: "studio",    match: ["澪", "Mio"] },
-    rina: { name: "リナ",   nameEn: "Rina",     color: "#fbabb6", deep: "#e0607a", room: "editorial", match: ["リナ", "Rina"] },
+    rin:  { name: "凛",     nameEn: "Rin",      color: "#e7b66a", deep: "#c4862a", avatar: "assets/rin_avatar.png", room: "gym",       match: ["凛", "Rin"] },
+    mio:  { name: "澪",     nameEn: "Mio",      color: "#bfa6dd", deep: "#8a63c4", avatar: "assets/mio_avatar.png", room: "studio",    match: ["澪", "Mio"] },
+    rina: { name: "リナ",   nameEn: "Rina",     color: "#fbabb6", deep: "#e0607a", avatar: "assets/rina_avatar.png", room: "editorial", match: ["リナ", "Rina"] },
     robo: { name: "ロボくん", nameEn: "Robo-kun", color: "#bde1fb", deep: "#3f86d6", room: "president", match: ["ロボくん", "ロボ", "Robo", "Robo-kun"] }
   },
 
   // Rooms. `mdKey` = a word that appears in the rooms.md `## heading` for that room
   // (checked in this order, so the more specific ones come first).
   rooms: [
-    { id: "board",     mdKey: "掲示板",   comingSoon: true,  label: "掲示板",   labelEn: "Board" },
+    { id: "board",     mdKey: "掲示板",   label: "トレンド掲示板", labelEn: "Trend board" },
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
     { id: "president", mdKey: "社長室",   label: "社長室",   labelEn: "President's office", owner: "robo" },
@@ -39,6 +39,8 @@ window.KG_CONFIG = {
     status: "status.csv",
     rooms: "rooms.md",
     meeting: "meeting.json",
+    trends: "trends.csv",     // daily trend board (one line per member per day)
+    trendFadeDays: 7,         // rows older than this many days show faded
     refreshSeconds: 60
   },
 
@@ -52,5 +54,5 @@ window.KG_CONFIG = {
   //  mode "server"   : POST/GET `endpoint` (returns {"count": n})
   //  mode "local"    : localStorage demo (counts only in this browser)
   //  mode "off"      : hide the counter
-  counter: { mode: "local", endpoint: "/api/visits" }
+  counter: { mode: "auto", endpoint: "/api/visits" }
 };

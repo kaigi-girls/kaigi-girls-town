@@ -141,7 +141,7 @@
     s += onR(ed.x + ed.w, 3.7, 4.5, 4, 14, "#a9cfee");
     s += tile(ed.x, ed.y, ed.w, ed.d, 17, "#fbabb6", "none", 'opacity=".55"');
     add({ id: "editorial", room: "editorial", ...ed, svg: s, top: 17 });
-    // bulletin board (coming soon)
+    // trend board (掲示板)
     s = "";
     { const a = P(6.52, 4.86, 0), b = P(6.88, 4.86, 0); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${a[0]}" y2="${a[1] - 9}" stroke="#b07f55" stroke-width="1.4"/><line x1="${b[0]}" y1="${b[1]}" x2="${b[0]}" y2="${b[1] - 9}" stroke="#b07f55" stroke-width="1.4"/>`; }
     s += onL(4.86, 6.45, 6.95, 6, 12, "#e8c48f", NAVY); s += onL(4.86, 6.52, 6.66, 7.2, 10.8, "#ffffff"); s += onL(4.86, 6.72, 6.88, 7.6, 11, "#fbabb6");
@@ -172,9 +172,9 @@
     add({ id: "gym", room: "gym", ...gy, svg: s, top: 17.4 });
 
     // the three girls (tiny chibi markers in their colors)
-    add({ x: 2.35, y: 6.55, w: .1, d: .1, svg: girl(2.4, 6.6, 0.2, "#e7b66a", "#4a3a3a", 0.85, true) });      // 凛 inside the glass gym
-    add({ x: 4.72, y: 4.55, w: .1, d: .1, svg: girl(4.77, 4.6, 0, "#bfa6dd", "#22243a", 0.8) });              // 澪 in the alley
-    add({ x: 8.75, y: 4.82, w: .1, d: .1, svg: girl(8.8, 4.87, 0, "#fbabb6", "#9a6a3a", 0.85) });            // リナ by the tracks
+    add({ girl: "rin", gx: 2.4, gy: 6.6, gz: 0.2, x: 2.35, y: 6.55, w: .1, d: .1, svg: girl(2.4, 6.6, 0.2, "#e7b66a", "#4a3a3a", 0.85, true) });      // 凛 inside the glass gym
+    add({ girl: "mio", gx: 4.77, gy: 4.6, gz: 0, x: 4.72, y: 4.55, w: .1, d: .1, svg: girl(4.77, 4.6, 0, "#bfa6dd", "#22243a", 0.8) });              // 澪 in the alley
+    add({ girl: "rina", gx: 8.8, gy: 4.87, gz: 0, x: 8.75, y: 4.82, w: .1, d: .1, svg: girl(8.8, 4.87, 0, "#fbabb6", "#9a6a3a", 0.85) });            // リナ by the tracks
 
     // promenade pines, bench
     add({ x: 3.9, y: 6.6, w: .2, d: .2, svg: pine(4.0, 6.7, 0, 1.05) });
@@ -246,7 +246,7 @@
     let s = `<defs><clipPath id="kgTramClip"><polygon points="${pts(clip)}"/></clipPath></defs>`;
     s += `<g id="kgGround">${ground()}</g><g id="kgObjs">`;
     sorted.forEach((o, i) => {
-      const attrs = o.room ? ` data-room="${o.room}" class="obj room-hit" role="button" tabindex="0"` : ` class="obj"`;
+      const attrs = o.room ? ` data-room="${o.room}" class="obj room-hit" role="button" tabindex="0"` : o.girl ? ` class="obj girl" data-girl="${o.girl}"` : ` class="obj"`;
       s += `<g data-i="${i}" data-x="${o.x}" data-y="${o.y}" data-w="${o.w}" data-d="${o.d}"${attrs}>${o.svg}</g>`;
     });
     s += `</g><g id="kgSigns"></g>`;

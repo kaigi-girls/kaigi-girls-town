@@ -14,19 +14,21 @@
       visitors: "これまでに来たロボ", comingSoon: "COMING SOON", tapToPeek: "タップでのぞく", nowDoing: "いま",
       noStatus: "ひみつ", sample: "サンプル", sampleNote: "※サンプルの会話です（実際の会議ではありません）",
       curated: "公開OKになったセリフだけを載せています。", replay: "もう一度再生", you: "YOU", loaded: "自動更新",
-      noMeeting: "まだ公開できる会議はありません。", soonText: "準備中" },
+      noMeeting: "まだ公開できる会議はありません。", soonText: "準備中",
+      trendToday: "今日のトレンド", trendArchive: "トレンドの記録", trendNext: "次で使うかも👀", trendPicked: "ピック", noTrends: "まだトレンドはありません。", trendNote: "メンバーが気になった話題をひとことで。" },
     en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building to peek inside", nowTitle: "What's everyone doing?",
       meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit as tiny robots.",
       updated: "updated", minAgo: n => `${n} min ago`, hourAgo: n => `${n} h ago`, dayAgo: n => `${n} d ago`, justNow: "just now",
       visitors: "robots visited so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek", nowDoing: "Now",
       noStatus: "secret", sample: "SAMPLE", sampleNote: "* Sample conversation (not a real meeting)",
       curated: "Only lines approved for publishing appear here.", replay: "Replay", you: "YOU", loaded: "auto-refresh",
-      noMeeting: "No public meetings yet.", soonText: "coming soon" }
+      noMeeting: "No public meetings yet.", soonText: "coming soon",
+      trendToday: "Today's trends", trendArchive: "Trend archive", trendNext: "maybe next post 👀", trendPicked: "picked", noTrends: "No trends yet.", trendNote: "Topics the girls are into, in one line." }
   };
   let lang = localStorage.getItem("kg_lang") === "en" ? "en" : "ja";
   const t = k => I18N[lang][k];
 
-  const S = { status: {}, rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0 };
+  const S = { status: {}, rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0, trends: [] };
   const roomCfg = id => C.rooms.find(r => r.id === id) || { id, label: id, labelEn: id };
   const ownerOf = roomId => { const r = roomCfg(roomId); return r.owner ? { id: r.owner, ...C.members[r.owner] } : null; };
 
@@ -139,7 +141,7 @@
     const ids = Object.keys(C.members);
     $("#cards").innerHTML = ids.map(id => {
       const m = C.members[id], st = S.status[id];
-      const av = id === "robo" ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>` : `<span class="av" style="background:${m.color}">${esc(m.name[0])}</span>`;
+      const av = avatarOf(id, m);
       return `<button class="card" data-room="${m.room}" style="border-color:${m.color}">${av}<span>` +
         `<div class="who"><b>${esc(lang === "en" ? m.nameEn : m.name)}</b>${esc(roomTitle(m.room))}</div>` +
         (statusText(st) ? `<div class="st">${esc(statusText(st))}</div>` : `<div class="st muted">${esc(introLine(m.room) || "…")}</div>`) +
@@ -158,6 +160,7 @@
     $("#sheetHead").style.background = owner ? owner.color : id === "meeting" ? "linear-gradient(90deg,#fbabb6,#bfa6dd,#e7b66a)" : "#bde1fb";
     let h = "";
     if (id === "meeting") { renderMeeting(); showSheet(); return; }
+    if (id === "board") { renderBoard(); showSheet(); return; }
     if (owner) {
       const st = S.status[owner.id];
       h += `<div class="nowbox" style="border-left-color:${owner.color}"><div class="lbl">${t("nowDoing")}・${esc(lang === "en" ? owner.nameEn : owner.name)}</div>` +
@@ -182,7 +185,7 @@
     h += `<div class="chat">` + (m.lines || []).map(l => {
       const mem = C.members[l.speaker] || { name: l.speaker, nameEn: l.speaker, color: "#eef3fa" };
       const isRobo = l.speaker === "robo";
-      const av = isRobo ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>` : `<span class="av" style="background:${mem.color}">${esc((mem.name || "?")[0])}</span>`;
+      const av = isRobo ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>` : (mem.avatar ? `<span class="av"><img src="${esc(mem.avatar)}" alt=""></span>` : `<span class="av" style="background:${mem.color}">${esc((mem.name || "?")[0])}</span>`);
       return `<div class="line${isRobo ? " right" : ""}">${av}<div class="bub" style="background:${mem.color}">` +
         `<div class="nm">${esc(lang === "en" ? mem.nameEn : mem.name)}${l.sample && !m.sample ? ` <span class="badge">${t("sample")}</span>` : ""}</div>${esc(l.text)}</div></div>`;
     }).join("") + `</div>`;
@@ -195,6 +198,27 @@
     let i = 0;
     const step = () => { if (i < lines.length) { lines[i++].classList.add("show"); chatTimer = setTimeout(step, 750); } };
     chatTimer = setTimeout(step, 250);
+  }
+  // ---------- trend board ----------
+  const avatarOf = (id, m) => id === "robo" ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>`
+    : m.avatar ? `<span class="av"><img src="${esc(m.avatar)}" alt=""></span>` : `<span class="av" style="background:${m.color}">${esc(m.name[0])}</span>`;
+  function trendCard(it) {
+    const m = C.members[it.who];
+    const ageDays = (Date.now() - new Date(it.date + "T00:00:00+09:00").getTime()) / 864e5;
+    const old = ageDays > (C.data.trendFadeDays || 7);
+    return `<div class="tcard${old ? " old" : ""}">${avatarOf(it.who, m)}<div class="tbub" style="border-color:${m.color};background:${m.color}22">` +
+      `<div class="nm"><b>${esc(lang === "en" ? m.nameEn : m.name)}</b><span>${t("trendPicked")} ${esc(it.date)}</span></div>` +
+      `<div class="tr">${esc(it.trend)}</div>${it.comment ? `<div class="cm">${esc(it.comment)}</div>` : ""}` +
+      (it.next ? `<span class="eyes" style="background:${m.color}">${t("trendNext")}</span>` : "") + `</div></div>`;
+  }
+  function renderBoard() {
+    const md = S.rooms.rooms.board || {}, days = S.trends;
+    let h = `<p>${esc((lang === "en" ? md.en : md.ja) || t("trendNote"))}</p>`;
+    if (!days.length) { $("#sheetBody").innerHTML = h + `<p>${t("noTrends")}</p>`; return; }
+    h += `<h4 class="th">${t("trendToday")}・${esc(days[0].date)}</h4><div class="tlist">${days[0].items.map(trendCard).join("")}</div>`;
+    if (days.length > 1) h += `<h4 class="th">${t("trendArchive")}</h4>` + days.slice(1).map(d =>
+      `<div class="tday"><div class="td">${esc(d.date)}</div><div class="tlist">${d.items.map(trendCard).join("")}</div></div>`).join("");
+    $("#sheetBody").innerHTML = h;
   }
   function showSheet() { $("#sheet").hidden = false; $("#sheetBg").hidden = false; $("#sheetClose").focus({ preventScroll: true }); }
   function closeSheet() { $("#sheet").hidden = true; $("#sheetBg").hidden = true; openId = null; clearTimeout(chatTimer); }
@@ -275,6 +299,8 @@
     return [gx, gy];
   }
   svg.addEventListener("click", ev => {
+    const gHit = ev.target.closest("[data-girl]");
+    if (gHit && C.members[gHit.dataset.girl]) { openRoom(C.members[gHit.dataset.girl].room); return; }
     const hit = ev.target.closest("[data-room]");
     if (hit) { const room = hit.dataset.room; const d = T.DOORS[room]; if (d) walkTo(d[0], d[1]); R.lastRoom = room; openRoom(room); return; }
     const p = svgPoint(ev); let [gx, gy] = toGrid(p.x, p.y);
@@ -289,6 +315,73 @@
   });
   addEventListener("keyup", e => R.keys.delete(e.key));
   addEventListener("blur", () => R.keys.clear());
+
+  // ---------- girls' little walks ----------
+  // Every 20–40 s one girl steps out of her place, walks a short route on open ground,
+  // pauses, and walks back. Routes are grid waypoints (first = her home spot).
+  // Off in ?still=1 / prefers-reduced-motion.
+  const GIRL_ROUTES = {
+    rin:  [[2.4, 6.6], [1.75, 7.3], [1.75, 7.75], [3.4, 7.85]],        // gym -> beach
+    mio:  [[4.77, 4.6], [4.78, 5.1], [4.78, 6.05], [5.9, 6.05]],       // down the alley -> across the tram street
+    rina: [[8.8, 4.87], [8.8, 4.98], [7.2, 4.98], [7.2, 6.3], [7.6, 7.8]] // tracks -> crossing -> beach
+  };
+  const G = {};   // id -> { el, inner, x0, y0, z0, x, y, face }
+  function placeObj(el, gx, gy) {   // painter's order, same rule as the visitor robot
+    const objs = [...$("#kgObjs").children].filter(n => n !== el);
+    let after = null;
+    for (const n of objs) {
+      const o = { x: +n.dataset.x, y: +n.dataset.y, w: +n.dataset.w, d: +n.dataset.d };
+      if (o.x + o.w <= gx - 0.05 || o.y + o.d <= gy - 0.05) after = n;
+    }
+    const want = after ? after.nextSibling : objs[0];
+    if (want !== el && el.previousSibling !== after) $("#kgObjs").insertBefore(el, want);
+  }
+  function placeGirl(g, bob) {
+    const z = g.home ? g.z0 : zAt(g.x, g.y);
+    const [sx, sy] = T.P(g.x, g.y, z), [hx, hy] = T.P(g.x0, g.y0, g.z0);
+    g.el.setAttribute("transform", `translate(${(sx - hx).toFixed(1)},${(sy - hy).toFixed(1)})`);
+    g.inner.setAttribute("transform", `translate(${hx.toFixed(1)},${(hy + bob).toFixed(1)}) scale(${g.face},1)`);
+    placeObj(g.el, g.x, g.y);
+  }
+  function girlWalk(id) {
+    const g = G[id], route = GIRL_ROUTES[id];
+    const path = route.concat(route.slice(0, -1).reverse());   // out and back
+    const PAUSE_AT = route.length - 1, GS = 0.9;               // grid units / s
+    let i = 0, last = 0, pauseUntil = 0;
+    g.walking = true;
+    const step = ts => {
+      if (document.hidden) { last = ts; requestAnimationFrame(step); return; }
+      const dt = Math.min(0.05, (ts - (last || ts)) / 1000); last = ts;
+      if (ts < pauseUntil) { placeGirl(g, 0); requestAnimationFrame(step); return; }
+      const [tx, ty] = path[i + 1], dx = tx - g.x, dy = ty - g.y, len = Math.hypot(dx, dy);
+      const sxDir = dx - dy;                                   // screen-x direction on the iso map
+      if (Math.abs(sxDir) > 0.01) g.face = sxDir < 0 ? -1 : 1;
+      const st = GS * dt;
+      if (len <= st) {
+        g.x = tx; g.y = ty; i++;
+        g.home = i === 0 || i === path.length - 1;
+        if (i === PAUSE_AT) pauseUntil = ts + 2500 + Math.random() * 1500;
+        if (i >= path.length - 1) { g.face = 1; g.home = true; placeGirl(g, 0); g.walking = false; return; }
+      } else { g.x += dx / len * st; g.y += dy / len * st; g.home = false; }
+      placeGirl(g, -Math.abs(Math.sin(ts / 110)) * 1.1);
+      requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  }
+  function girlsInit() {
+    sorted.filter(o => o.girl).forEach(o => {
+      const el = $(`#kgObjs [data-girl="${o.girl}"]`); if (!el) return;
+      const inner = el.firstElementChild;
+      G[o.girl] = { el, inner, x0: o.gx, y0: o.gy, z0: o.gz, x: o.gx, y: o.gy, face: 1, home: true, walking: false };
+    });
+    if (STILL) return;
+    const next = () => setTimeout(() => {
+      const free = Object.keys(G).filter(id => !G[id].walking && GIRL_ROUTES[id]);
+      if (free.length && !document.hidden) girlWalk(free[Math.floor(Math.random() * free.length)]);
+      next();
+    }, 20000 + Math.random() * 20000);
+    next();
+  }
 
   // ---------- tram ----------
   function tramLoop() {
@@ -306,10 +399,11 @@
 
   // ---------- data refresh ----------
   async function refresh() {
-    const [st, rm, mt] = await Promise.allSettled([D.loadStatus(), D.loadRooms(), D.loadMeetings()]);
+    const [st, rm, mt, tr] = await Promise.allSettled([D.loadStatus(), D.loadRooms(), D.loadMeetings(), D.loadTrends()]);
     if (st.status === "fulfilled") S.status = st.value; else console.warn(st.reason);
     if (rm.status === "fulfilled") S.rooms = rm.value; else console.warn(rm.reason);
     if (mt.status === "fulfilled") S.meetings = mt.value; else console.warn(mt.reason);
+    if (tr.status === "fulfilled") S.trends = tr.value; else console.warn(tr.reason);
     S.loadedAt = new Date();
     paintText();
     if (openId && openId !== "meeting") openRoom(openId);
@@ -350,10 +444,11 @@
   // ---------- boot ----------
   drawMap();
   tramLoop();
+  girlsInit();
   refresh();
   initCounter();
   setInterval(refresh, (C.data.refreshSeconds || 60) * 1000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) refresh(); });
   if (params.get("open")) setTimeout(() => openRoom(params.get("open")), 400);
-  window.KG_APP = { openRoom, walkTo, R };
+  window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding };
 })();

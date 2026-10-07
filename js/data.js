@@ -94,5 +94,18 @@
     return list;
   }
 
-  window.KG_DATA = { loadStatus, loadRooms, loadMeetings, parseCSV, parseJST };
+  // trends.csv: date,who,trend,comment,next_post  -> [{date, items:[...]}] newest first
+  async function loadTrends() {
+    const text = (await fetchText(C.data.trends)).split(/\r?\n/).filter(l => !l.trim().startsWith("#")).join("\n");
+    const by = {};
+    for (const r of parseCSV(text)) {
+      const d = (r.date || "").match(/^\d{4}-\d{2}-\d{2}$/) ? r.date : null;
+      const who = (r.who || "").toLowerCase();
+      if (!d || !C.members[who] || !r.trend) continue;
+      (by[d] = by[d] || []).push({ date: d, who, trend: r.trend, comment: r.comment || "", next: r.next_post === "1" });
+    }
+    return Object.keys(by).sort().reverse().map(date => ({ date, items: by[date] }));
+  }
+
+  window.KG_DATA = { loadStatus, loadRooms, loadMeetings, loadTrends, parseCSV, parseJST };
 })();
