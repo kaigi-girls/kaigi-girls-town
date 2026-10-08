@@ -41,6 +41,7 @@ window.KG_CONFIG = {
     meeting: "meeting.json",
     trends: "trends.csv",     // daily trend board (one line per member per day)
     trendFadeDays: 7,         // rows older than this many days show faded
+    rewards: "rewards.csv",   // daily off-shot after talking to all three (file,who,caption_ja,caption_en -> assets/rewards/)
     refreshSeconds: 60
   },
 

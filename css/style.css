@@ -172,3 +172,31 @@ html[data-phase=night] #town .girl{opacity:0;pointer-events:none}
 #town .stars .tw{animation:twinkle 2.8s ease-in-out infinite}
 #town .stars .t1{animation-delay:-.9s}#town .stars .t2{animation-delay:-1.8s}
 @keyframes twinkle{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ---------- talk bubbles + daily off-shot (js/app.js "talk bubbles") ---------- */
+#town .girl{cursor:pointer;outline:none}
+#town .girl:focus-visible{filter:drop-shadow(0 0 2px #6eabea) drop-shadow(0 0 2px #6eabea)}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.talk{position:absolute;left:0;top:0;z-index:3;width:max-content;max-width:min(250px,calc(100% - 12px));padding:6px 11px;background:#fff;color:#1d2b4f;border:2px solid var(--c,#bde1fb);border-radius:14px;font-size:13px;font-weight:700;line-height:1.45;box-shadow:0 3px 10px rgba(17,46,88,.18);pointer-events:none;overflow-wrap:anywhere}
+.talk i{position:absolute;left:calc(var(--tx,50%) - 6px);bottom:-7px;width:11px;height:11px;background:#fff;border:solid var(--c,#bde1fb);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.talk.below i{bottom:auto;top:-7px;border-width:2px 0 0 2px}
+.talk.show{animation:talk 4s ease-in-out forwards}
+.talk.still.show{animation:none}
+@keyframes talk{0%{opacity:0;transform:translateY(4px)}6%,85%{opacity:1;transform:none}100%{opacity:0}}
+.talkdots{position:absolute;left:8px;top:8px;z-index:2;display:flex;align-items:center;gap:4px;padding:4px 8px;border:none;border-radius:99px;background:rgba(255,255,255,.85);box-shadow:0 2px 6px rgba(17,46,88,.10);font-size:11px;line-height:1;cursor:pointer}
+.talkdots:disabled{cursor:default;color:inherit}
+.talkdots i{width:9px;height:9px;border-radius:50%;border:2px solid var(--c);background:#fff}
+.talkdots i.on{background:var(--c)}
+.talkdots span{opacity:.35;margin-left:1px}
+.talkdots.done span{opacity:1}
+.reward{position:absolute;left:50%;top:50%;z-index:4;transform:translate(-50%,-50%);width:min(300px,calc(100% - 24px));max-height:calc(100% - 24px);overflow:auto;background:#fff;border:3px solid var(--c,#bfa6dd);border-radius:18px;padding:10px 12px 12px;box-shadow:0 8px 26px rgba(17,46,88,.28);color:#1d2b4f;animation:pop .25s ease-out}
+.reward.still{animation:none}
+@keyframes pop{from{opacity:0;transform:translate(-50%,-46%)}to{opacity:1;transform:translate(-50%,-50%)}}
+.reward .rhead{display:flex;align-items:center;gap:8px}
+.reward .rhead b{flex:1;font-size:15px}
+.reward .rclose{border:none;background:#eef3fa;width:30px;height:30px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;flex:none}
+.reward img{display:block;width:100%;max-height:min(230px,45vh);object-fit:contain;background:#f4f9fe;border-radius:12px;margin-top:8px}
+.reward p{margin:8px 2px 0;font-size:13px;line-height:1.5}
+.reward p.empty{font-size:14px;font-weight:700;text-align:center;padding:14px 4px 8px}
+@media (prefers-reduced-motion:reduce){.talk.show,.reward{animation:none}}
+@media (max-width:480px){.talk{font-size:12px;padding:5px 10px;max-width:min(225px,calc(100% - 12px))}}

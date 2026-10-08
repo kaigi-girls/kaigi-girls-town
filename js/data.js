@@ -107,5 +107,15 @@
     return Object.keys(by).sort().reverse().map(date => ({ date, items: by[date] }));
   }
 
-  window.KG_DATA = { loadStatus, loadRooms, loadMeetings, loadTrends, parseCSV, parseJST };
+  // rewards.csv: file,who,caption_ja,caption_en  (images live in assets/rewards/; no sub-folders or other paths)
+  async function loadRewards() {
+    if (!C.data.rewards) return [];
+    const text = (await fetchText(C.data.rewards)).split(/\r?\n/).filter(l => !l.trim().startsWith("#")).join("\n");
+    return parseCSV(text)
+      .map(r => ({ ...r, file: (r.file || "").replace(/^(\.\/)?assets\/rewards\//, "") }))   // "assets/rewards/x.jpg" or just "x.jpg"
+      .filter(r => /^[\w-][\w.-]*\.(jpe?g|png|webp|gif)$/i.test(r.file))
+      .map(r => ({ file: r.file, who: (r.who || "").toLowerCase(), ja: r.caption_ja || "", en: r.caption_en || "" }));
+  }
+
+  window.KG_DATA = { loadStatus, loadRooms, loadMeetings, loadTrends, loadRewards, parseCSV, parseJST };
 })();

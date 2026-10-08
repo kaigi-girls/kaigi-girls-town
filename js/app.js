@@ -15,7 +15,9 @@
       noStatus: "ひみつ", sample: "サンプル", sampleNote: "※サンプルの会話です（実際の会議ではありません）",
       curated: "公開OKになったセリフだけを載せています。", replay: "もう一度再生", you: "YOU", loaded: "自動更新",
       noMeeting: "まだ公開できる会議はありません。", soonText: "準備中",
-      trendToday: "今日のトレンド", trendArchive: "トレンドの記録", trendNext: "次で使うかも👀", trendPicked: "ピック", noTrends: "まだトレンドはありません。", trendNote: "メンバーが気になった話題をひとことで。" },
+      trendToday: "今日のトレンド", trendArchive: "トレンドの記録", trendNext: "次で使うかも👀", trendPicked: "ピック", noTrends: "まだトレンドはありません。", trendNote: "メンバーが気になった話題をひとことで。",
+      hint2: "ロボを三人に近づけると、ひとこと話すよ", talkTo: n => `${n}に話しかける`, heard: "今日おはなしした",
+      rewardHint: "三人とおはなしすると、今日のオフショットが見られるよ", rewardTitle: "今日のオフショット📸", rewardEmpty: "ゴール！オフショットは準備中だよ", close: "閉じる" },
     en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building to peek inside", nowTitle: "What's everyone doing?",
       meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit as tiny robots.",
       updated: "updated", minAgo: n => `${n} min ago`, hourAgo: n => `${n} h ago`, dayAgo: n => `${n} d ago`, justNow: "just now",
@@ -23,12 +25,14 @@
       noStatus: "secret", sample: "SAMPLE", sampleNote: "* Sample conversation (not a real meeting)",
       curated: "Only lines approved for publishing appear here.", replay: "Replay", you: "YOU", loaded: "auto-refresh",
       noMeeting: "No public meetings yet.", soonText: "coming soon",
-      trendToday: "Today's trends", trendArchive: "Trend archive", trendNext: "maybe next post 👀", trendPicked: "picked", noTrends: "No trends yet.", trendNote: "Topics the girls are into, in one line." }
+      trendToday: "Today's trends", trendArchive: "Trend archive", trendNext: "maybe next post 👀", trendPicked: "picked", noTrends: "No trends yet.", trendNote: "Topics the girls are into, in one line.",
+      hint2: "Walk your robot up to the girls to hear what they're up to", talkTo: n => `Talk to ${n}`, heard: "Talked today",
+      rewardHint: "Talk to all three to unlock today's off-shot", rewardTitle: "Today's off-shot 📸", rewardEmpty: "Goal! Off-shots coming soon", close: "Close" }
   };
   let lang = localStorage.getItem("kg_lang") === "en" ? "en" : "ja";
   const t = k => I18N[lang][k];
 
-  const S = { status: {}, rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0, trends: [] };
+  const S = { status: {}, rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0, trends: [], rewards: [] };
   const roomCfg = id => C.rooms.find(r => r.id === id) || { id, label: id, labelEn: id };
   const ownerOf = roomId => { const r = roomCfg(roomId); return r.owner ? { id: r.owner, ...C.members[r.owner] } : null; };
 
@@ -227,7 +231,7 @@
   $("#meetBtn").onclick = () => openRoom("meeting");
 
   // ---------- visitor robot ----------
-  const R = { x: 4.3, y: 6.9, tx: null, ty: null, keys: new Set(), raf: 0, last: 0, lastRoom: null, pendingRoom: null };
+  const R = { x: 4.3, y: 6.9, tx: null, ty: null, keys: new Set(), raf: 0, last: 0, lastRoom: null, pendingRoom: null, talkTo: null };
   const SPEED = 2.6;
   const blockers = () => sorted.filter(o => o.room || (o.w * o.d > 0.5 && o.id !== "tram" && o.x < 10 && o.y < 8.6));
   const inRect = (x, y, o, m = 0.1) => x > o.x - m && x < o.x + o.w + m && y > o.y - m && y < o.y + o.d + m;
@@ -269,7 +273,11 @@
       if (R.keys.has("ArrowUp")) { dx -= 1; dy -= 1; } if (R.keys.has("ArrowDown")) { dx += 1; dy += 1; }
       if (R.keys.has("ArrowLeft")) { dx -= 1; dy += 1; } if (R.keys.has("ArrowRight")) { dx += 1; dy -= 1; }
       R.tx = R.ty = null;
-    } else if (R.tx != null) { dx = R.tx - R.x; dy = R.ty - R.y; }
+      R.talkTo = null;
+    } else if (R.tx != null) {
+      if (R.talkTo) { const sp = talkSpot(R.talkTo); R.tx = sp[0]; R.ty = sp[1]; }   // follow her if she is walking
+      dx = R.tx - R.x; dy = R.ty - R.y;
+    }
     const len = Math.hypot(dx, dy);
     if (len > 0.001) {
       const st = Math.min(SPEED * dt, R.tx != null && !R.keys.size ? len : Infinity);
@@ -279,7 +287,9 @@
       if (R.lastRoom && !hitBuilding(R.x + 0.2, R.y + 0.2) && !hitBuilding(R.x - 0.2, R.y - 0.2)) R.lastRoom = null;
       placeRobot();
       $("#visitor .vbody").setAttribute("transform", `translate(0,${(Math.sin(ts / 70) * 0.6).toFixed(2)})`);
-    }
+      checkTalk();
+    } else if (R.tx != null && !R.keys.size) R.tx = R.ty = null;   // already there
+    if (R.talkTo && R.tx == null && !R.keys.size) arriveTalk();
     R.raf = (R.keys.size || R.tx != null) ? requestAnimationFrame(loop) : 0;
     if (!R.raf) R.last = 0;
   }
@@ -299,19 +309,23 @@
     return [gx, gy];
   }
   svg.addEventListener("click", ev => {
-    const gHit = ev.target.closest("[data-girl]");
-    if (gHit && C.members[gHit.dataset.girl]) { openRoom(C.members[gHit.dataset.girl].room); return; }
+    // a girl under the tap wins, even where a sign's leader line/dot is drawn over her
+    const gHit = ev.target.closest("[data-girl]") || document.elementsFromPoint(ev.clientX, ev.clientY).map(n => n.closest && n.closest("#town [data-girl]")).find(Boolean);
+    if (gHit && G[gHit.dataset.girl]) { talkTo(gHit.dataset.girl); return; }
     const hit = ev.target.closest("[data-room]");
     if (hit) { const room = hit.dataset.room; const d = T.DOORS[room]; if (d) walkTo(d[0], d[1]); R.lastRoom = room; openRoom(room); return; }
     const p = svgPoint(ev); let [gx, gy] = toGrid(p.x, p.y);
-    R.pendingRoom = null;
+    R.pendingRoom = null; R.talkTo = null;
     if (!walkable(gx, gy)) { gx = Math.min(9.85, Math.max(0.15, gx)); gy = Math.min(8.45, Math.max(0.15, gy)); }
     walkTo(gx, gy);
   });
-  svg.addEventListener("keydown", ev => { if ((ev.key === "Enter" || ev.key === " ") && ev.target.dataset && ev.target.dataset.room) { ev.preventDefault(); openRoom(ev.target.dataset.room); } });
+  svg.addEventListener("keydown", ev => {
+    if ((ev.key === "Enter" || ev.key === " ") && ev.target.dataset && ev.target.dataset.room) { ev.preventDefault(); openRoom(ev.target.dataset.room); }
+    else if ((ev.key === "Enter" || ev.key === " ") && ev.target.dataset && G[ev.target.dataset.girl]) { ev.preventDefault(); talkTo(ev.target.dataset.girl); }
+  });
   addEventListener("keydown", e => {
     if (!e.key.startsWith("Arrow") || openId) return;
-    e.preventDefault(); R.keys.add(e.key); kick();
+    e.preventDefault(); R.keys.add(e.key); R.talkTo = null; kick();
   });
   addEventListener("keyup", e => R.keys.delete(e.key));
   addEventListener("blur", () => R.keys.clear());
@@ -403,6 +417,7 @@
         if (i >= path.length - 1) { g.face = 1; g.home = true; placeGirl(g, 0); g.walking = false; return; }
       } else { g.x += dx / len * st; g.y += dy / len * st; g.home = false; }
       placeGirl(g, -Math.abs(Math.sin(ts / 110)) * 1.1);
+      checkTalk();
       requestAnimationFrame(step);
     };
     requestAnimationFrame(step);
@@ -412,6 +427,7 @@
       const el = $(`#kgObjs [data-girl="${o.girl}"]`); if (!el) return;
       const inner = el.firstElementChild;
       G[o.girl] = { el, inner, x0: o.gx, y0: o.gy, z0: o.gz, x: o.gx, y: o.gy, face: 1, home: true, walking: false };
+      el.setAttribute("tabindex", "0"); el.setAttribute("role", "button");
     });
     phaseHooks.push(p => { if (p === "night") Object.values(G).forEach(g => { if (g.walking) g.abort = true; }); });
     if (STILL) return;
@@ -421,6 +437,159 @@
       next();
     }, 20000 + Math.random() * 20000);
     next();
+  }
+
+
+  // ---------- talk bubbles ----------
+  // When the visitor robot comes within NEAR grid units of a girl she says ONE line:
+  // her current status from status.csv (zzZ… at night). Once per approach: the robot
+  // has to go further than AWAY before the same girl talks again. One bubble at a time.
+  // The bubble is HTML over the map (readable font size on phones), clamped inside it.
+  const TALK = { MS: 4000, NEAR: 0.9, AWAY: 1.4, armed: {}, who: null, timer: 0, raf: 0, el: null };
+  const JPC = /[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]/;
+  const seg = typeof Intl.Segmenter === "function" ? new Intl.Segmenter(undefined, { granularity: "grapheme" }) : null;
+  const graphemes = s => seg ? [...seg.segment(s)].map(x => x.segment) : [...s];
+  function shortLine(s) {
+    s = String(s || "").replace(/\s+/g, " ").trim();
+    const max = JPC.test(s) ? 28 : 45, g = graphemes(s);
+    if (g.length <= max) return s;
+    let cut = g.slice(0, max - 1).join("");
+    if (!JPC.test(s)) { const sp = cut.lastIndexOf(" "); if (sp > max * 0.6) cut = cut.slice(0, sp); }
+    return cut.replace(/[\s、。，,.!！?？・:：;；\-–—]+$/u, "") + "…";
+  }
+  const talkLine = id => isNight() ? "zzZ…" : shortLine(statusText(S.status[id])) || "…";
+  const memberName = id => { const m = C.members[id]; return lang === "en" ? m.nameEn : m.name; };
+  function talkSpot(id) {   // a free spot just short of her, nearest to the robot
+    const g = G[id]; let best = null;
+    for (const r of [0.55, 0.65, 0.8]) for (let a = 0; a < 16; a++) {
+      const x = g.x + Math.cos(a * Math.PI / 8) * r, y = g.y + Math.sin(a * Math.PI / 8) * r;
+      if (!walkable(x, y) || hitBuilding(x, y)) continue;
+      const d = Math.hypot(x - R.x, y - R.y); if (!best || d < best[2]) best = [x, y, d];
+    }
+    return best || [g.x, g.y];
+  }
+  function talkTo(id) {     // tap / Enter on a girl: walk up to her, she talks on arrival
+    R.pendingRoom = null; R.keys.clear();
+    const [x, y] = talkSpot(id);
+    R.talkTo = id;
+    if (Math.hypot(x - R.x, y - R.y) < 0.05) { arriveTalk(); return; }
+    walkTo(x, y);
+  }
+  function arriveTalk() {
+    const id = R.talkTo; R.talkTo = null;
+    if (!id || !G[id]) return;
+    TALK.armed[id] = false;
+    if (TALK.who !== id) say(id);
+  }
+  function checkTalk() {
+    let best = null;
+    for (const id of Object.keys(G)) {
+      const g = G[id], d = Math.hypot(g.x - R.x, g.y - R.y);
+      if (d > TALK.AWAY) TALK.armed[id] = true;
+      else if (d < TALK.NEAR && TALK.armed[id] !== false && (!best || d < best.d)) best = { id, d };
+    }
+    if (best) { TALK.armed[best.id] = false; if (R.talkTo === best.id) R.talkTo = null; say(best.id); }
+  }
+  function talkAnchor(id) {  // map (SVG) point the tail touches: above her head, or her Zzz at night
+    if (isNight()) {
+      const z = svg.querySelector(`[data-zzz="${id}"]`), m = z && /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(z.getAttribute("transform") || "");
+      if (m) return { x: +m[1] + 8, y: +m[2] - 23, foot: +m[2] + 4 };
+    }
+    const g = G[id], [sx, sy] = T.P(g.x, g.y, g.home ? g.z0 : zAt(g.x, g.y));
+    return { x: sx, y: sy - 18, foot: sy + 3 };
+  }
+  function placeTalk() {
+    const el = TALK.el; if (!TALK.who || !el || el.hidden) return;
+    const wrap = el.parentNode.getBoundingClientRect(), r = svg.getBoundingClientRect(), k = r.width / T.VB.w;
+    const a = talkAnchor(TALK.who), px = r.left - wrap.left + a.x * k;
+    const w = el.offsetWidth, h = el.offsetHeight, pad = 6, gap = 9;
+    const left = Math.min(Math.max(px - w / 2, pad), Math.max(pad, wrap.width - w - pad));
+    let top = r.top - wrap.top + a.y * k - h - gap, below = false;
+    if (top < pad) { top = r.top - wrap.top + a.foot * k + gap; below = true; }   // no room above: hang it below her
+    top = Math.min(top, wrap.height - h - pad);
+    el.style.left = left.toFixed(1) + "px"; el.style.top = top.toFixed(1) + "px";
+    el.style.setProperty("--tx", Math.min(Math.max(px - left, 14), w - 14).toFixed(1) + "px");
+    el.classList.toggle("below", below);
+  }
+  function followTalk() {
+    cancelAnimationFrame(TALK.raf);
+    const f = () => { if (!TALK.who) return; placeTalk(); TALK.raf = requestAnimationFrame(f); };
+    TALK.raf = requestAnimationFrame(f);
+  }
+  function say(id) {
+    if (!G[id] || !TALK.el) return;
+    clearTimeout(TALK.timer);
+    const el = TALK.el;
+    el.style.setProperty("--c", C.members[id].color);
+    el.innerHTML = `<span class="sr">${esc(memberName(id))}: </span>${esc(talkLine(id))}<i aria-hidden="true"></i>`;
+    el.classList.remove("show"); el.hidden = false; void el.offsetWidth; el.classList.add("show");
+    TALK.who = id; placeTalk(); followTalk();
+    TALK.timer = setTimeout(hideTalk, TALK.MS);
+    markHeard(id);
+  }
+  function hideTalk() { clearTimeout(TALK.timer); cancelAnimationFrame(TALK.raf); TALK.who = null; if (TALK.el) { TALK.el.hidden = true; TALK.el.classList.remove("show"); } }
+
+  // ---------- daily reward (all three heard on the same Japan date) ----------
+  // Progress lives only in this browser's localStorage: key kg_heard_YYYY-MM-DD (JST) = "rin,mio".
+  // The photo comes from rewards.csv (assets/rewards/); same pick for everyone that day.
+  const TALKERS = ["rin", "mio", "rina"];
+  const jstDayFmt = new Intl.DateTimeFormat("en-US", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" });
+  function jstDate(d = new Date()) { const p = jstDayFmt.formatToParts(d), v = ty => (p.find(x => x.type === ty) || {}).value; return `${v("year")}-${v("month")}-${v("day")}`; }
+  const heardKey = () => "kg_heard_" + jstDate();
+  function heardToday() { try { return (localStorage.getItem(heardKey()) || "").split(",").filter(x => TALKERS.includes(x)); } catch (e) { return []; } }
+  function markHeard(id) {
+    if (!TALKERS.includes(id)) return;
+    const h = heardToday();
+    if (!h.includes(id)) {
+      h.push(id);
+      try {
+        for (let i = localStorage.length - 1; i >= 0; i--) { const k = localStorage.key(i); if (k && k.startsWith("kg_heard_") && k !== heardKey()) localStorage.removeItem(k); }
+        localStorage.setItem(heardKey(), h.join(","));
+      } catch (e) { /* storage off: progress just isn't kept */ }
+      if (TALKERS.every(x => h.includes(x))) setTimeout(openReward, STILL ? 500 : 1500);
+    }
+    drawProgress();
+  }
+  function drawProgress() {
+    const el = $("#talkDots"); if (!el) return;
+    const h = heardToday(), done = TALKERS.every(x => h.includes(x));
+    const label = `${t("heard")} ${h.length}/3` + (done ? ` · ${t("rewardTitle")}` : ` · ${t("rewardHint")}`);
+    el.innerHTML = TALKERS.map(id => `<i class="${h.includes(id) ? "on" : ""}" style="--c:${C.members[id].color}"></i>`).join("") + `<span aria-hidden="true">📸</span>`;
+    el.classList.toggle("done", done); el.title = label; el.setAttribute("aria-label", label);
+    el.disabled = !done;
+  }
+  function openReward() {
+    const el = $("#reward"); if (!el) return;
+    const list = S.rewards || [];
+    const day = Math.floor(Date.parse(jstDate() + "T00:00:00Z") / 864e5);
+    const it = list.length ? list[((day % list.length) + list.length) % list.length] : null;
+    const m = it && C.members[it.who];
+    const cap = it ? (lang === "en" ? it.en || it.ja : it.ja || it.en) : "";
+    el.style.setProperty("--c", m ? m.color : "#bfa6dd");
+    el.innerHTML = `<div class="rhead"><b id="rewardTitle">${esc(t("rewardTitle"))}</b><button class="rclose" aria-label="${esc(t("close"))}">×</button></div>` +
+      (it ? `<img src="assets/rewards/${encodeURIComponent(it.file)}" alt="${esc(cap || t("rewardTitle"))}">${cap ? `<p>${esc(cap)}</p>` : ""}` : `<p class="empty">${esc(t("rewardEmpty"))}</p>`);
+    const img = el.querySelector("img");
+    if (img) img.onerror = () => { img.remove(); const p = el.querySelector("p"); if (p) p.remove(); el.insertAdjacentHTML("beforeend", `<p class="empty">${esc(t("rewardEmpty"))}</p>`); };
+    el.querySelector(".rclose").onclick = closeReward;
+    el.hidden = false; el.classList.toggle("still", STILL);
+    el.querySelector(".rclose").focus({ preventScroll: true });
+  }
+  function closeReward() { const el = $("#reward"); if (el && !el.hidden) { el.hidden = true; const d = $("#talkDots"); if (d && !d.disabled) d.focus({ preventScroll: true }); } }
+  function talkInit() {
+    const wrap = $(".mapwrap"); if (!wrap) return;
+    TALK.el = document.createElement("div");
+    TALK.el.className = "talk" + (STILL ? " still" : ""); TALK.el.hidden = true;
+    TALK.el.setAttribute("role", "status"); TALK.el.setAttribute("aria-live", "polite");
+    const dots = document.createElement("button");
+    dots.id = "talkDots"; dots.className = "talkdots"; dots.type = "button"; dots.onclick = openReward;
+    const card = document.createElement("div");
+    card.id = "reward"; card.className = "reward"; card.hidden = true;
+    card.setAttribute("role", "dialog"); card.setAttribute("aria-labelledby", "rewardTitle");
+    wrap.append(TALK.el, dots, card);
+    addEventListener("keydown", e => { if (e.key === "Escape") closeReward(); });
+    addEventListener("resize", placeTalk);
+    phaseHooks.push(() => { if (TALK.who) say(TALK.who); });   // dusk/dawn mid-bubble: refresh the line
+    drawProgress();
   }
 
   // ---------- tram ----------
@@ -451,11 +620,12 @@
 
   // ---------- data refresh ----------
   async function refresh() {
-    const [st, rm, mt, tr] = await Promise.allSettled([D.loadStatus(), D.loadRooms(), D.loadMeetings(), D.loadTrends()]);
+    const [st, rm, mt, tr, rw] = await Promise.allSettled([D.loadStatus(), D.loadRooms(), D.loadMeetings(), D.loadTrends(), D.loadRewards()]);
     if (st.status === "fulfilled") S.status = st.value; else console.warn(st.reason);
     if (rm.status === "fulfilled") S.rooms = rm.value; else console.warn(rm.reason);
     if (mt.status === "fulfilled") S.meetings = mt.value; else console.warn(mt.reason);
     if (tr.status === "fulfilled") S.trends = tr.value; else console.warn(tr.reason);
+    if (rw.status === "fulfilled") S.rewards = rw.value; else console.warn(rw.reason);
     S.loadedAt = new Date();
     paintText();
     if (openId && openId !== "meeting") openRoom(openId);
@@ -463,15 +633,16 @@
   function paintText() {
     document.documentElement.lang = lang;
     document.querySelectorAll("[data-i18n]").forEach(el => { const v = t(el.dataset.i18n); if (typeof v === "string") el.textContent = v; });
-    $("#hint").innerHTML = `<span>${esc(t("hint"))}</span>`;
+    $("#hint").innerHTML = `<span>${esc(t("hint"))}</span><br><span>${esc(t("hint2"))}</span>`;
     $("#langBtn").textContent = lang === "ja" ? "EN" : "日本語";
     const intro = S.rooms.intro || {};
     $("#townIntro").textContent = (lang === "en" ? intro.en : intro.ja) || "";
     if (S.loadedAt) $("#lastLoad").textContent = `${t("loaded")} ${new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit" }).format(S.loadedAt)} JST`;
     const yt = $("#visitor text"); if (yt) yt.textContent = t("you");
-    drawSigns(); drawCards(); drawLinks(); drawCounter();
+    drawSigns(); drawCards(); drawLinks(); drawCounter(); drawProgress();
+    Object.keys(G).forEach(id => G[id].el.setAttribute("aria-label", t("talkTo")(memberName(id))));
   }
-  $("#langBtn").onclick = () => { lang = lang === "ja" ? "en" : "ja"; localStorage.setItem("kg_lang", lang); paintText(); if (openId) openRoom(openId); };
+  $("#langBtn").onclick = () => { lang = lang === "ja" ? "en" : "ja"; localStorage.setItem("kg_lang", lang); paintText(); if (openId) openRoom(openId); if (!$("#reward").hidden) openReward(); };
 
   function drawLinks() {
     $("#links").innerHTML = Object.values(C.links).map(l => {
@@ -498,11 +669,13 @@
   applyPhase();
   tramLoop();
   girlsInit();
+  talkInit();
   setInterval(applyPhase, 60 * 1000);
   refresh();
   initCounter();
   setInterval(refresh, (C.data.refreshSeconds || 60) * 1000);
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { applyPhase(); refresh(); } });
   if (params.get("open")) setTimeout(() => openRoom(params.get("open")), 400);
-  window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding, phaseAt, jstHour, get phase() { return phase; } };
+  window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding, phaseAt, jstHour, get phase() { return phase; },
+    talkTo, say, checkTalk, talkSpot, shortLine, heardToday, openReward, closeReward, jstDate, TALK };
 })();
