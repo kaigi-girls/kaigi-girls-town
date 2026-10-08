@@ -8,7 +8,7 @@
   const STILL = params.has("still") || matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const I18N = {
-    ja: { tagline: "ロボになって、街をのぞこう", hint: "タップした場所へ歩くよ・建物をタップでのぞける", nowTitle: "いま、なにしてる？",
+    ja: { tagline: "ロボになって、街をのぞこう", hint: "タップした場所へ歩くよ・建物は「入る」でのぞける", nowTitle: "いま、なにしてる？",
       meetBtn: "会議室をのぞく", footNote: "この街と登場人物はフィクションです。人間はみんな小さなロボの姿で遊びに来ています。",
       updated: "更新", minAgo: n => `${n}分前`, hourAgo: n => `${n}時間前`, dayAgo: n => `${n}日前`, justNow: "たった今",
       visitors: "これまでに来たロボ", comingSoon: "COMING SOON", tapToPeek: "タップでのぞく", nowDoing: "いま",
@@ -17,8 +17,9 @@
       noMeeting: "まだ公開できる会議はありません。", soonText: "準備中",
       trendToday: "今日のトレンド", trendArchive: "トレンドの記録", trendNext: "次で使うかも👀", trendPicked: "ピック", noTrends: "まだトレンドはありません。", trendNote: "メンバーが気になった話題をひとことで。",
       hint2: "ロボを三人に近づけると、ひとこと話すよ", talkTo: n => `${n}に話しかける`, heard: "今日おはなしした",
-      rewardHint: "三人とおはなしすると、今日のオフショットが見られるよ", rewardTitle: "今日のオフショット📸", rewardEmpty: "ゴール！オフショットは準備中だよ", close: "閉じる" },
-    en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building to peek inside", nowTitle: "What's everyone doing?",
+      rewardHint: "三人とおはなしすると、今日のオフショットが見られるよ", rewardTitle: "今日のオフショット📸", rewardEmpty: "ゴール！オフショットは準備中だよ", close: "閉じる",
+      enterQ: n => `${n}に入る？`, enterGo: "入る", enterNo: "やめる" },
+    en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building, then “Go in” to peek", nowTitle: "What's everyone doing?",
       meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit as tiny robots.",
       updated: "updated", minAgo: n => `${n} min ago`, hourAgo: n => `${n} h ago`, dayAgo: n => `${n} d ago`, justNow: "just now",
       visitors: "robots visited so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek", nowDoing: "Now",
@@ -27,7 +28,8 @@
       noMeeting: "No public meetings yet.", soonText: "coming soon",
       trendToday: "Today's trends", trendArchive: "Trend archive", trendNext: "maybe next post 👀", trendPicked: "picked", noTrends: "No trends yet.", trendNote: "Topics the girls are into, in one line.",
       hint2: "Walk your robot up to the girls to hear what they're up to", talkTo: n => `Talk to ${n}`, heard: "Talked today",
-      rewardHint: "Talk to all three to unlock today's off-shot", rewardTitle: "Today's off-shot 📸", rewardEmpty: "Goal! Off-shots coming soon", close: "Close" }
+      rewardHint: "Talk to all three to unlock today's off-shot", rewardTitle: "Today's off-shot 📸", rewardEmpty: "Goal! Off-shots coming soon", close: "Close",
+      enterQ: n => `Go into ${n}?`, enterGo: "Go in", enterNo: "Cancel" }
   };
   let lang = localStorage.getItem("kg_lang") === "en" ? "en" : "ja";
   const t = k => I18N[lang][k];
@@ -102,9 +104,30 @@
     const sx = Math.min(Math.max(tx, b.x + 10), b.x + w - 10), sy = ty > b.y + h ? b.y + h : ty < b.y ? b.y : b.y + h / 2;
     return `<line x1="${sx}" y1="${sy}" x2="${tx}" y2="${ty}" stroke="${stroke}" stroke-width="1.3" stroke-dasharray="2.5 2" stroke-linecap="round"/><circle cx="${tx}" cy="${ty}" r="2.4" fill="#fff" stroke="${stroke}" stroke-width="1.3"/>`;
   }
+  // Tap targets: every sign gets an invisible "hitpad" of at least HIT_PX CSS px (sized from the
+  // current map scale), so a slightly-off tap still lands. Neighbouring pads never overlap
+  // (they are split at the middle of the overlap, never cutting into a visible label).
+  const HIT_PX = 46;   // >= 44 px with a little rounding slack
+  function hitUnits() { const w = svg.getBoundingClientRect().width; return w > 0 ? HIT_PX * T.VB.w / w : 30; }
+  function signPads(items) {
+    const U = hitUnits();
+    const pads = items.map(it => { const w = Math.max(it.w, U), h = Math.max(it.h, U); return { x: it.x + (it.w - w) / 2, y: it.y + (it.h - h) / 2, w, h, b: it }; });
+    for (let i = 0; i < pads.length; i++) for (let j = i + 1; j < pads.length; j++) {
+      const a = pads[i], c = pads[j];
+      const ox = Math.min(a.x + a.w, c.x + c.w) - Math.max(a.x, c.x), oy = Math.min(a.y + a.h, c.y + c.h) - Math.max(a.y, c.y);
+      if (ox <= 0 || oy <= 0) continue;
+      const ax = ox <= oy ? "x" : "y", sz = ax === "x" ? "w" : "h";
+      const [lo, hi] = a[ax] + a[sz] / 2 <= c[ax] + c[sz] / 2 ? [a, c] : [c, a];
+      const cut = (Math.max(lo[ax], hi[ax]) + Math.min(lo[ax] + lo[sz], hi[ax] + hi[sz])) / 2;   // middle of the overlap
+      const loEnd = Math.max(cut, lo.b[ax] + lo.b[sz]), hiStart = Math.min(cut, hi.b[ax]);
+      lo[sz] = loEnd - lo[ax];
+      hi[sz] = hi[ax] + hi[sz] - hiStart; hi[ax] = hiStart;
+    }
+    return pads;
+  }
   function drawSigns() {
     const layer = $("#kgSigns"); if (!layer) return;
-    let s = "";
+    const items = [];   // { room, x, y, w, h, html }
     for (const o of sorted) {
       if (!o.room) continue;
       const r = roomCfg(o.room);
@@ -113,10 +136,10 @@
         const l1 = roomTitle(o.room).replace(/^(浜辺の|編集部の)/, ""), fs = 7.5;
         const w = Math.max(tw(l1, fs), tw("COMING SOON", 6.5)) + 14, h = 22;
         const b = signBox(o.room, w, h, ax, ay);
-        s += `<g class="sign" data-room="${o.room}" role="button">${pointer(b, w, h, b.tx, b.ty, NAVY, NAVY)}` +
-          `<rect x="${b.x}" y="${b.y}" width="${w}" height="${h}" rx="6" fill="${NAVY}"/>` +
+        items.push({ room: o.room, x: b.x, y: b.y, w, h, html: `<g pointer-events="none">${pointer(b, w, h, b.tx, b.ty, NAVY, NAVY)}</g>` +
+          `<rect class="sbody" x="${b.x}" y="${b.y}" width="${w}" height="${h}" rx="6" fill="${NAVY}"/>` +
           `<text x="${b.x + w / 2}" y="${b.y + 9.5}" font-size="${fs}" font-weight="700" fill="#fff" text-anchor="middle">${esc(l1)}</text>` +
-          `<text x="${b.x + w / 2}" y="${b.y + 18}" font-size="6.5" font-weight="800" fill="#ffd98a" text-anchor="middle" letter-spacing=".4">COMING SOON</text></g>`;
+          `<text x="${b.x + w / 2}" y="${b.y + 18}" font-size="6.5" font-weight="800" fill="#ffd98a" text-anchor="middle" letter-spacing=".4">COMING SOON</text>` });
         continue;
       }
       const owner = ownerOf(o.room);
@@ -128,16 +151,18 @@
       line2 = clip(line2, fs2, maxW);
       const w = Math.max(tw(name, fs1) + 22 + (o.room === "meeting" ? 18 : 0), tw(line2, fs2) + 12, 44), h = 28;
       const b = signBox(o.room, w, h, ax, ay);
-      s += `<g class="sign" data-room="${o.room}" role="button">` +
-        `<rect x="${b.x + 1}" y="${b.y + 2}" width="${w}" height="${h}" rx="8" fill="${NAVY}" opacity=".12"/>` +
-        pointer(b, w, h, b.tx, b.ty, "#fff", owner ? deep : NAVY) +
-        `<rect x="${b.x}" y="${b.y}" width="${w}" height="${h}" rx="8" fill="#fff" stroke="${owner ? col : NAVY}" stroke-width="1.6"/>` +
+      items.push({ room: o.room, x: b.x, y: b.y, w, h, html:
+        `<rect x="${b.x + 1}" y="${b.y + 2}" width="${w}" height="${h}" rx="8" fill="${NAVY}" opacity=".12" pointer-events="none"/>` +
+        `<g pointer-events="none">${pointer(b, w, h, b.tx, b.ty, "#fff", owner ? deep : NAVY)}</g>` +
+        `<rect class="sbody" x="${b.x}" y="${b.y}" width="${w}" height="${h}" rx="8" fill="#fff" stroke="${owner ? col : NAVY}" stroke-width="1.6"/>` +
         `<circle cx="${b.x + 9}" cy="${b.y + 8.5}" r="4.2" fill="${col}"/>` +
         `<text x="${b.x + 16}" y="${b.y + 11.4}" font-size="${fs1}" font-weight="800" fill="${NAVY}">${esc(name)}</text>` +
         (o.room === "meeting" ? `<g class="dots">${[0, 1, 2].map(i => `<circle cx="${b.x + w - 18 + i * 5}" cy="${b.y + 8.5}" r="1.5" fill="${NAVY}"/>`).join("")}</g>` : "") +
-        `<text x="${b.x + 6}" y="${b.y + 23}" font-size="${fs2}" fill="${NAVY}">${esc(line2)}</text></g>`;
+        `<text x="${b.x + 6}" y="${b.y + 23}" font-size="${fs2}" fill="${NAVY}">${esc(line2)}</text>` });
     }
-    layer.innerHTML = s;
+    const pads = signPads(items);
+    layer.innerHTML = items.map((it, i) => { const p = pads[i];
+      return `<g class="sign" data-room="${it.room}" role="button"><rect class="hitpad" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" width="${p.w.toFixed(1)}" height="${p.h.toFixed(1)}" fill="#fff" fill-opacity="0"/>${it.html}</g>`; }).join("");
   }
 
   // ---------- cards ----------
@@ -158,6 +183,7 @@
   // ---------- sheet ----------
   let openId = null, chatTimer = null;
   function openRoom(id) {
+    hideEnter();
     openId = id;
     const r = roomCfg(id), owner = ownerOf(id), md = S.rooms.rooms[id] || {};
     $("#sheetTitle").textContent = roomTitle(id, true);
@@ -231,7 +257,10 @@
   $("#meetBtn").onclick = () => openRoom("meeting");
 
   // ---------- visitor robot ----------
-  const R = { x: 4.3, y: 6.9, tx: null, ty: null, keys: new Set(), raf: 0, last: 0, lastRoom: null, pendingRoom: null, talkTo: null };
+  // Taps never open a panel by themselves. Ground = walk there. Building / sign = walk to its door
+  // and ask 「〇〇に入る？」 in the enter bar; only 「入る」 opens the panel. Arriving next to a building
+  // (or bumping into it with the arrow keys) asks too; walking away closes the bar.
+  const R = { x: 4.3, y: 6.9, tx: null, ty: null, keys: new Set(), raf: 0, last: 0, pendingRoom: null, talkTo: null, goal: null, bump: null, path: [], chk: null };
   const SPEED = 2.6;
   const blockers = () => sorted.filter(o => o.room || (o.w * o.d > 0.5 && o.id !== "tram" && o.x < 10 && o.y < 8.6));
   const inRect = (x, y, o, m = 0.1) => x > o.x - m && x < o.x + o.w + m && y > o.y - m && y < o.y + o.d + m;
@@ -255,48 +284,192 @@
     if (want !== g && g.previousSibling !== after) $("#kgObjs").insertBefore(g, want);
   }
   function tryMove(dx, dy) {
-    let moved = false;
-    const go = (nx, ny) => { if (walkable(nx, ny)) { const b = hitBuilding(nx, ny); if (!b) { R.x = nx; R.y = ny; return true; } if (b.room && (R.keys.size || b.room === R.pendingRoom)) knock(b.room); } return false; };
+    let moved = false; R.bump = null;
+    const go = (nx, ny) => { if (walkable(nx, ny)) { const b = hitBuilding(nx, ny); if (!b) { R.x = nx; R.y = ny; return true; } if (b.room) R.bump = b.room; } return false; };
     if (go(R.x + dx, R.y + dy)) moved = true;
-    else { if (dx && go(R.x + dx, R.y)) moved = true; if (dy && go(R.x, R.y + dy)) moved = true; }
+    else {   // blocked: slide along the wall at full step (bigger component first; ignore near-head-on)
+      const L = Math.hypot(dx, dy), axes = Math.abs(dx) >= Math.abs(dy) ? [[dx, 0], [0, dy]] : [[0, dy], [dx, 0]];
+      for (const [ax, ay] of axes) if (Math.abs(ax + ay) > 0.05 * L && go(R.x + Math.sign(ax) * L, R.y + Math.sign(ay) * L)) { moved = true; break; }
+    }
     return moved;
   }
-  function knock(room) {   // walked into a building => peek inside
-    if (openId || R.lastRoom === room) return;
-    R.lastRoom = room; R.tx = R.ty = null; R.keys.clear();
+
+  // ---------- route finding (so a tapped building's door is actually reached) ----------
+  // 0.1-grid occupancy map built once (buildings never move); BFS + line-of-sight smoothing.
+  const NAV = { s: 0.1, W: 100, H: 140, free: null };
+  const freeAt = (x, y) => walkable(x, y) && !hitBuilding(x, y);
+  const roomy = (x, y, m = 0.04) => freeAt(x, y) && freeAt(x + m, y) && freeAt(x - m, y) && freeAt(x, y + m) && freeAt(x, y - m);   // not a zero-width gap
+  function navGrid() {
+    if (NAV.free) return NAV.free;
+    const f = new Uint8Array(NAV.W * NAV.H);
+    for (let j = 0; j < NAV.H; j++) for (let i = 0; i < NAV.W; i++) f[j * NAV.W + i] = roomy((i + 0.5) * NAV.s, (j + 0.5) * NAV.s) ? 1 : 0;
+    return (NAV.free = f);
+  }
+  function nearestFree(x, y) {
+    const f = navGrid(), ci = Math.floor(x / NAV.s), cj = Math.floor(y / NAV.s);
+    for (let r = 0; r < 30; r++) { let best = -1, bd = Infinity;
+      for (let j = cj - r; j <= cj + r; j++) for (let i = ci - r; i <= ci + r; i++) {
+        if (Math.max(Math.abs(i - ci), Math.abs(j - cj)) !== r || i < 0 || j < 0 || i >= NAV.W || j >= NAV.H || !f[j * NAV.W + i]) continue;
+        const d = Math.hypot((i + 0.5) * NAV.s - x, (j + 0.5) * NAV.s - y); if (d < bd) { bd = d; best = j * NAV.W + i; } }
+      if (best >= 0) return best; }
+    return -1;
+  }
+  function clearLine(x0, y0, x1, y1) {
+    const n = Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 0.05);
+    for (let k = 1; k <= n; k++) if (!(k === n ? freeAt : roomy)(x0 + (x1 - x0) * k / n, y0 + (y1 - y0) * k / n)) return false;
+    return true;
+  }
+  function findPath(x0, y0, x1, y1) {   // -> [[x,y], ...] ending at the goal (or the free spot nearest to it)
+    if (clearLine(x0, y0, x1, y1)) return [[x1, y1]];
+    const f = navGrid(), W = NAV.W, a = nearestFree(x0, y0), b = nearestFree(x1, y1);
+    if (a < 0 || b < 0) return [[x1, y1]];
+    const prev = new Int32Array(W * NAV.H).fill(-1), q = [a]; prev[a] = a;
+    for (let h = 0; h < q.length && prev[b] < 0; h++) {
+      const c = q[h], i = c % W, j = (c - i) / W;
+      for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) {
+        const ni = i + di, nj = j + dj, n = nj * W + ni;
+        if ((!di && !dj) || ni < 0 || nj < 0 || ni >= W || nj >= NAV.H || !f[n] || prev[n] >= 0) continue;
+        if (di && dj && (!f[j * W + ni] || !f[nj * W + i])) continue;   // no corner cutting
+        prev[n] = c; q.push(n);
+      }
+    }
+    if (prev[b] < 0) return [[x1, y1]];
+    const cells = []; for (let c = b; c !== a; c = prev[c]) cells.push(c); cells.reverse();
+    const pts = cells.map(c => [(c % W + 0.5) * NAV.s, (Math.floor(c / W) + 0.5) * NAV.s]);
+    const goal = freeAt(x1, y1) ? [x1, y1] : pts[pts.length - 1];
+    if (freeAt(x1, y1)) pts.push(goal);
+    const out = []; let cx = x0, cy = y0, k = 0;   // keep only the corners we must turn at
+    while (k < pts.length) { let far = k; for (let m = pts.length - 1; m > k; m--) if (clearLine(cx, cy, pts[m][0], pts[m][1])) { far = m; break; }
+      out.push(pts[far]); [cx, cy] = pts[far]; k = far + 1; }
+    return out;
+  }
+
+  // ---------- enter bar 「〇〇に入る？」 ----------
+  const CONF = { room: null, no: null, el: null, NEAR: 0.4, LEAVE: 0.9 };
+  function roomDist(room, x = R.x, y = R.y) {   // grid distance to the building's footprint or its door
+    const o = sorted.find(q => q.room === room); if (!o) return Infinity;
+    const dx = Math.max(o.x - x, 0, x - (o.x + o.w)), dy = Math.max(o.y - y, 0, y - (o.y + o.d));
+    const d = T.DOORS[room];
+    return Math.min(Math.hypot(dx, dy), d ? Math.hypot(d[0] - x, d[1] - y) : Infinity);
+  }
+  function nearRoom(x = R.x, y = R.y) {
+    let best = null;
+    for (const o of sorted) if (o.room) { const d = roomDist(o.room, x, y); if (d <= CONF.NEAR && (!best || d < best.d)) best = { room: o.room, d }; }
+    return best && best.room;
+  }
+  function paintEnter() {
+    const el = CONF.el; if (!el || !CONF.room) return;
+    const owner = ownerOf(CONF.room);
+    el.style.setProperty("--c", owner ? owner.color : CONF.room === "meeting" ? "#bfa6dd" : "#bde1fb");
+    const [pre, post] = t("enterQ")("\u0000").split("\u0000");   // keep 「に入る？」 / "?" from breaking off on its own line
+    el.querySelector(".q").innerHTML = `${esc(pre)}${esc(roomTitle(CONF.room))}<span class="sfx">${esc(post)}</span>`;
+    el.querySelector(".go").textContent = t("enterGo");
+    el.querySelector(".no").textContent = t("enterNo");
+  }
+  function askEnter(room, explicit) {   // explicit = the user tapped this building / its sign
+    if (!room || !CONF.el || openId) return;
+    if (!explicit && CONF.no === room) return;   // said 「やめる」 here; ask again only after walking away
+    if (explicit) CONF.no = null;
+    const was = CONF.room; CONF.room = room; paintEnter();
+    if (was !== room || CONF.el.hidden) { CONF.el.hidden = false; CONF.el.classList.remove("show"); void CONF.el.offsetWidth; CONF.el.classList.add("show"); }
+  }
+  function hideEnter() { CONF.room = null; if (CONF.el) CONF.el.hidden = true; }
+  function enterGo() {
+    const room = CONF.room; if (!room) return;
+    CONF.no = room;   // no re-ask at this door right after the panel closes
+    if (R.pendingRoom === room) R.pendingRoom = null;
     openRoom(room);
   }
+  function enterNo() {
+    const room = CONF.room; CONF.no = room;
+    if (room && R.pendingRoom === room) { R.pendingRoom = null; R.tx = R.ty = null; R.path = []; R.goal = null; }
+    hideEnter();
+  }
+  function checkLeave() {
+    if (CONF.room && CONF.room !== R.pendingRoom && roomDist(CONF.room) > CONF.LEAVE) hideEnter();
+    if (CONF.no && roomDist(CONF.no) > CONF.LEAVE) CONF.no = null;
+  }
+  function arrived() {   // the robot stopped (reached the target or got blocked)
+    clearMark();
+    const goal = R.goal; R.goal = null;
+    if (goal === "talk") return;
+    if (R.pendingRoom) { const room = R.pendingRoom; R.pendingRoom = null; askEnter(room, false); return; }
+    askEnter(nearRoom(), false);
+  }
+  function enterInit() {
+    const el = document.createElement("div");
+    el.id = "enterBar"; el.className = "enterbar" + (STILL ? " still" : ""); el.hidden = true;
+    el.setAttribute("role", "group"); el.setAttribute("aria-live", "polite");
+    el.innerHTML = `<i class="dot" aria-hidden="true"></i><b class="q"></b><button type="button" class="go"></button><button type="button" class="no"></button>`;
+    el.querySelector(".go").onclick = enterGo; el.querySelector(".no").onclick = enterNo;
+    document.body.appendChild(el); CONF.el = el;
+    addEventListener("keydown", e => { if (e.key === "Escape" && CONF.room && !openId) enterNo(); });
+  }
+
+  // little ring where the robot is heading (ground taps)
+  function showMark(gx, gy) {
+    clearMark();
+    const layer = $("#kgGround"); if (!layer) return;
+    const [x, y] = T.P(gx, gy, zAt(gx, gy));
+    const m = document.createElementNS("http://www.w3.org/2000/svg", "g");
+    m.id = "tapMark"; m.setAttribute("pointer-events", "none");
+    m.innerHTML = `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="6.5" ry="3.25" fill="#fff" fill-opacity=".55" stroke="${NAVY}" stroke-opacity=".55" stroke-width="1"/>`;
+    layer.appendChild(m);
+  }
+  function clearMark() { const m = $("#tapMark"); if (m) m.remove(); }
+
   function loop(ts) {
     const dt = Math.min(0.05, (ts - (R.last || ts)) / 1000); R.last = ts;
     let dx = 0, dy = 0;
     if (R.keys.size) {
       if (R.keys.has("ArrowUp")) { dx -= 1; dy -= 1; } if (R.keys.has("ArrowDown")) { dx += 1; dy += 1; }
       if (R.keys.has("ArrowLeft")) { dx -= 1; dy += 1; } if (R.keys.has("ArrowRight")) { dx += 1; dy -= 1; }
-      R.tx = R.ty = null;
+      R.tx = R.ty = null; R.path = [];
       R.talkTo = null;
     } else if (R.tx != null) {
-      if (R.talkTo) { const sp = talkSpot(R.talkTo); R.tx = sp[0]; R.ty = sp[1]; }   // follow her if she is walking
+      if (R.talkTo && !R.path.length) { const sp = talkSpot(R.talkTo); R.tx = sp[0]; R.ty = sp[1]; }   // follow her if she is walking
       dx = R.tx - R.x; dy = R.ty - R.y;
     }
     const len = Math.hypot(dx, dy);
     if (len > 0.001) {
       const st = Math.min(SPEED * dt, R.tx != null && !R.keys.size ? len : Infinity);
       const ok = tryMove(dx / len * st, dy / len * st);
-      if (!ok && R.tx != null) R.tx = R.ty = null;
-      if (R.tx != null && Math.hypot(R.tx - R.x, R.ty - R.y) < 0.03) { R.tx = R.ty = null; if (R.pendingRoom) { R.pendingRoom = null; } }
-      if (R.lastRoom && !hitBuilding(R.x + 0.2, R.y + 0.2) && !hitBuilding(R.x - 0.2, R.y - 0.2)) R.lastRoom = null;
+      if (R.bump && (R.keys.size || R.bump === R.pendingRoom)) askEnter(R.bump, false);   // bumped into it: ask, never open
+      let stop = false;
+      if (!ok && R.tx != null) { R.tx = R.ty = null; R.path = []; stop = true; }
+      if (R.tx != null && !R.keys.size) {   // sliding along a wall without getting closer: give up there
+        const d = Math.hypot(R.tx - R.x, R.ty - R.y);
+        if (!R.chk) R.chk = { t: ts, d };
+        else if (ts - R.chk.t > 300) { if (R.chk.d - d < Math.min(0.25, R.chk.d * 0.5)) { R.tx = R.ty = null; R.path = []; stop = true; } else R.chk = { t: ts, d }; }
+      }
+      if (R.tx != null && Math.hypot(R.tx - R.x, R.ty - R.y) < 0.03) {
+        if (R.path.length) { [R.tx, R.ty] = R.path.shift(); R.chk = null; } else { R.tx = R.ty = null; stop = true; }
+      }
       placeRobot();
       $("#visitor .vbody").setAttribute("transform", `translate(0,${(Math.sin(ts / 70) * 0.6).toFixed(2)})`);
       checkTalk();
-    } else if (R.tx != null && !R.keys.size) R.tx = R.ty = null;   // already there
+      checkLeave();
+      if (stop) arrived();
+    } else if (R.tx != null && !R.keys.size) {   // already at this point
+      if (R.path.length) [R.tx, R.ty] = R.path.shift(); else { R.tx = R.ty = null; arrived(); }
+    }
     if (R.talkTo && R.tx == null && !R.keys.size) arriveTalk();
     R.raf = (R.keys.size || R.tx != null) ? requestAnimationFrame(loop) : 0;
     if (!R.raf) R.last = 0;
   }
   const kick = () => { if (!R.raf) R.raf = requestAnimationFrame(loop); };
-  function walkTo(x, y) { R.tx = x; R.ty = y; kick(); }
+  function walkTo(x, y) {   // walks around buildings (route), not just straight at the point
+    R.path = findPath(R.x, R.y, x, y); [R.tx, R.ty] = R.path.shift(); R.chk = null; kick();
+  }
+  function tapRoom(room) {   // tap on a building or its sign: walk to the door and ask
+    R.talkTo = null; R.keys.clear(); clearMark();
+    askEnter(room, true);
+    const d = T.DOORS[room];
+    if (d && Math.hypot(d[0] - R.x, d[1] - R.y) > 0.05) { R.pendingRoom = room; R.goal = "room"; walkTo(d[0], d[1]); }
+    else { R.pendingRoom = null; R.goal = null; }
+  }
 
-  function svgPoint(ev) {
+  function svgPoint(ev) {   // ev = { clientX, clientY }
     const p = svg.createSVGPoint(); p.x = ev.clientX; p.y = ev.clientY;
     return p.matrixTransform(svg.getScreenCTM().inverse());
   }
@@ -308,24 +481,51 @@
     }
     return [gx, gy];
   }
-  svg.addEventListener("click", ev => {
-    // a girl under the tap wins, even where a sign's leader line/dot is drawn over her
-    const gHit = ev.target.closest("[data-girl]") || document.elementsFromPoint(ev.clientX, ev.clientY).map(n => n.closest && n.closest("#town [data-girl]")).find(Boolean);
-    if (gHit && G[gHit.dataset.girl]) { talkTo(gHit.dataset.girl); return; }
-    const hit = ev.target.closest("[data-room]");
-    if (hit) { const room = hit.dataset.room; const d = T.DOORS[room]; if (d) walkTo(d[0], d[1]); R.lastRoom = room; openRoom(room); return; }
+  // What did this tap mean? Visible label > visible girl > nearest invisible hit pad > building art > ground.
+  const pxDist = (r, x, y) => Math.hypot(Math.max(r.left - x, 0, x - r.right), Math.max(r.top - y, 0, y - r.bottom));
+  function pickTarget(ev) {   // ev = { clientX, clientY }
+    const x = ev.clientX, y = ev.clientY;
+    const els = document.elementsFromPoint(x, y).filter(n => n !== svg && svg.contains(n));
+    const pads = els.filter(n => n.classList.contains("hitpad")), real = els.filter(n => !n.classList.contains("hitpad"));
+    const as = n => { const s = n.closest(".sign"); if (s) return { room: s.dataset.room }; const g = n.closest("[data-girl]"); return g && G[g.dataset.girl] ? { girl: g.dataset.girl } : null; };
+    let n = real.find(n => n.closest(".sign")); if (n) return as(n);
+    n = real.find(n => { const g = n.closest("[data-girl]"); return g && G[g.dataset.girl]; }); if (n) return as(n);
+    let best = null;
+    for (const p of pads) {
+      const own = p.closest(".sign") || p.closest("[data-girl]"); if (!own) continue;
+      const vis = own.classList.contains("sign") ? own.querySelector(".sbody") : (G[own.dataset.girl] || {}).inner;
+      if (!vis) continue;
+      const d = pxDist(vis.getBoundingClientRect(), x, y);
+      if (!best || d < best.d) best = { d, p };
+    }
+    if (best) { const r = as(best.p); if (r) return r; }
+    n = real.find(n => n.closest(".room-hit")); if (n) return { room: n.closest(".room-hit").dataset.room };
+    return null;
+  }
+  // Mobile Chrome "touch adjustment" moves a tap's click onto a nearby clickable thing (e.g. a
+  // building next to the ground you tapped). Use where the finger really lifted instead.
+  let rawTap = null;
+  svg.addEventListener("pointerup", e => { rawTap = e.pointerType === "mouse" ? null : { clientX: e.clientX, clientY: e.clientY, t: performance.now() }; });
+  svg.addEventListener("click", e => {
+    const ev = rawTap && performance.now() - rawTap.t < 800 && Math.hypot(rawTap.clientX - e.clientX, rawTap.clientY - e.clientY) < 40 ? rawTap : e;
+    rawTap = null;
+    const hit = pickTarget(ev);
+    if (hit && hit.girl) { talkTo(hit.girl); return; }
+    if (hit && hit.room) { tapRoom(hit.room); return; }   // never opens directly: walk + 「入る？」
+    // empty ground: just walk there
     const p = svgPoint(ev); let [gx, gy] = toGrid(p.x, p.y);
-    R.pendingRoom = null; R.talkTo = null;
+    R.pendingRoom = null; R.talkTo = null; R.goal = "ground"; hideEnter();
     if (!walkable(gx, gy)) { gx = Math.min(9.85, Math.max(0.15, gx)); gy = Math.min(8.45, Math.max(0.15, gy)); }
+    showMark(gx, gy);
     walkTo(gx, gy);
   });
-  svg.addEventListener("keydown", ev => {
+  svg.addEventListener("keydown", ev => {   // keyboard focus is deliberate: Enter on a building still opens it
     if ((ev.key === "Enter" || ev.key === " ") && ev.target.dataset && ev.target.dataset.room) { ev.preventDefault(); openRoom(ev.target.dataset.room); }
     else if ((ev.key === "Enter" || ev.key === " ") && ev.target.dataset && G[ev.target.dataset.girl]) { ev.preventDefault(); talkTo(ev.target.dataset.girl); }
   });
   addEventListener("keydown", e => {
     if (!e.key.startsWith("Arrow") || openId) return;
-    e.preventDefault(); R.keys.add(e.key); R.talkTo = null; kick();
+    e.preventDefault(); R.keys.add(e.key); R.talkTo = null; R.pendingRoom = null; R.goal = null; clearMark(); kick();
   });
   addEventListener("keyup", e => R.keys.delete(e.key));
   addEventListener("blur", () => R.keys.clear());
@@ -390,6 +590,12 @@
     g.el.appendChild(b);
     setTimeout(() => b.remove(), 1600);
   }
+  function sizeGirlPads() {
+    const U = hitUnits();
+    Object.values(G).forEach(g => { if (!g.pad) return; const [hx, hy] = T.P(g.x0, g.y0, g.z0);
+      g.pad.setAttribute("x", (hx - U / 2).toFixed(1)); g.pad.setAttribute("y", (hy - 7 - U / 2).toFixed(1));
+      g.pad.setAttribute("width", U.toFixed(1)); g.pad.setAttribute("height", U.toFixed(1)); g.pad.setAttribute("rx", (U / 4).toFixed(1)); });
+  }
   function girlWalk(id) {
     if (isNight()) return;                                     // asleep at home
     const g = G[id], route = GIRL_ROUTES[id];
@@ -428,7 +634,13 @@
       const inner = el.firstElementChild;
       G[o.girl] = { el, inner, x0: o.gx, y0: o.gy, z0: o.gz, x: o.gx, y: o.gy, face: 1, home: true, walking: false };
       el.setAttribute("tabindex", "0"); el.setAttribute("role", "button");
+      // invisible >= 44 px square tap pad around her (moves with her; off at night with her)
+      const pad = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+      pad.setAttribute("class", "hitpad"); pad.setAttribute("fill", "#fff"); pad.setAttribute("fill-opacity", "0");
+      el.appendChild(pad);
+      G[o.girl].pad = pad;
     });
+    sizeGirlPads();
     phaseHooks.push(p => { if (p === "night") Object.values(G).forEach(g => { if (g.walking) g.abort = true; }); });
     if (STILL) return;
     const next = () => setTimeout(() => {
@@ -469,7 +681,7 @@
     return best || [g.x, g.y];
   }
   function talkTo(id) {     // tap / Enter on a girl: walk up to her, she talks on arrival
-    R.pendingRoom = null; R.keys.clear();
+    R.pendingRoom = null; R.keys.clear(); R.goal = "talk"; hideEnter(); clearMark();
     const [x, y] = talkSpot(id);
     R.talkTo = id;
     if (Math.hypot(x - R.x, y - R.y) < 0.05) { arriveTalk(); return; }
@@ -639,7 +851,7 @@
     $("#townIntro").textContent = (lang === "en" ? intro.en : intro.ja) || "";
     if (S.loadedAt) $("#lastLoad").textContent = `${t("loaded")} ${new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit" }).format(S.loadedAt)} JST`;
     const yt = $("#visitor text"); if (yt) yt.textContent = t("you");
-    drawSigns(); drawCards(); drawLinks(); drawCounter(); drawProgress();
+    drawSigns(); drawCards(); drawLinks(); drawCounter(); drawProgress(); paintEnter();
     Object.keys(G).forEach(id => G[id].el.setAttribute("aria-label", t("talkTo")(memberName(id))));
   }
   $("#langBtn").onclick = () => { lang = lang === "ja" ? "en" : "ja"; localStorage.setItem("kg_lang", lang); paintText(); if (openId) openRoom(openId); if (!$("#reward").hidden) openReward(); };
@@ -670,6 +882,8 @@
   tramLoop();
   girlsInit();
   talkInit();
+  enterInit();
+  { let rt = 0; addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { drawSigns(); sizeGirlPads(); }, 150); }); }   // hit pads follow the map scale
   setInterval(applyPhase, 60 * 1000);
   refresh();
   initCounter();
@@ -677,5 +891,6 @@
   document.addEventListener("visibilitychange", () => { if (!document.hidden) { applyPhase(); refresh(); } });
   if (params.get("open")) setTimeout(() => openRoom(params.get("open")), 400);
   window.KG_APP = { openRoom, walkTo, R, G, girlWalk, GIRL_ROUTES, walkable, hitBuilding, phaseAt, jstHour, get phase() { return phase; },
-    talkTo, say, checkTalk, talkSpot, shortLine, heardToday, openReward, closeReward, jstDate, TALK };
+    talkTo, say, checkTalk, talkSpot, shortLine, heardToday, openReward, closeReward, jstDate, TALK,
+    tapRoom, askEnter, hideEnter, nearRoom, roomDist, CONF, get openId() { return openId; } };
 })();

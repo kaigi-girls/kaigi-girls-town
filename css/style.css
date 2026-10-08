@@ -200,3 +200,29 @@ html[data-phase=night] #town .girl{opacity:0;pointer-events:none}
 .reward p.empty{font-size:14px;font-weight:700;text-align:center;padding:14px 4px 8px}
 @media (prefers-reduced-motion:reduce){.talk.show,.reward{animation:none}}
 @media (max-width:480px){.talk{font-size:12px;padding:5px 10px;max-width:min(225px,calc(100% - 12px))}}
+
+/* ---------- mobile tap usability (js/app.js "enter bar" + hit pads) ----------
+   Small buttons keep their look but get an invisible >= 44x44 px hit area (::after).
+   Map labels / girls get invisible SVG .hitpad rects sized from the map scale in JS. */
+#town{-webkit-tap-highlight-color:transparent}
+#town .hitpad{cursor:pointer}
+.lang,.close,.reward .rclose,.mtabs button,.replay,.links a{position:relative}   /* .talkdots is already absolute */
+.lang::after,.close::after,.reward .rclose::after,.talkdots::after,.mtabs button::after,.replay::after,.links a::after{
+  content:"";position:absolute;left:50%;top:50%;width:max(100%,44px);height:max(100%,44px);transform:translate(-50%,-50%)}
+.talkdots:disabled{pointer-events:none}
+.mtabs{padding:10px 0 12px;gap:10px}
+.enterbar{position:fixed;left:50%;bottom:max(16px,calc(env(safe-area-inset-bottom) + 8px));z-index:9;transform:translateX(-50%);
+  width:min(420px,calc(100% - 20px));display:flex;align-items:center;gap:8px;padding:6px 6px 6px 14px;background:#fff;color:var(--navy);
+  border:2px solid var(--c,var(--robot));border-radius:99px;box-shadow:0 6px 22px rgba(17,46,88,.24)}
+.enterbar.show{animation:barup .2s ease-out}
+.enterbar.still.show{animation:none}
+@keyframes barup{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.enterbar .dot{flex:none;width:10px;height:10px;border-radius:50%;background:var(--c,var(--robot))}
+.enterbar .q{flex:1;min-width:0;font-size:14px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+.enterbar .sfx{white-space:nowrap}
+.enterbar button{flex:none;min-width:64px;min-height:44px;padding:0 14px;border-radius:99px;font-size:14px;font-weight:800;cursor:pointer}
+.enterbar .go{border:none;background:var(--navy);color:#fff}
+.enterbar .no{border:1.5px solid var(--navy);background:#fff}
+@media (max-width:400px){.enterbar{gap:6px;padding-left:12px}.enterbar .q{font-size:13px}.enterbar button{min-width:58px;padding:0 12px}}
+@media (prefers-reduced-motion:reduce){.enterbar.show{animation:none}}
+.talkdots::after{top:-8px;transform:translateX(-50%)}   /* stay inside the map's rounded clip */
