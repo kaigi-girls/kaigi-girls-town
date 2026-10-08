@@ -10,6 +10,24 @@
   // ---------- elevation (for the walking robot) ----------
   const elev = gy => gy < 2.2 ? HILL : gy < 3.2 ? HILL * (3.2 - gy) : 0;
 
+  // ---------- lighthouse island + bridge (walkable; js/app.js uses onBridge / onIsle / groundZ) ----------
+  // A low bridge runs from the beach to the island's NE corner (rising z 0 -> 4, like a long causeway).
+  // The island's flat top (z 4) is walkable; the little hill with the lighthouse (west side) is not.
+  const ISLE = { cx: 7.6, cy: 12.55, rx: 1.55, ry: 1.3, wob: 0.18, z: 4 };     // island base
+  const KNOLL = { cx: 7.05, cy: 12.6, rx: 0.8, ry: 0.75, wob: 0.12, z: 12 };   // hill (top at z 12)
+  const LH = { x: 7.1, y: 12.5 };                                             // lighthouse, on the hilltop
+  const BR = { x0: 7.9, x1: 8.3, y0: 8.6, yTop: 11.35, y1: 11.6 };            // bridge deck footprint; level from yTop on
+  const blobK = (t, w) => 1 + w * Math.sin(t * 3 + 1.3) * 0.5 + w * Math.cos(t * 5) * 0.3;   // same wobble as iso.blob()
+  const inBlob = (x, y, B, m = 1) => { const dx = (x - B.cx) / B.rx, dy = (y - B.cy) / B.ry; return Math.hypot(dx, dy) <= blobK(Math.atan2(dy, dx), B.wob) * m; };
+  const onBridge = (x, y) => x >= BR.x0 + 0.08 && x <= BR.x1 - 0.08 && y >= 8.4 && y <= BR.y1 + 0.1;
+  const onIsle = (x, y) => inBlob(x, y, ISLE, 0.86) && !inBlob(x, y, KNOLL, 1.15);
+  const bridgeZ = y => ISLE.z * Math.min(1, Math.max(0, (y - BR.y0) / (BR.yTop - BR.y0)));
+  function groundZ(x, y) {   // height of the walkable surface (town / bridge / island); sea = 0
+    if (y <= 8.45) return elev(Math.max(0, y));
+    if (onBridge(x, y)) return bridgeZ(y);
+    return inBlob(x, y, ISLE) ? ISLE.z : 0;
+  }
+
   // ---------- ground ----------
   function ground() {
     let s = "";
@@ -66,6 +84,43 @@
     for (const x of [8.05, 9.5]) { const q = P(x, 6.2, 2.2); s += `<line x1="${q[0]}" y1="${q[1]}" x2="${q[0]}" y2="${q[1] - 12}" stroke="#8a90a8" stroke-width="1"/>`; }
     s += box({ x: 7.95, y: 6.02, w: 1.65, d: 0.3, z: 14, h: 1.2, left: "#5cb58e", right: "#3f9572", top: "#7cc9a6" });
     s += box({ x: 9.68, y: 5.22, w: 0.1, d: 0.56, z: 0, h: 4, left: "#ef6f6f", right: "#d65a5a", top: "#f4a0a0" });
+    s += islandGround();
+    return s;
+  }
+
+  // bridge railing along gx = x (posts + white hand rail), following the deck's slope
+  function railing(x) {
+    const H0 = 2.3, H1 = 3.4, ys = [BR.y0, BR.yTop, BR.y1];
+    let s = "";
+    for (let y = BR.y0 + 0.08; y <= BR.y1; y += 0.32) {
+      const a = P(x, y, bridgeZ(y)), b = P(x, y, bridgeZ(y) + H1);
+      s += `<line x1="${a[0].toFixed(1)}" y1="${a[1].toFixed(1)}" x2="${b[0].toFixed(1)}" y2="${b[1].toFixed(1)}" stroke="#b9c4d6" stroke-width=".9"/>`;
+    }
+    s += poly(ys.map(y => P(x, y, bridgeZ(y) + H1)).concat(ys.slice().reverse().map(y => P(x, y, bridgeZ(y) + H0))), "#ffffff");
+    return s;
+  }
+  // flat parts of the island + bridge (drawn with the ground, so the robot is always on top of them)
+  function islandGround() {
+    let s = "";
+    const T = 1.4;   // deck thickness
+    // piers (before the island, whose front cliff hides the last ones)
+    for (let y = 8.95; y < BR.yTop; y += 0.6) {
+      const f = P((BR.x0 + BR.x1) / 2, y + 0.04, SEA - 1);
+      s += `<ellipse cx="${f[0].toFixed(1)}" cy="${f[1].toFixed(1)}" rx="7" ry="2.2" fill="#fff" opacity=".45"/>`;
+      for (const x of [BR.x0 + 0.05, BR.x1 - 0.13]) s += box({ x, y, w: 0.08, d: 0.08, z: SEA - 1, h: bridgeZ(y) - T - SEA + 1, left: "#dfe5ee", right: "#c9d3e3", top: null, stroke: "none" });
+    }
+    // island base: sandy cliff + grass top (same look as before)
+    s += blob(ISLE.cx, ISLE.cy, ISLE.rx, ISLE.ry, ISLE.z, "#bfe2a9", "#e2c99a", 10, ISLE.wob);
+    // paved landing + path round to the steps of the lighthouse hill
+    s += blob(8.12, 12.0, 0.42, 0.5, ISLE.z, PATH, "none", 0, 0.08);
+    s += blob(8.2, 12.5, 0.3, 0.3, ISLE.z, PATH, "none", 0, 0.08);
+    s += tile(7.92, 11.5, 0.36, 0.5, ISLE.z, PATH);
+    // deck: front (+gx) face, then the top, then the far railing
+    const ys = [BR.y0, BR.yTop, BR.y1];
+    s += poly(ys.map(y => P(BR.x1, y, bridgeZ(y))).concat(ys.slice().reverse().map(y => P(BR.x1, y, bridgeZ(y) - T))), "#e3e9f2");
+    s += poly(ys.map(y => P(BR.x1, y, bridgeZ(y))).concat(ys.slice().reverse().map(y => P(BR.x0, y, bridgeZ(y)))), "#f7f9fc");
+    for (let y = BR.y0 + 0.3; y < BR.yTop; y += 0.3) s += `<polyline points="${pts([P(BR.x0 + 0.04, y, bridgeZ(y)), P(BR.x1 - 0.04, y, bridgeZ(y))])}" stroke="#e3e9f2" stroke-width=".7"/>`;
+    s += railing(BR.x0 + 0.03);
     return s;
   }
 
@@ -215,16 +270,30 @@
     s += gable({ x: 6.1, y: 7.55, w: 1.15, d: 0.7, z: 9, h: 6, roof: "#fbabb6", back: "#e994a3", wall: "#eef0f4" });
     add({ id: "shop", room: "shop", x: 6.1, y: 7.55, w: 1.15, d: 0.7, svg: s, top: 15 });
 
-    // bridge + little island with a lighthouse (fictional, "feels like" the coast)
-    s = "";
-    for (let y = 8.9; y < 11.4; y += 0.55) { const a = P(7.45, y, -2), b = P(7.45, y, SEA), c = P(7.85, y, -2), d = P(7.85, y, SEA);
-      s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="#c9d3e3" stroke-width="1.2"/><line x1="${c[0]}" y1="${c[1]}" x2="${d[0]}" y2="${d[1]}" stroke="#c9d3e3" stroke-width="1.2"/>`; }
-    s += box({ x: 7.45, y: 8.6, w: 0.4, d: 2.9, z: -2.2, h: 1.6, left: "#ffffff", right: "#e3e9f2", top: "#f7f9fc" });
-    s += blob(7.6, 12.55, 1.55, 1.3, 4, "#bfe2a9", "#e2c99a", 10, 0.18);
-    s += blob(7.7, 12.4, 0.95, 0.8, 12, "#a9d895", "#d9bf8f", 8, 0.12);
-    s += tree(7.2, 12.2, 12, 0.75, "#8fcf8a") + tree(8.2, 13.1, 4, 0.7, "#9ad48f") + tree(6.9, 13.2, 4, 0.6);
-    s += cyl(7.85, 12.25, 0.2, 12, 16, "#ffffff", "#eef2f8") + cyl(7.85, 12.25, 0.28, 28, 2, "#bde1fb", "#9ccbf0") + cyl(7.85, 12.25, 0.13, 30, 4, "#fbabb6", "#e994a3");
-    add({ x: 7.4, y: 8.6, w: 0.5, d: 6, svg: s });
+    // bridge + little island with a lighthouse (fictional, "feels like" the coast). The deck, far railing and
+    // island top are ground (see islandGround); these are the parts the robot can walk behind / in front of.
+    // (Hill + lighthouse are added before the near railing + gate on purpose: if the painter sort ever falls
+    //  back to insertion order, the robot on the bridge still ends up between them and the railing.)
+    // the hill: steps up its east side, a path to the lighthouse, a tree
+    s = blob(KNOLL.cx, KNOLL.cy, KNOLL.rx, KNOLL.ry, KNOLL.z, "#a9d895", "#d9bf8f", 8, KNOLL.wob);
+    s += tile(7.2, 12.42, 0.5, 0.26, KNOLL.z, PATH);
+    for (let i = 3; i >= 0; i--) s += box({ x: 7.98 - (i + 1) * 0.1, y: 12.42, w: 0.1, d: 0.26, z: ISLE.z, h: (i + 1) * 2, left: "#e8d9bd", right: "#dccaa8", top: PATH, stroke: "none" });
+    s += tree(6.72, 12.25, KNOLL.z, 0.75, "#8fcf8a");
+    s += tree(6.65, 13.4, ISLE.z, 0.6);   // small tree on the shore in front of the hill (part of it, so it always draws on top)
+    add({ id: "knoll", x: KNOLL.cx - KNOLL.rx, y: KNOLL.cy - KNOLL.ry, w: 1.35, d: 1.31, svg: s });   // w/d: painter box for the walk ring
+    // the lighthouse (a visitable spot: label + 「灯台の島に入る？」)
+    s = cyl(LH.x, LH.y, 0.2, KNOLL.z, 16, "#ffffff", "#eef2f8") + cyl(LH.x, LH.y, 0.28, KNOLL.z + 16, 2, "#bde1fb", "#9ccbf0") + cyl(LH.x, LH.y, 0.13, KNOLL.z + 18, 4, "#fbabb6", "#e994a3");
+    { const d = P(LH.x + 0.14, LH.y + 0.14, KNOLL.z); s += `<rect x="${(d[0] - 1.4).toFixed(1)}" y="${(d[1] - 5.5).toFixed(1)}" width="2.8" height="5" rx="1.2" fill="${NAVY}" opacity=".7"/>`; }
+    add({ id: "lighthouse", room: "lighthouse", over: "knoll", x: LH.x - 0.15, y: LH.y - 0.15, w: 0.3, d: 0.3, svg: s, top: KNOLL.z + 22 });
+    add({ id: "bridgeRail", x: BR.x1 - 0.05, y: BR.y0, w: 0.05, d: 11.9 - BR.y0, svg: railing(BR.x1 - 0.03) });   // near railing
+    // little red gate at the island end of the bridge
+    { const Y = 11.8, red = "#ef6f6f", redD = "#d65a5a";
+      s = onL(Y, 7.88, 7.94, ISLE.z, ISLE.z + 12.5, red) + onR(7.94, Y - 0.05, Y, ISLE.z, ISLE.z + 12.5, redD) +
+        onL(Y, 8.26, 8.32, ISLE.z, ISLE.z + 12.5, red) + onR(8.32, Y - 0.05, Y, ISLE.z, ISLE.z + 12.5, redD) +
+        onL(Y, 7.84, 8.36, ISLE.z + 9, ISLE.z + 10.2, red) +
+        onL(Y, 7.78, 8.42, ISLE.z + 12.2, ISLE.z + 13.8, red, NAVY) + onL(Y, 7.76, 8.44, ISLE.z + 13.8, ISLE.z + 14.6, "#55627f");
+      add({ id: "gate", x: 7.84, y: Y - 0.04, w: 0.52, d: 0.04, svg: s }); }
+    add({ x: 8.55, y: 12.95, w: .2, d: .2, svg: tree(8.65, 13.05, ISLE.z, 0.7, "#9ad48f") });
     // little boats
     const boat = (x, y, c) => `<g class="boat"><path d="M${x - 9} ${y} h18 l-3 4 h-12z" fill="#ffffff" stroke="${NAVY}" stroke-opacity=".3" stroke-width=".6"/><path d="M${x} ${y - 1} v-15 l9 13z" fill="${c}"/><path d="M${x - 1} ${y - 1} v-11 l-6 10z" fill="#ffffff"/></g>`;
     add({ x: 20, y: 20, w: .1, d: .1, svg: boat(318, 346, "#fbabb6") + boat(232, 374, "#bfa6dd") });
@@ -232,7 +301,7 @@
 
   // topological painter's order
   function sortObjects(list) {
-    const behind = (a, b) => (a.x + a.w <= b.x + 1e-6) || (a.y + a.d <= b.y + 1e-6);
+    const behind = (a, b) => b.over === a.id || (a.over !== b.id && ((a.x + a.w <= b.x + 1e-6) || (a.y + a.d <= b.y + 1e-6)));   // over = always drawn on top of that id
     const n = list.length, indeg = new Array(n).fill(0), adj = list.map(() => []);
     for (let i = 0; i < n; i++) for (let j = 0; j < n; j++) if (i !== j) {
       const a = list[i], b = list[j];
@@ -284,7 +353,7 @@
       const b = P(x, y, z), t = P(x, y, z + 15);
       s += `<ellipse class="pool" cx="${b[0]}" cy="${b[1]}" rx="15" ry="6" fill="url(#kgGlow)" opacity=".55"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="9" fill="url(#kgGlow)"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="1.6" fill="#fff6c8"/>`;
     });
-    { const l = P(7.85, 12.25, 32); s += `<g class="lighthouse"><circle cx="${l[0]}" cy="${l[1]}" r="13" fill="url(#kgGlow)"/><circle cx="${l[0]}" cy="${l[1]}" r="2" fill="#fff6c8"/></g>`; }
+    { const l = P(LH.x, LH.y, KNOLL.z + 20); s += `<g class="lighthouse"><circle cx="${l[0]}" cy="${l[1]}" r="13" fill="url(#kgGlow)"/><circle cx="${l[0]}" cy="${l[1]}" r="2" fill="#fff6c8"/></g>`; }
     s += `</g><g id="kgLit"></g>`;
     // sleepy Zzz above each girl's building
     const zz = (id, who, gx, gy, z) => {
@@ -321,7 +390,7 @@
   // anchor for room signs (screen coords) and door points (grid coords)
   function roomAnchor(o) { return P(o.x + o.w / 2, o.y + o.d / 2, (o.top || 10) + (o.z || 0) * 0 + 4); }
   const DOORS = { meeting: [2.0, 2.0], president: [7.5, 2.05], studio: [4.78, 4.35], editorial: [8.0, 4.95],
-                  gym: [1.75, 7.4], shop: [6.6, 8.45], board: [6.7, 5.05] };
+                  gym: [1.75, 7.4], shop: [6.6, 8.45], board: [6.7, 5.05], lighthouse: [8.12, 12.57] };   // lighthouse: foot of the hill steps
 
-  window.KG_TOWN = { render, iso, P, elev, VB, DOORS, roomAnchor, sortObjects };
+  window.KG_TOWN = { render, iso, P, elev, VB, DOORS, roomAnchor, sortObjects, groundZ, onBridge, onIsle, BR };
 })();

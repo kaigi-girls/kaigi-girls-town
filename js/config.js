@@ -31,7 +31,11 @@ window.KG_CONFIG = {
     { id: "president", mdKey: "社長室",   label: "社長室",   labelEn: "President's office", owner: "robo" },
     { id: "gym",       mdKey: "ジム",     label: "ジム",     labelEn: "Gym",       owner: "rin" },
     { id: "studio",    mdKey: "スタジオ", label: "スタジオ", labelEn: "Studio",    owner: "mio" },
-    { id: "editorial", mdKey: "編集部",   label: "編集部",   labelEn: "Editorial", owner: "rina" }
+    { id: "editorial", mdKey: "編集部",   label: "編集部",   labelEn: "Editorial", owner: "rina" },
+    // the little island at the end of the bridge (no rooms.md section needed: introJa/introEn are used)
+    { id: "lighthouse", mdKey: "灯台の島", label: "灯台の島", labelEn: "Lighthouse Island", signEn: "Lighthouse",
+      introJa: "街のいちばん端っこ、江ノ島っぽい灯台の島。ここから街ぜんぶと海が見えるよ🌊",
+      introEn: "The far edge of town: a little Enoshima-ish island with a lighthouse. You can see the whole town and the sea from here 🌊" }
   ],
 
   // Data files (relative to index.html). The team edits status.csv and rooms.md.

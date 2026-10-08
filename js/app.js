@@ -86,7 +86,8 @@
     gym:       { x: 6, y: 224, to: [84, 208] },
     editorial: { x: 262, y: 254, to: [266, 238] },
     shop:      { cx: 161, y: 206 },
-    board:     { x: 212, y: 190, to: [224, 216] }
+    board:     { x: 212, y: 190, to: [224, 216] },
+    lighthouse: { x: 189, y: 270 }   // out at sea, right of the bridge (clear of the gym / shop / editorial labels' hit pads)
   };
   function signBox(room, w, h, ax, ay) {
     const sl = SIGN_SLOT[room] || {};
@@ -144,7 +145,7 @@
       }
       const owner = ownerOf(o.room);
       const col = owner ? owner.color : "#bde1fb", deep = owner ? owner.deep : NAVY;
-      const name = owner ? (lang === "en" ? owner.nameEn : owner.name) : roomTitle(o.room);
+      const name = owner ? (lang === "en" ? owner.nameEn : owner.name) : (lang === "en" ? r.signEn : r.sign) || roomTitle(o.room);
       const st = owner ? S.status[owner.id] : null;
       let line2 = owner ? (statusText(st) || roomTitle(o.room)) : t("tapToPeek");
       const fs1 = 8.5, fs2 = 8.5, maxW = lang === "en" ? 104 : 100;
@@ -197,8 +198,9 @@
         `<div class="tx">${esc(statusText(st) || "…")}</div>` +
         (st && st.updated ? `<div class="lbl">${t("updated")} ${esc(fmtJST(st.updated))}・${esc(relTime(st.updated))}</div>` : "") + `</div>`;
     }
-    if (md.ja) h += `<p>${esc(md.ja)}</p>`;
-    if (md.en) h += `<p class="en">${esc(md.en)}</p>`;
+    const pJa = md.ja || r.introJa, pEn = md.en || r.introEn;   // rooms.md first; config text for spots it doesn't cover
+    if (pJa) h += `<p>${esc(pJa)}</p>`;
+    if (pEn) h += `<p class="en">${esc(pEn)}</p>`;
     if (r.comingSoon) h += `<span class="soon">COMING SOON</span>`;
     $("#sheetBody").innerHTML = h;
     showSheet();
@@ -264,9 +266,9 @@
   const SPEED = 2.6;
   const blockers = () => sorted.filter(o => o.room || (o.w * o.d > 0.5 && o.id !== "tram" && o.x < 10 && o.y < 8.6));
   const inRect = (x, y, o, m = 0.1) => x > o.x - m && x < o.x + o.w + m && y > o.y - m && y < o.y + o.d + m;
-  const onIsland = (x, y) => ((x - 7.6) / 1.35) ** 2 + ((y - 12.55) / 1.1) ** 2 <= 1 && ((x - 7.7) / 1.05) ** 2 + ((y - 12.4) / 0.9) ** 2 > 1;
-  const walkable = (x, y) => (x >= 0.15 && x <= 9.85 && y >= 0.15 && y <= 8.45) || (x >= 7.5 && x <= 7.8 && y >= 8.4 && y <= 11.4) || onIsland(x, y);
-  const zAt = (x, y) => y <= 8.45 ? T.elev(y) : onIsland(x, y) ? 4 : -0.6;
+  // town block + the bridge + the lighthouse island's flat top (shapes live in js/town.js)
+  const walkable = (x, y) => (x >= 0.15 && x <= 9.85 && y >= 0.15 && y <= 8.45) || T.onBridge(x, y) || T.onIsle(x, y);
+  const zAt = (x, y) => T.groundZ(x, y);
   function hitBuilding(x, y) { return blockers().find(o => inRect(x, y, o)); }
 
   function placeRobot() {
@@ -477,7 +479,7 @@
     let z = 0, gx = 0, gy = 0;
     for (let i = 0; i < 3; i++) {
       const a = (sx - T.iso.cx) / T.iso.hw, b = (sy + z - T.iso.oy) / T.iso.hh;
-      gx = (a + b) / 2; gy = (b - a) / 2; z = gy <= 8.45 ? T.elev(Math.max(0, gy)) : 0;
+      gx = (a + b) / 2; gy = (b - a) / 2; z = T.groundZ(gx, gy);
     }
     return [gx, gy];
   }
@@ -515,7 +517,11 @@
     // empty ground: just walk there
     const p = svgPoint(ev); let [gx, gy] = toGrid(p.x, p.y);
     R.pendingRoom = null; R.talkTo = null; R.goal = "ground"; hideEnter();
-    if (!walkable(gx, gy)) { gx = Math.min(9.85, Math.max(0.15, gx)); gy = Math.min(8.45, Math.max(0.15, gy)); }
+    if (!walkable(gx, gy)) {   // off the walkable area: the bridge / island spot right next to it, else the town edge
+      const n = gy > 8.5 ? nearestFree(gx, gy) : -1, nx = (n % NAV.W + 0.5) * NAV.s, ny = (Math.floor(n / NAV.W) + 0.5) * NAV.s;
+      if (n >= 0 && ny > 8.45 && Math.hypot(nx - gx, ny - gy) < 1.2) { gx = nx; gy = ny; }
+      else { gx = Math.min(9.85, Math.max(0.15, gx)); gy = Math.min(8.45, Math.max(0.15, gy)); }
+    }
     showMark(gx, gy);
     walkTo(gx, gy);
   });
