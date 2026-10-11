@@ -28,7 +28,7 @@ window.KG_CONFIG = {
     { id: "board",     mdKey: "掲示板",   label: "トレンド掲示板", labelEn: "Trend board" },
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
-    { id: "president", mdKey: "社長室",   label: "社長室",   labelEn: "President's office", owner: "robo" },
+    { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", link: "robo.html", linkJa: "📺 YouTubeアーカイブを見る", linkEn: "📺 Watch the YouTube archive", owner: "robo" },
     { id: "gym",       mdKey: "ジム",     label: "ジム",     labelEn: "Gym",       owner: "rin" },
     { id: "studio",    mdKey: "スタジオ", label: "スタジオ", labelEn: "Studio",    owner: "mio" },
     { id: "editorial", mdKey: "編集部",   label: "編集部",   labelEn: "Editorial", owner: "rina" },
@@ -48,6 +48,17 @@ window.KG_CONFIG = {
     rewards: "rewards.csv",   // daily off-shot after talking to all three (file,who,caption_ja,caption_en -> assets/rewards/)
     refreshSeconds: 60
   },
+
+  // コンテンツ hub (index.html #contents). Add a card = add one object. href: null => 準備中.
+  // group = section heading. c = card accent color.
+  contents: [
+    { group: "YouTube", icon: "assets/robo_channel.png", title: "ロボくんの部屋", sub: "ロボくんの深掘り動画アーカイブ", href: "robo.html", c: "#bde1fb", internal: true },
+    { group: "YouTube", title: "YouTubeチャンネル", sub: "@robo-fukabori", href: "https://www.youtube.com/@robo-fukabori", c: "#bde1fb" },
+    { group: "X（メンバー）", icon: "assets/rin_avatar.png", title: "凛のX", sub: "@rin_aoyama_fit", href: "https://x.com/rin_aoyama_fit", c: "#e7b66a" },
+    { group: "X（メンバー）", icon: "assets/mio_avatar.png", title: "澪のX", sub: "準備中", href: null, c: "#bfa6dd" },
+    { group: "X（メンバー）", icon: "assets/rina_avatar.png", title: "リナのX", sub: "準備中", href: null, c: "#fbabb6" },
+    { group: "音楽", title: "真白の音楽", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" }
+  ],
 
   // Footer links. href: null => shown as "準備中 / coming soon" (not clickable).
   links: {

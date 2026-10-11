@@ -1,0 +1,35 @@
+{
+  "channel": {
+    "name": "ロボくんの深掘りチャンネル",
+    "url": "https://www.youtube.com/@robo-fukabori",
+    "icon": "assets/robo_channel.png"
+  },
+  "hosts": {
+    "ロボくん": { "color": "#bde1fb", "deep": "#3f86d6" },
+    "澪": { "color": "#bfa6dd", "deep": "#8a63c4" },
+    "凛": { "color": "#e7b66a", "deep": "#c4862a" },
+    "リナ": { "color": "#fbabb6", "deep": "#e0607a" }
+  },
+  "videos": [
+    {
+      "number": 1,
+      "title": "睡眠",
+      "date": "2026-10-10",
+      "host": "ロボくん",
+      "genre": "からだ・健康",
+      "summary": "なぜ人は眠るの？ロボくんが睡眠のしくみを深掘りするよ。",
+      "thumbnail": "assets/videos/ep01.jpg",
+      "url": "https://youtu.be/-fsR2704xkU"
+    },
+    {
+      "number": 2,
+      "title": "ピラミッドの秘密",
+      "date": "2026-10-11",
+      "host": "ロボくん",
+      "genre": "歴史・ミステリー",
+      "summary": "4500年前の巨大建造物はどうやって作られた？ピラミッドの謎に迫るよ。",
+      "thumbnail": "assets/videos/ep02.jpg",
+      "url": "https://youtu.be/qdIpwyCD398"
+    }
+  ]
+}

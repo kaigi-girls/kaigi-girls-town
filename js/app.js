@@ -201,6 +201,7 @@
     const pJa = md.ja || r.introJa, pEn = md.en || r.introEn;   // rooms.md first; config text for spots it doesn't cover
     if (pJa) h += `<p>${esc(pJa)}</p>`;
     if (pEn) h += `<p class="en">${esc(pEn)}</p>`;
+    if (r.link) h += `<a class="robolink" href="${esc(r.link)}">${esc(lang === "en" ? r.linkEn : r.linkJa)} ›</a>`;
     if (r.comingSoon) h += `<span class="soon">COMING SOON</span>`;
     $("#sheetBody").innerHTML = h;
     showSheet();
