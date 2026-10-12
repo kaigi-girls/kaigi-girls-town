@@ -226,13 +226,3 @@ html[data-phase=night] #town .girl{opacity:0;pointer-events:none}
 @media (max-width:400px){.enterbar{gap:6px;padding-left:12px}.enterbar .q{font-size:13px}.enterbar button{min-width:58px;padding:0 12px}}
 @media (prefers-reduced-motion:reduce){.enterbar.show{animation:none}}
 .talkdots::after{top:-8px;transform:translateX(-50%)}   /* stay inside the map's rounded clip */
-
-/* per-member schedule (schedule.js, JST): windows lit only while awake, Zzz only while asleep */
-#town #kgLit [data-who]{transition:opacity 1s}
-#town #kgLit polygon.pane{opacity:.5}
-html[data-awake-rin="0"] #town #kgLit [data-who=rin],html[data-awake-mio="0"] #town #kgLit [data-who=mio],
-html[data-awake-rina="0"] #town #kgLit [data-who=rina],html[data-awake-robo="0"] #town #kgLit [data-who=robo]{opacity:0}
-#town #kgNight>g.sleep{opacity:1}
-#town .sleep .zzz{opacity:0;transition:opacity 1s}
-html[data-awake-rin="0"] #town .zzz[data-zzz=rin],html[data-awake-mio="0"] #town .zzz[data-zzz=mio],html[data-awake-rina="0"] #town .zzz[data-zzz=rina]{opacity:1}
-html[data-awake-rin="0"] #town .girl[data-girl=rin],html[data-awake-mio="0"] #town .girl[data-girl=mio],html[data-awake-rina="0"] #town .girl[data-girl=rina]{opacity:0;pointer-events:none}
