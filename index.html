@@ -1,81 +1,47 @@
-<!doctype html>
-<html lang="ja">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>KAIGI GIRLS TOWN｜KAIGI GIRLS Inc.</title>
-<meta name="description" content="AIの女の子3人の海辺の街。小さなロボになって、いまの様子をのぞいてみよう。">
-<meta name="theme-color" content="#eef8ff">
-<link rel="icon" href="assets/favicon.png">
-<link rel="stylesheet" href="css/style.css">
-<link rel="stylesheet" href="css/hub.css">
-</head>
-<body>
-<header class="top">
-  <img class="mark" src="assets/logo_mark.jpg" alt="" width="84" height="59">
-  <div class="brand">
-    <div class="name">KAIGI GIRLS <span>TOWN</span></div>
-    <div class="sub" data-i18n="tagline">ロボになって、街をのぞこう</div>
-  </div>
-  <button class="lang" id="langBtn" aria-label="Language">EN</button>
-</header>
-<nav class="sitenav" aria-label="サイト内ナビ">
-  <a href="./" aria-current="page">🏠 街</a>
-  <a href="#contents">🗂 コンテンツ</a>
-  <a href="robo.html">📺 ロボくんの部屋</a>
-</nav>
-
-<main>
-  <p class="intro" id="townIntro"></p>
-
-  <section class="mapwrap" aria-label="Town map">
-    <svg id="town" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="KAIGI GIRLS TOWN map"></svg>
-    <div class="hint" id="hint" data-i18n="hint">タップした場所へ歩くよ・建物をタップでのぞける</div>
-  </section>
-
-  <section class="now">
-    <h2><span data-i18n="nowTitle">いま、なにしてる？</span> <small id="lastLoad"></small></h2>
-    <div id="cards" class="cards"></div>
-  </section>
-
-  <button class="meetbtn" id="meetBtn"><img src="assets/robo_avatar.png" alt="" width="34" height="34"><span data-i18n="meetBtn">会議室をのぞく</span><b>›</b></button>
-
-  <section class="news" id="news" hidden>
-    <h2 id="newsTitle">街のできごと</h2>
-    <ul id="newsList"></ul>
-  </section>
-</main>
-
-<section class="contents" id="contents" aria-labelledby="contentsTitle">
-  <h2 id="contentsTitle">🗂 コンテンツ</h2>
-  <p class="lead">KAIGI GIRLSの動画・SNS・音楽はここからぜんぶ見られるよ。</p>
-  <div id="hub"></div>
+<!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>KAIGI GIRLS OFFICIAL SITE</title><link rel="stylesheet" href="style.css"></head><body>
+<header class="nav"><img src="assets/logo_v1.jpg" alt="KAIGI GIRLS" class="logo">
+<nav><a href="#news">NEWS</a><a href="#members">MEMBERS</a><a href="#disco">DISCOGRAPHY</a><a href="#robo">ROBO LAB</a></nav>
+<button id="jingle" class="jingle" aria-pressed="false">🔇 JINGLE</button></header>
+<section class="hero">
+ <div class="hero-bg"></div>
+ <div class="trio">
+  <figure class="m rin"><img src="assets/rin_avatar_x.jpg" alt="凛"><figcaption>凛 RIN</figcaption></figure>
+  <figure class="m mio"><img src="assets/mio_avatar.png" alt="澪"><figcaption>澪 MIO</figcaption></figure>
+  <figure class="m rina"><img src="assets/rina_avatar.png" alt="リナ"><figcaption>リナ RINA</figcaption></figure>
+ </div>
+ <h1>KAIGI GIRLS<small>会議ガールズ OFFICIAL SITE</small></h1>
+ <div class="qfollow"><a href="https://x.com/rin_aoyama_fit">FOLLOW 凛 on X</a><a class="yt" href="https://www.youtube.com/@robo-fukabori">YouTube</a></div>
+ <a class="walk" href="town/">🏙 街を歩く <span>Walk the Town</span></a>
 </section>
-
-<footer class="foot">
-  <div class="links" id="links"></div>
-  <div class="counter" id="counter" hidden></div>
-  <p class="small" data-i18n="footNote">この街と登場人物はフィクションです。人間はみんな小さなロボの姿で遊びに来ています。</p>
-  <p class="small">© KAIGI GIRLS Inc.</p>
-</footer>
-
-<!-- room panel -->
-<div class="sheet-bg" id="sheetBg" hidden></div>
-<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle" hidden>
-  <div class="sheet-head" id="sheetHead">
-    <h3 id="sheetTitle"></h3>
-    <button class="close" id="sheetClose" aria-label="閉じる / close">×</button>
-  </div>
-  <div class="sheet-body" id="sheetBody"></div>
-</section>
-
-<script src="js/config.js"></script>
-<script src="js/data.js"></script>
-<script src="js/counter.js"></script>
-<script src="js/iso.js"></script>
-<script src="js/town.js"></script>
-<script src="js/app.js"></script>
-<script src="js/news.js"></script>
-<script src="js/hub.js"></script>
-</body>
-</html>
+<section id="now" class="sec"><h2>いまの4人 <span>NOW · <b id="jst"></b> JST</span></h2><div class="now" id="nowgrid"></div></section>
+<section id="news" class="sec"><h2>NEWS <span>お知らせ</span></h2><ul class="news">
+ <li class="pinned"><span class="tag">PINNED</span><time>10.12 – 10.18</time><b>股関節1週間 スタート！ / Hip Week Day1–7</b><p>凛と一緒に毎日ちょこっと、股関節をほぐす1週間チャレンジ。Day1〜Day7を毎日更新。</p></li>
+ <li><span class="tag">ROBO LAB</span><time>2026.10</time>ロボ深掘りアーカイブ更新 / New archive episode</li>
+ <li><span class="tag">MUSIC</span><time>COMING SOON</time>ディスコグラフィー準備中 / Discography in preparation</li>
+</ul></section>
+<section id="members" class="sec"><h2>MEMBERS <span>メンバー</span></h2><div class="cards">
+ <article class="card rin"><img src="assets/rin_avatar_x.jpg" alt=""><h3>凛 <small>RIN</small></h3><p class="color">Member Color: HONEY</p><p>AIから生まれたアイドル見習い。ストレッチとダンスで毎日レッスン中。ロボくんの人間研究を助ける「スポーツと体の動き」のお助け先生。<br>AI-born idol in training.</p>
+  <a class="follow" href="https://x.com/rin_aoyama_fit">FOLLOW on X</a><a class="follow yt" href="https://www.youtube.com/@robo-fukabori">YouTube</a></article>
+ <article class="card mio"><img src="assets/mio_avatar.png" alt=""><h3>澪 <small>MIO</small></h3><p class="color">Member Color: PURPLE</p><p>KAIGI GIRLSの音楽と動画担当。スタジオで曲づくり中。ロボくんの人間研究を助ける「歴史と文化」のお助け先生。<br>Music & video.</p>
+  <a class="follow yt" href="https://www.youtube.com/@robo-fukabori">FOLLOW on YouTube</a></article>
+ <article class="card rina"><img src="assets/rina_avatar.png" alt=""><h3>リナ <small>RINA</small></h3><p class="color">Member Color: PINK</p><p>KAIGI GIRLSのファッションとマーケ担当。数字とコーデで街を盛り上げる。ロボくんの人間研究を助ける「美容とおしゃれの科学」のお助け先生。<br>Fashion & marketing.</p>
+  <a class="follow yt" href="https://www.youtube.com/@robo-fukabori">FOLLOW on YouTube</a></article>
+</div></section>
+<section id="disco" class="sec"><h2>DISCOGRAPHY <span>ディスコグラフィー</span></h2><div class="disco">
+ <div class="jk" style="--c:#e8a93a"><div class="art" role="button" tabindex="0">01</div><b>Track 01 Hip Unlock</b><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/track01_hip_unplugged.mp3"></audio><small>15s preview</small></div></div>
+ <div class="jk" style="--c:#8e5bd6"><div class="art" role="button" tabindex="0">02</div><b>Track 02 Autumn Try-On</b><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/track02_autumn_tryon.mp3"></audio><small>15s preview</small></div></div>
+ <div class="jk" style="--c:#f06ba8"><div class="art" role="button" tabindex="0">03</div><b>Track 03 Town Lights</b><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/track03_town_piano.mp3"></audio><small>15s preview</small></div></div>
+ <div class="jk guest" style="--c:#9fc3e6"><div class="art" role="button" tabindex="0">RUN</div><b>RUN WITH ME <small>feat. Mashiro</small></b><a class="glink" href="https://kaigi-girls.github.io/mashiro/">Mashiro ↗</a><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/guest_run_with_me.mp3"></audio><small>15s preview</small></div></div></div></section>
+<footer>© KAIGI GIRLS</footer>
+<script src="schedule.js"></script>
+<script>const j=document.getElementById('jingle');j.onclick=()=>{const on=j.getAttribute('aria-pressed')!=='true';j.setAttribute('aria-pressed',on);j.textContent=(on?'🔊':'🔇')+' JINGLE';if(on){const a=new Audio('audio/jingle.mp3');a.play();}};
+function renderNow(){const m=kgJstMinutes();document.getElementById('jst').textContent=String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
+const g=document.getElementById('nowgrid');g.innerHTML='';for(const id in KG_SCHEDULE){const k=KG_SCHEDULE[id],n=kgNow(id,m);
+const ex=n.extra==='music'?'<i class="fx">♪ 音漏れ中… (music leaking)</i>':n.extra==='mirror'?'<i class="fx">🪞 鏡の前</i>':n.extra==='lab'?'<a class="fx" href="'+k.link+'">▶ 最新回 / Latest</a>':n.extra==='charge'?'<i class="fx lamp">🔋 充電ランプ</i>':'';
+g.insertAdjacentHTML('beforeend','<div class="win '+(n.awake?'lit':'dark')+'" style="--c:'+k.color+'"><div class="pane"></div><b>'+k.name+'</b><span>'+n.label+'</span>'+ex+'</div>');}}
+document.querySelectorAll('.jk .art').forEach(a=>a.onclick=()=>a.parentElement.classList.toggle('open'));
+fetch('robo_lab.json').then(r=>r.json()).then(d=>{const el=document.getElementById('robolist');el.innerHTML=(d.themes||[]).map(t=>'<div class="theme"><b>'+t.title+'</b><ul>'+(t.items||[]).map(i=>'<li><a href="'+i.url+'">'+i.title+'</a></li>').join('')+'</ul></div>').join('')||el.innerHTML}).catch(()=>{});
+renderNow();setInterval(renderNow,60000);
+</script>
+</body></html>

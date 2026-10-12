@@ -174,6 +174,7 @@
       const av = avatarOf(id, m);
       return `<button class="card" data-room="${m.room}" style="border-color:${m.color}">${av}<span>` +
         `<div class="who"><b>${esc(lang === "en" ? m.nameEn : m.name)}</b>${esc(roomTitle(m.room))}</div>` +
+        (nowLabel(id) ? `<div class="tm">🕒 ${esc(nowLabel(id))}${awake(id) ? "" : " 💤"}</div>` : "") +
         (statusText(st) ? `<div class="st">${esc(statusText(st))}</div>` : `<div class="st muted">${esc(introLine(m.room) || "…")}</div>`) +
         (st && st.updated ? `<div class="tm">${t("updated")} ${esc(fmtJST(st.updated))}・${esc(relTime(st.updated))}</div>` : "") +
         `</span></button>`;
@@ -552,7 +553,14 @@
   let phase = null;
   const isNight = () => phase === "night";
   const phaseHooks = [];
+  // per-member awake/asleep from schedule.js (JST): drives lit windows, Zzz, walks and talk
+  const awake = id => !window.kgNow || !(window.KG_SCHEDULE || {})[id] || window.kgNow(id).awake;
+  const nowLabel = id => window.kgNow && (window.KG_SCHEDULE || {})[id] ? window.kgNow(id).label : "";
+  function applyAwake() {
+    ["rin", "mio", "rina", "robo"].forEach(id => { document.documentElement.setAttribute("data-awake-" + id, awake(id) ? "1" : "0"); });
+  }
   function applyPhase() {
+    applyAwake();
     const p = FORCED || phaseAt(jstHour());
     if (p === phase) return;
     phase = p;
@@ -604,7 +612,7 @@
       g.pad.setAttribute("width", U.toFixed(1)); g.pad.setAttribute("height", U.toFixed(1)); g.pad.setAttribute("rx", (U / 4).toFixed(1)); });
   }
   function girlWalk(id) {
-    if (isNight()) return;                                     // asleep at home
+    if (isNight() || !awake(id)) return;                       // indoors at night / asleep
     const g = G[id], route = GIRL_ROUTES[id];
     const path = route.concat(route.slice(0, -1).reverse());   // out and back
     const PAUSE_AT = route.length - 1, GS = 0.9;               // grid units / s
@@ -676,7 +684,7 @@
     if (!JPC.test(s)) { const sp = cut.lastIndexOf(" "); if (sp > max * 0.6) cut = cut.slice(0, sp); }
     return cut.replace(/[\s、。，,.!！?？・:：;；\-–—]+$/u, "") + "…";
   }
-  const talkLine = id => isNight() ? "zzZ…" : shortLine(statusText(S.status[id])) || "…";
+  const talkLine = id => !awake(id) ? "zzZ…" : shortLine(statusText(S.status[id])) || "…";
   const memberName = id => { const m = C.members[id]; return lang === "en" ? m.nameEn : m.name; };
   function talkSpot(id) {   // a free spot just short of her, nearest to the robot
     const g = G[id]; let best = null;

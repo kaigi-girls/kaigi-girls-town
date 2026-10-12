@@ -354,7 +354,7 @@
       s += `<ellipse class="pool" cx="${b[0]}" cy="${b[1]}" rx="15" ry="6" fill="url(#kgGlow)" opacity=".55"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="9" fill="url(#kgGlow)"/><circle cx="${t[0]}" cy="${t[1] + 1}" r="1.6" fill="#fff6c8"/>`;
     });
     { const l = P(LH.x, LH.y, KNOLL.z + 20); s += `<g class="lighthouse"><circle cx="${l[0]}" cy="${l[1]}" r="13" fill="url(#kgGlow)"/><circle cx="${l[0]}" cy="${l[1]}" r="2" fill="#fff6c8"/></g>`; }
-    s += `</g><g id="kgLit"></g>`;
+    s += `</g><g id="kgLit">${onL(6.15 + 1.05, 0.75, 3.25, 0.5, 14.5, "#ffd27e", "none", 'data-who="rin" class="pane"')}</g>`;   // gym glass glows while 凛 is up
     // sleepy Zzz above each girl's building
     const zz = (id, who, gx, gy, z) => {
       const [x, y] = P(gx, gy, z), m = C.members[who] || {}, col = m.deep || NAVY;
@@ -383,7 +383,13 @@
     svgEl.innerHTML = s;
     // windows that stay lit at night: copy them above the colour wash so they glow warm
     const lit = svgEl.querySelector("#kgLit");
-    svgEl.querySelectorAll("#kgObjs .win.lit").forEach(p => { const c = p.cloneNode(); c.removeAttribute("class"); lit.appendChild(c); });
+    // each member's windows glow only while she is awake (html[data-awake-*], set from schedule.js in app.js)
+    const WHO = { gym: "rin", studio: "mio", editorial: "rina", president: "robo" };
+    svgEl.querySelectorAll("#kgObjs .win").forEach(p => {
+      const r = p.closest("[data-room]"), who = r && WHO[r.dataset.room];
+      if (!who && !p.classList.contains("lit")) return;
+      const c = p.cloneNode(); c.removeAttribute("class"); if (who) c.setAttribute("data-who", who); lit.appendChild(c);
+    });
     return sorted;
   }
 

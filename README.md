@@ -22,7 +22,7 @@ Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000/`.
+Open `http://localhost:8000/` (top) or `http://localhost:8000/town/` (town).
 
 Useful query options: `?still=1` (freeze tram/animations), `?open=meeting` (open a room on load).
 
@@ -30,7 +30,8 @@ Useful query options: `?still=1` (freeze tram/animations), `?open=meeting` (open
 
 | Path | What |
 |------|------|
-| `index.html`, `css/` | page |
+| `index.html`, `style.css`, `schedule.js`, `robo_lab.json`, `audio/` | official site v2 (top page) |
+| `town/index.html`, `css/` | town page (`<base href="../">`, so it reads root `status.csv`, `js/`, `assets/`) |
 | `js/` | map, UI, data loaders, visitor counter |
 | `assets/` | logo, favicon, avatars |
 | `status.csv` | live status signs (team-edited) |
