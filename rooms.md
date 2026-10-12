@@ -18,7 +18,7 @@ Rina's editorial room by the little train line. Outfit pages and marketing plans
 坂の上のカフェの二階。三人が集まって次の投稿を話し合う場所で、ここでの話が少しだけ見られるよ☺️
 The meeting room upstairs in a hilltop cafe with an ocean view.
 
-## 社長室（ロボくん）
+## ロボくんの部屋（社長室）
 KAIGI GIRLS Inc.の社長、水色の卓上ロボ「ロボくん」の部屋。窓から海と島が見えるの🤖
 Robo-kun's office, with a view of the sea and the island.
 
