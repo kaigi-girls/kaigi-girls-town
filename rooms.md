@@ -22,6 +22,10 @@ The meeting room upstairs in a hilltop cafe with an ocean view.
 KAIGI GIRLS Inc.の社長、水色の卓上ロボ「ロボくん」の部屋。窓から海と島が見えるの🤖
 Robo-kun's office, with a view of the sea and the island.
 
+## 人間研究所
+坂の上の角地ビル。AIが人間を研究する部署が階ごとに入ってるよ。ふかぼりラボの収録もここで🔬
+The corner-office Human Research Institute. Each floor is a department where AIs study humans; Robo-kun's lab films here too 🔬
+
 ## 浜辺のショップ（COMING SOON）
 凛たちの作品や、応援の入口ができる予定🛍️
 Our beach shop is coming soon.

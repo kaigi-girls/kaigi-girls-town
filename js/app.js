@@ -82,6 +82,7 @@
   const SIGN_SLOT = {
     meeting:   { cx: 207, y: 44 },
     president: { x: 288, y: 96 },
+    institute: { x: 168, y: 72 },
     studio:    { x: 22, y: 122, to: [209, 170] },
     gym:       { x: 6, y: 224, to: [84, 208] },
     editorial: { x: 262, y: 254, to: [266, 238] },

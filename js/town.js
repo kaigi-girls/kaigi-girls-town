@@ -164,6 +164,24 @@
     add({ id: "meeting", room: "meeting", ...cf, svg: s, top: HILL + 33 });
     add({ x: 0.45, y: 1.75, w: .2, d: .2, svg: tree(0.55, 1.85, HILL, 0.8, "#9ad48f") });
 
+    // human research institute (corner office, 5 floors) between cafe and Robo office
+    s = "";
+    const hi = { x: 3.55, y: 0.4, w: 2.5, d: 1.35, z: HILL };
+    s += box({ ...hi, h: 28, left: "#f4f7fb", right: "#dbe6f2", top: null });
+    // red accent band (shared town kit)
+    s += tile(hi.x, hi.y, hi.w, hi.d, HILL + 0.35, "#ef6f6f", "none", 'opacity=".9"');
+    for (let fl = 0; fl < 5; fl++) {
+      const z0 = HILL + 2 + fl * 5.2;
+      s += onL(hi.y + hi.d, 3.75, 4.35, z0, z0 + 3.6, "#bfe0f6", "none", 'class="win"');
+      s += onL(hi.y + hi.d, 4.55, 5.15, z0, z0 + 3.6, "#bfe0f6", "none", 'class="win"');
+      s += onL(hi.y + hi.d, 5.35, 5.85, z0, z0 + 3.6, "#bfe0f6", "none", 'class="win"');
+      if (fl === 1) s += onR(hi.x + hi.w, 0.6, 1.5, z0, z0 + 3.6, "#7fc0ef", "none", 'class="win lit"');
+    }
+    s += onL(hi.y + hi.d, 4.4, 5.0, HILL, HILL + 9, "#3f86d6"); // door
+    s += tile(hi.x - 0.05, hi.y - 0.05, hi.w + 0.1, hi.d + 0.1, HILL + 28, "#c5d8ec");
+    s += tile(hi.x + 0.35, hi.y + 0.25, 1.8, 0.85, HILL + 28.4, "#eef4fa"); // roof deck hint
+    add({ id: "institute", room: "institute", ...hi, svg: s, top: HILL + 30 });
+
     // president's office (robot light blue), window facing the sea & island
     s = "";
     const pr = { x: 6.7, y: 0.45, w: 1.9, d: 1.3, z: HILL };
@@ -395,7 +413,7 @@
 
   // anchor for room signs (screen coords) and door points (grid coords)
   function roomAnchor(o) { return P(o.x + o.w / 2, o.y + o.d / 2, (o.top || 10) + (o.z || 0) * 0 + 4); }
-  const DOORS = { meeting: [2.0, 2.0], president: [7.5, 2.05], studio: [4.78, 4.35], editorial: [8.0, 4.95],
+  const DOORS = { meeting: [2.0, 2.0], institute: [4.8, 2.0], president: [7.5, 2.05], studio: [4.78, 4.35], editorial: [8.0, 4.95],
                   gym: [1.75, 7.4], shop: [6.6, 8.45], board: [6.7, 5.05], lighthouse: [8.12, 12.57] };   // lighthouse: foot of the hill steps
 
   window.KG_TOWN = { render, iso, P, elev, VB, DOORS, roomAnchor, sortObjects, groundZ, onBridge, onIsle, BR };

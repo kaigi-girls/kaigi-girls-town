@@ -29,6 +29,7 @@ window.KG_CONFIG = {
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
     { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", link: "robo.html", linkJa: "📺 YouTubeアーカイブを見る", linkEn: "📺 Watch the YouTube archive", owner: "robo" },
+    { id: "institute", mdKey: "人間研究所", label: "人間研究所", labelEn: "Human Research Institute", signEn: "Institute", link: "institute.html", linkJa: "🔬 部署をのぞく", linkEn: "🔬 Peek at the departments", shared: true },
     { id: "gym",       mdKey: "ジム",     label: "ジム",     labelEn: "Gym",       owner: "rin" },
     { id: "studio",    mdKey: "スタジオ", label: "スタジオ", labelEn: "Studio",    owner: "mio" },
     { id: "editorial", mdKey: "編集部",   label: "編集部",   labelEn: "Editorial", owner: "rina" },
