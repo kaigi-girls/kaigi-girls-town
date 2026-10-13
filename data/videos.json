@@ -5,10 +5,22 @@
     "icon": "assets/robo_channel.png"
   },
   "hosts": {
-    "ロボくん": { "color": "#bde1fb", "deep": "#3f86d6" },
-    "澪": { "color": "#bfa6dd", "deep": "#8a63c4" },
-    "凛": { "color": "#e7b66a", "deep": "#c4862a" },
-    "リナ": { "color": "#fbabb6", "deep": "#e0607a" }
+    "ロボくん": {
+      "color": "#bde1fb",
+      "deep": "#3f86d6"
+    },
+    "澪": {
+      "color": "#bfa6dd",
+      "deep": "#8a63c4"
+    },
+    "凛": {
+      "color": "#e7b66a",
+      "deep": "#c4862a"
+    },
+    "リナ": {
+      "color": "#fbabb6",
+      "deep": "#e0607a"
+    }
   },
   "videos": [
     {
@@ -30,6 +42,16 @@
       "summary": "4500年前の巨大建造物はどうやって作られた？ピラミッドの謎に迫るよ。",
       "thumbnail": "assets/videos/ep02.jpg",
       "url": "https://youtu.be/qdIpwyCD398"
+    },
+    {
+      "number": 3,
+      "title": "ドレミってだれが決めたの？「ド」は昔「ウト」だった！1000年前の歌のヒミツ",
+      "date": "2026-10-13",
+      "host": "澪",
+      "genre": "歴史・文化",
+      "summary": "「ド」は昔「ウト」だった！？ゲストの澪と、1000年前の歌から生まれたドレミの歴史を深掘りするよ。",
+      "thumbnail": "assets/videos/ep03.jpg",
+      "url": "https://youtu.be/B7-bxram7Ng"
     }
   ]
 }

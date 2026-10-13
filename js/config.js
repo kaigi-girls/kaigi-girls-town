@@ -58,7 +58,8 @@ window.KG_CONFIG = {
     { group: "X（メンバー）", icon: "assets/rin_avatar.png", title: "凛のX", sub: "@rin_aoyama_fit", href: "https://x.com/rin_aoyama_fit", c: "#e7b66a" },
     { group: "X（メンバー）", icon: "assets/mio_avatar.png", title: "澪のX", sub: "準備中", href: null, c: "#bfa6dd" },
     { group: "X（メンバー）", icon: "assets/rina_avatar.png", title: "リナのX", sub: "準備中", href: null, c: "#fbabb6" },
-    { group: "音楽", title: "真白の音楽", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" }
+    { group: "音楽", title: "真白の音楽", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" },
+    { group: "音楽", title: "RUN WITH ME（MV）", sub: "柊真白 / YouTube", href: "https://youtu.be/obhO8MeWjVM", c: "#9fc3e6" }
   ],
 
   // Footer links. href: null => shown as "準備中 / coming soon" (not clickable).
