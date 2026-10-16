@@ -6,7 +6,7 @@
   try { D = await (await fetch("data/videos.json", { cache: "no-cache" })).json(); }
   catch (e) { $("#vgrid").innerHTML = "<p>動画リストを読み込めませんでした。</p>"; return; }
   if (D.channel && D.channel.url) $("#channelLink").href = D.channel.url;
-  const vids = (D.videos || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || "") || b.number - a.number);
+  const vids = (D.videos || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.number || 0) - (a.number || 0));
   const hosts = D.hosts || {};
   const uniq = k => [...new Set(vids.map(v => v[k]).filter(Boolean))];
   const params = new URLSearchParams(location.search);
@@ -28,7 +28,7 @@
     $("#vgrid").innerHTML = list.map(v => {
       const h = hosts[v.host] || { color: "#bde1fb", deep: "#3f86d6" };
       return `<a class="vcard" href="${esc(v.url)}" target="_blank" rel="noopener" style="--c:${h.color};--d:${h.deep}">
-        <div class="vthumb"><img src="${esc(thumb(v))}" alt="" loading="lazy" width="640" height="360"><span class="ep">#${String(v.number).padStart(2, "0")}</span><span class="play">▶</span></div>
+        <div class="vthumb"><img src="${esc(thumb(v))}" alt="" loading="lazy" width="640" height="360"><span class="ep">${v.number ? "#" + String(v.number).padStart(2, "0") : esc(v.kind || "")}</span><span class="play">▶</span></div>
         <div class="vinfo"><h2>${esc(v.title)}</h2><p>${esc(v.summary)}</p>
         <div class="meta"><span class="host">${esc(v.host)}</span><span class="genre">${esc(v.genre)}</span><time>${esc(v.date)}</time></div></div></a>`;
     }).join("") || "<p>該当する動画はまだありません。</p>";
