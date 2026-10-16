@@ -41,3 +41,5 @@ body{padding-bottom:76px}
 .card.mashiro{--c:#6f8fb3}
 @media(min-width:1000px){.s1-eq{grid-template-columns:repeat(5,1fr);gap:14px}}
 .card.mashiro .follow{background:#6f8fb3;color:#fff}.card.mashiro .follow.mashiro-site{background:#2f4766}
+@media(max-width:768px){header.nav>nav,nav.sitenav,body>header>nav{display:none!important}}
+@media(max-width:480px){.s1-robohero .qfollow{display:flex;flex-wrap:wrap;justify-content:center;gap:8px}.s1-robohero .qfollow a{margin:0;white-space:nowrap;font-size:13px;padding:9px 14px}}
