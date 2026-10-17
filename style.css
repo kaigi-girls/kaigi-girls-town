@@ -24,11 +24,6 @@ h1{font-size:clamp(40px,8vw,96px);margin:20px 0 0;color:#fff;letter-spacing:.06e
 .robo{background:#1d1f2e;color:#fff;border-radius:24px}.robobox{display:flex;gap:20px;align-items:center}.robobox img{width:140px;border-radius:16px}
 footer{text-align:center;padding:30px;color:#888}
 @media(max-width:600px){.nav{flex-wrap:wrap;gap:8px}.nav nav{order:3;flex-basis:100%;font-size:12px;gap:10px;overflow-x:auto}h2{font-size:26px}}
-.now{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:14px}
-.win{background:#2a2840;color:#fff;border-radius:14px;padding:14px;text-align:center;border:4px solid #444}
-.win .pane{height:70px;border-radius:6px;background:#111;margin-bottom:8px}
-.win.lit{border-color:var(--c)}.win.lit .pane{background:radial-gradient(circle,#fff6c8,var(--c));box-shadow:0 0 24px var(--c)}
-.win span{display:block;font-size:13px;opacity:.9}.fx{display:block;margin-top:6px;font-size:12px;color:#ffd}.lamp{color:#7f7}
 .qfollow{display:none}.glink{display:block;font-size:12px;margin-top:4px}
 .pv{display:none;margin-top:8px;background:#f3eef8;border-radius:8px;padding:8px;font-size:12px}.pv audio{width:100%;height:30px}.jk.open .pv{display:block}.art{cursor:pointer}
 .tl{margin:28px 0 10px}.robolist{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.ph{border:2px dashed #555;border-radius:12px;padding:20px;color:#aaa}
@@ -37,9 +32,7 @@ footer{text-align:center;padding:30px;color:#888}
  .hero{padding:12px 10px 16px}.m img,.m.mio img{width:22vw;border-width:4px}figcaption{font-size:11px;margin-top:2px}
  h1{font-size:30px;margin-top:6px}.walk{font-size:14px;padding:8px 18px;margin-top:8px;box-shadow:0 3px 0 #2a2233}.walk span{display:none}
  .qfollow{display:flex;gap:8px;justify-content:center;margin-top:10px}.qfollow a{background:#f2b84b;color:#fff;font-weight:900;text-decoration:none;padding:10px 14px;border-radius:99px;font-size:14px}.qfollow a.yt{background:#e33}
- .sec{padding:18px 14px}#now h2,#news h2{font-size:20px;margin-bottom:8px}
- .now{grid-template-columns:1fr;gap:4px}.win{display:flex;align-items:center;gap:8px;padding:5px 10px;text-align:left;border-width:2px;border-radius:8px;font-size:12px;white-space:nowrap;overflow:hidden}
- .win .pane{width:14px;height:14px;margin:0;flex:none;border-radius:3px}.win span{font-size:11px;overflow:hidden;text-overflow:ellipsis}.win .fx{margin:0;font-size:10px}
+ .sec{padding:18px 14px}#news h2{font-size:20px;margin-bottom:8px}
  .disco{grid-template-columns:1fr 1fr;gap:10px}.art{font-size:24px}.jk b{font-size:12px}
 }
 .hero h1{text-shadow:0 0 2px #3a1f5c,0 2px 6px rgba(40,20,70,.75),0 0 14px rgba(40,20,70,.45);-webkit-text-stroke:1px rgba(58,31,92,.6)}

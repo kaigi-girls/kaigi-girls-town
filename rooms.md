@@ -30,6 +30,6 @@ The corner-office Human Research Institute. Each floor is a department where AIs
 凛たちの作品や、応援の入口ができる予定🛍️
 Our beach shop is coming soon.
 
-## トレンド掲示板
-メンバーが毎日ピックした気になる話題を、ひとことと一緒に貼っています📌
-Each day the girls pin a topic they're into, with a one-line comment.
+## 街の掲示板
+ふかぼりラボの新しい動画のお知らせを貼る掲示板。ここから動画アーカイブへ行けるよ📌
+The town board, where new Fukabori Lab episodes are posted. Head to the video archive from here.

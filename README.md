@@ -30,16 +30,17 @@ Useful query options: `?still=1` (freeze tram/animations), `?open=meeting` (open
 
 | Path | What |
 |------|------|
-| `index.html`, `style.css`, `schedule.js`, `robo_lab.json`, `audio/` | official site v2 (top page) |
-| `town/index.html`, `css/` | town page (`<base href="../">`, so it reads root `status.csv`, `js/`, `assets/`) |
+| `index.html`, `style.css`, `robo_lab.json`, `audio/` | official site v2 (top page; 「最新の本編」 reads `data/videos.json`) |
+| `town/index.html`, `css/` | town page (`<base href="../">`, so it reads root `rooms.md`, `js/`, `assets/`; `schedule.js` drives awake/asleep) |
 | `js/` | map, UI, data loaders, visitor counter |
 | `assets/` | logo, favicon, avatars |
-| `status.csv` | live status signs (team-edited) |
+| `data/videos.json` | YouTube episodes (top 「最新の本編」 = newest numbered episode; `lab/` lists numbered episodes only) |
+| `status.csv` | legacy いま status (kept in the repo, **no longer loaded or shown**) |
 | `rooms.md` | room intros (team-edited) |
 | `meeting.json` | curated meeting-room lines |
 | `.nojekyll` | tells GitHub Pages not to run Jekyll |
 
-The page re-reads `status.csv`, `rooms.md`, and `meeting.json` about every 60 seconds and when the tab becomes visible again.
+The town page re-reads `rooms.md`, `meeting.json`, and `rewards.csv` about every 60 seconds and when the tab becomes visible again.
 
 ## Visitor counter
 
@@ -49,7 +50,7 @@ On static hosting (including GitHub Pages), there is no `/api/visits` endpoint, 
 
 ## How to update content
 
-### `status.csv`
+### `status.csv` (not used by the site anymore)
 
 One row per member. Columns:
 
@@ -111,7 +112,9 @@ English intro…
 
 Fictional town and characters only. No personal information about real people. Meeting lines are hand-picked before they go in.
 
-## trends.csv (trend board / 掲示板)
+## trends.csv (trend board / 掲示板) — not used by the site anymore
+
+The trend board was removed from the UI; the 掲示板 building now links to `lab/`. The file is kept as an archive.
 
 **How to add a trend line:** append one line per member per day to `trends.csv` — `date,who,trend,comment,next_post` — e.g. `2026-10-08,rin,秋のストレッチ,朝5分だけでも体がぽかぽか,1`. `date` is the JST day (`YYYY-MM-DD`), `who` is `rin` / `mio` / `rina`, `trend` is a few topic words only (no links, no other people's posts or names), `comment` is a one-line hitokoto, and `next_post` is `1` to show the 「次で使うかも👀」 badge (else `0`). The newest date shows as 今日のトレンド on the board; older dates move into トレンドの記録 / Trend archive automatically (newest first), and rows older than 7 days fade (`trendFadeDays` in `js/config.js`). Lines starting with `#` are ignored. Icons: `assets/{rin,mio,rina}_avatar.png` (256px, metadata stripped).
 

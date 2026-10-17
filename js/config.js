@@ -14,7 +14,7 @@ window.KG_CONFIG = {
     honey: "#e7b66a"
   },
 
-  // Members. `match` = names as written in status.csv's `name` column.
+  // Members.
   members: {
     rin:  { name: "凛",     nameEn: "Rin",      color: "#e7b66a", deep: "#c4862a", avatar: "assets/rin_avatar.png", room: "gym",       match: ["凛", "Rin"] },
     mio:  { name: "澪",     nameEn: "Mio",      color: "#bfa6dd", deep: "#8a63c4", avatar: "assets/mio_avatar.png", room: "studio",    match: ["澪", "Mio"] },
@@ -25,7 +25,7 @@ window.KG_CONFIG = {
   // Rooms. `mdKey` = a word that appears in the rooms.md `## heading` for that room
   // (checked in this order, so the more specific ones come first).
   rooms: [
-    { id: "board",     mdKey: "掲示板",   label: "トレンド掲示板", labelEn: "Trend board" },
+    { id: "board",     mdKey: "掲示板",   label: "街の掲示板", labelEn: "Town board", link: "lab/", linkJa: "▶ 動画アーカイブを見る", linkEn: "▶ Watch the video archive" },
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
     { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", link: "robo.html", linkJa: "📺 YouTubeアーカイブを見る", linkEn: "📺 Watch the YouTube archive", owner: "robo" },
@@ -39,13 +39,11 @@ window.KG_CONFIG = {
       introEn: "The far edge of town: a little Enoshima-ish island with a lighthouse. You can see the whole town and the sea from here 🌊" }
   ],
 
-  // Data files (relative to index.html). The team edits status.csv and rooms.md.
+  // Data files (relative to index.html). The team edits rooms.md.
+  // status.csv / trends.csv stay in the repo but are no longer loaded (いま status and trend board removed).
   data: {
-    status: "status.csv",
     rooms: "rooms.md",
     meeting: "meeting.json",
-    trends: "trends.csv",     // daily trend board (one line per member per day)
-    trendFadeDays: 7,         // rows older than this many days show faded
     rewards: "rewards.csv",   // daily off-shot after talking to all three (file,who,caption_ja,caption_en -> assets/rewards/)
     refreshSeconds: 60
   },

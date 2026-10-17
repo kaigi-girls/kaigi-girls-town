@@ -1,5 +1,5 @@
 <!doctype html><html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>KAIGI GIRLS OFFICIAL SITE</title><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="css/stage1.css"></head><body>
+<title>KAIGI GIRLS OFFICIAL SITE</title><link rel="icon" href="assets/favicon.png"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="css/stage1.css"></head><body>
 <header class="nav"><img src="assets/logo_v1.jpg" alt="KAIGI GIRLS" class="logo">
 <nav><a href="#news">NEWS</a><a href="#members">MEMBERS</a><a href="#disco">DISCOGRAPHY</a><a href="#lab">LAB</a><a href="lab/">VIDEOS</a><a href="robo.html">ROBO LAB</a></nav>
 <button id="jingle" class="jingle" aria-pressed="false">🔇 JINGLE</button></header>
@@ -22,7 +22,9 @@
 <div class="floor" style="--c:#d6a03f"><span class="fl">屋上</span><b>公開発表ステージ</b><p>新しい動画・曲の発表とライブの場所。</p><ul><li><a href="#news">NEWSを見る →</a></li></ul></div>
 </div></section>
 <section id="fukabori" class="s1-sec"><h2>ふかぼりラボ 最新動画 <span>FUKABORI LAB</span></h2><div class="vgrid" id="vlist" data-limit="3"></div><a class="s1-more" href="lab/">アーカイブをすべて見る →</a></section>
-<section id="now" class="sec"><h2>いまの4人 <span>NOW · <b id="jst"></b> JST</span></h2><div class="now" id="nowgrid"></div></section>
+<section id="latest" class="s1-sec s1-latest" aria-labelledby="latestTitle"><h2 id="latestTitle">最新の本編 <span>LATEST EPISODE</span></h2>
+ <div class="s1-latest-box"><a class="s1-latest-ep" id="latestEp" href="https://www.youtube.com/@robo-fukabori" target="_blank" rel="noopener"><span class="s1-latest-thumb"><img id="latestImg" src="assets/robo_channel.png" alt="" width="480" height="360"><i aria-hidden="true">▶</i></span><b id="latestTitleText">ふかぼりラボの最新回を読み込み中…</b><small id="latestMeta"></small></a>
+ <div class="s1-latest-cta"><p>ロボくんが人間のふしぎを深掘りする本編を、毎回YouTubeで公開中。</p><a class="s1-subbtn" href="https://www.youtube.com/@robo-fukabori?sub_confirmation=1" target="_blank" rel="noopener">▶ YouTubeでチャンネル登録</a><a class="s1-archlink" href="lab/">動画アーカイブ（過去の本編）を見る →</a></div></div></section>
 <section id="news" class="sec"><h2>NEWS <span>お知らせ</span></h2><ul class="news">
  <li class="pinned"><span class="tag">PINNED</span><time>10.12 – 10.18</time><b>股関節1週間 スタート！ / Hip Week Day1–7</b><p>凛と一緒に毎日ちょこっと、股関節をほぐす1週間チャレンジ。Day1〜Day7を毎日更新。</p></li>
  <li><span class="tag">ROBO LAB</span><time>2026.10</time>ロボ深掘りアーカイブ更新 / New archive episode</li>
@@ -47,15 +49,9 @@
  <div class="jk" style="--c:#f06ba8"><div class="art" role="button" tabindex="0">03</div><b>Track 03 Town Lights</b><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/track03_town_piano.mp3"></audio><small>15s preview</small></div></div>
  <div class="jk guest" style="--c:#9fc3e6"><div class="art" role="button" tabindex="0">RUN</div><b>RUN WITH ME <small>feat. Mashiro</small></b><a class="glink" href="https://kaigi-girls.github.io/mashiro/">Mashiro ↗</a> <a class="glink" href="https://youtu.be/obhO8MeWjVM" target="_blank" rel="noopener">▶ MV</a><div class="pv"><span>PREVIEW 0:00 / 0:15</span><audio controls preload="none" src="audio/guest_run_with_me.mp3"></audio><small>15s preview</small></div></div></div></section>
 <footer>© KAIGI GIRLS</footer>
-<script src="schedule.js"></script>
 <script>const j=document.getElementById('jingle');j.onclick=()=>{const on=j.getAttribute('aria-pressed')!=='true';j.setAttribute('aria-pressed',on);j.textContent=(on?'🔊':'🔇')+' JINGLE';if(on){const a=new Audio('audio/jingle.mp3');a.play();}};
-function renderNow(){const m=kgJstMinutes();document.getElementById('jst').textContent=String(m/60|0).padStart(2,'0')+':'+String(m%60).padStart(2,'0');
-const g=document.getElementById('nowgrid');g.innerHTML='';for(const id in KG_SCHEDULE){const k=KG_SCHEDULE[id],n=kgNow(id,m);
-const ex=n.extra==='music'?'<i class="fx">♪ 音漏れ中… (music leaking)</i>':n.extra==='mirror'?'<i class="fx">🪞 鏡の前</i>':n.extra==='lab'?'<a class="fx" href="'+k.link+'">▶ 最新回 / Latest</a>':n.extra==='charge'?'<i class="fx lamp">🔋 充電ランプ</i>':'';
-g.insertAdjacentHTML('beforeend','<div class="win '+(n.awake?'lit':'dark')+'" style="--c:'+k.color+'"><div class="pane"></div><b>'+k.name+'</b><span>'+n.label+'</span>'+ex+'</div>');}}
 document.querySelectorAll('.jk .art').forEach(a=>a.onclick=()=>a.parentElement.classList.toggle('open'));
 fetch('robo_lab.json').then(r=>r.json()).then(d=>{const el=document.getElementById('robolist');el.innerHTML=(d.themes||[]).map(t=>'<div class="theme"><b>'+t.title+'</b><ul>'+(t.items||[]).map(i=>'<li><a href="'+i.url+'">'+i.title+'</a></li>').join('')+'</ul></div>').join('')||el.innerHTML}).catch(()=>{});
-renderNow();setInterval(renderNow,60000);
 </script>
 <script src="js/stage1.js"></script>
 </body></html>

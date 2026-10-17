@@ -1,4 +1,4 @@
-/* Data loading: status.csv, rooms.md, meeting.json (all re-readable, no cache) */
+/* Data loading: rooms.md, meeting.json, rewards.csv (all re-readable, no cache) */
 (function () {
   const C = window.KG_CONFIG;
   const JP = /[\u3040-\u30ff\u3400-\u9fff\uff00-\uffef]/;
@@ -31,10 +31,6 @@
     return rows.slice(1).map(r => Object.fromEntries(head.map((h, i) => [h, (r[i] || "").trim()])));
   }
 
-  function memberIdByName(name) {
-    for (const [id, m] of Object.entries(C.members)) if (m.match.includes(name.trim())) return id;
-    return null;
-  }
   function roomIdByText(text) {
     for (const r of C.rooms) if (text.includes(r.mdKey)) return r.id;
     return null;
@@ -47,22 +43,6 @@
     if (!m) return null;
     const p = n => String(n).padStart(2, "0");
     return new Date(`${m[1]}-${p(m[2])}-${p(m[3])}T${p(m[4])}:${m[5]}:00+09:00`);
-  }
-
-  async function loadStatus() {
-    const rows = parseCSV(await fetchText(C.data.status));
-    const out = {};
-    for (const r of rows) {
-      const id = memberIdByName(r.name || "");
-      if (!id) continue;
-      out[id] = {
-        id, name: r.name, roomText: r.room,
-        roomId: roomIdByText(r.room || "") || C.members[id].room,
-        ja: r.status_ja || "", en: r.status_en || "",
-        updatedRaw: r.updated_jst || "", updated: parseJST(r.updated_jst)
-      };
-    }
-    return out;
   }
 
   // rooms.md: "# title", intro lines, then "## heading" sections.
@@ -94,19 +74,6 @@
     return list;
   }
 
-  // trends.csv: date,who,trend,comment,next_post  -> [{date, items:[...]}] newest first
-  async function loadTrends() {
-    const text = (await fetchText(C.data.trends)).split(/\r?\n/).filter(l => !l.trim().startsWith("#")).join("\n");
-    const by = {};
-    for (const r of parseCSV(text)) {
-      const d = (r.date || "").match(/^\d{4}-\d{2}-\d{2}$/) ? r.date : null;
-      const who = (r.who || "").toLowerCase();
-      if (!d || !C.members[who] || !r.trend) continue;
-      (by[d] = by[d] || []).push({ date: d, who, trend: r.trend, comment: r.comment || "", next: r.next_post === "1" });
-    }
-    return Object.keys(by).sort().reverse().map(date => ({ date, items: by[date] }));
-  }
-
   // rewards.csv: file,who,caption_ja,caption_en  (images live in assets/rewards/; no sub-folders or other paths)
   async function loadRewards() {
     if (!C.data.rewards) return [];
@@ -117,5 +84,5 @@
       .map(r => ({ file: r.file, who: (r.who || "").toLowerCase(), ja: r.caption_ja || "", en: r.caption_en || "" }));
   }
 
-  window.KG_DATA = { loadStatus, loadRooms, loadMeetings, loadTrends, loadRewards, parseCSV, parseJST };
+  window.KG_DATA = { loadRooms, loadMeetings, loadRewards, parseCSV, parseJST };
 })();

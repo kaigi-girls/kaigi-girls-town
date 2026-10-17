@@ -1,4 +1,4 @@
-/* KAIGI GIRLS TOWN — app glue: signs, cards, room sheet, meeting chat, visitor robot, tram, counter */
+/* KAIGI GIRLS TOWN — app glue: signs, room sheet, meeting chat, visitor robot, tram, counter */
 (function () {
   const C = window.KG_CONFIG, D = window.KG_DATA, T = window.KG_TOWN;
   const { robotSVG, NAVY } = window.KG_ISO;
@@ -8,25 +8,21 @@
   const STILL = params.has("still") || matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const I18N = {
-    ja: { tagline: "ロボになって、街をのぞこう", hint: "タップした場所へ歩くよ・建物は「入る」でのぞける", nowTitle: "いま、なにしてる？",
+    ja: { tagline: "ロボになって、街をのぞこう", hint: "タップした場所へ歩くよ・建物は「入る」でのぞける",
       meetBtn: "会議室をのぞく", footNote: "この街と登場人物はフィクションです。人間はみんな小さなロボの姿で遊びに来ています。",
-      updated: "更新", minAgo: n => `${n}分前`, hourAgo: n => `${n}時間前`, dayAgo: n => `${n}日前`, justNow: "たった今",
-      visitors: "これまでに来たロボ", comingSoon: "COMING SOON", tapToPeek: "タップでのぞく", nowDoing: "いま",
-      noStatus: "ひみつ", sample: "サンプル", sampleNote: "※サンプルの会話です（実際の会議ではありません）",
-      curated: "公開OKになったセリフだけを載せています。", replay: "もう一度再生", you: "YOU", loaded: "自動更新",
+      visitors: "これまでに来たロボ", comingSoon: "COMING SOON", tapToPeek: "タップでのぞく",
+      sample: "サンプル", sampleNote: "※サンプルの会話です（実際の会議ではありません）",
+      curated: "公開OKになったセリフだけを載せています。", replay: "もう一度再生", you: "YOU",
       noMeeting: "まだ公開できる会議はありません。", soonText: "準備中",
-      trendToday: "今日のトレンド", trendArchive: "トレンドの記録", trendNext: "次で使うかも👀", trendPicked: "ピック", noTrends: "まだトレンドはありません。", trendNote: "メンバーが気になった話題をひとことで。",
       hint2: "ロボを三人に近づけると、ひとこと話すよ", talkTo: n => `${n}に話しかける`, heard: "今日おはなしした",
       rewardHint: "三人とおはなしすると、今日のオフショットが見られるよ", rewardTitle: "今日のオフショット📸", rewardEmpty: "ゴール！オフショットは準備中だよ", close: "閉じる",
       enterQ: n => `${n}に入る？`, enterGo: "入る", enterNo: "やめる" },
-    en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building, then “Go in” to peek", nowTitle: "What's everyone doing?",
+    en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building, then “Go in” to peek",
       meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit as tiny robots.",
-      updated: "updated", minAgo: n => `${n} min ago`, hourAgo: n => `${n} h ago`, dayAgo: n => `${n} d ago`, justNow: "just now",
-      visitors: "robots visited so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek", nowDoing: "Now",
-      noStatus: "secret", sample: "SAMPLE", sampleNote: "* Sample conversation (not a real meeting)",
-      curated: "Only lines approved for publishing appear here.", replay: "Replay", you: "YOU", loaded: "auto-refresh",
+      visitors: "robots visited so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek",
+      sample: "SAMPLE", sampleNote: "* Sample conversation (not a real meeting)",
+      curated: "Only lines approved for publishing appear here.", replay: "Replay", you: "YOU",
       noMeeting: "No public meetings yet.", soonText: "coming soon",
-      trendToday: "Today's trends", trendArchive: "Trend archive", trendNext: "maybe next post 👀", trendPicked: "picked", noTrends: "No trends yet.", trendNote: "Topics the girls are into, in one line.",
       hint2: "Walk your robot up to the girls to hear what they're up to", talkTo: n => `Talk to ${n}`, heard: "Talked today",
       rewardHint: "Talk to all three to unlock today's off-shot", rewardTitle: "Today's off-shot 📸", rewardEmpty: "Goal! Off-shots coming soon", close: "Close",
       enterQ: n => `Go into ${n}?`, enterGo: "Go in", enterNo: "Cancel" }
@@ -34,7 +30,7 @@
   let lang = localStorage.getItem("kg_lang") === "en" ? "en" : "ja";
   const t = k => I18N[lang][k];
 
-  const S = { status: {}, rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0, trends: [], rewards: [] };
+  const S = { rooms: { rooms: {}, intro: {} }, meetings: [], meetingSel: 0, rewards: [] };
   const roomCfg = id => C.rooms.find(r => r.id === id) || { id, label: id, labelEn: id };
   const ownerOf = roomId => { const r = roomCfg(roomId); return r.owner ? { id: r.owner, ...C.members[r.owner] } : null; };
 
@@ -47,14 +43,6 @@
     return out + "…";
   }
 
-  function relTime(d) {
-    if (!d) return "";
-    const m = Math.max(0, Math.round((Date.now() - d.getTime()) / 60000));
-    if (m < 1) return t("justNow"); if (m < 60) return t("minAgo")(m);
-    if (m < 60 * 24) return t("hourAgo")(Math.round(m / 60)); return t("dayAgo")(Math.round(m / 1440));
-  }
-  const fmtJST = d => d ? new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }).format(d) + " JST" : "";
-  const statusText = st => st ? (lang === "en" ? (st.en || st.ja) : (st.ja || st.en)) : "";
   const roomTitle = (id, full) => {
     const md = S.rooms.rooms[id];
     if (md && lang === "ja") { let h = md.heading.replace(/[（(]COMING SOON[)）]/i, "").trim(); if (!full) h = h.replace(/[（(][^（()）]*[)）]$/, "").trim(); return h; }
@@ -147,8 +135,7 @@
       const owner = ownerOf(o.room);
       const col = owner ? owner.color : "#bde1fb", deep = owner ? owner.deep : NAVY;
       const name = owner ? (lang === "en" ? owner.nameEn : owner.name) : (lang === "en" ? r.signEn : r.sign) || roomTitle(o.room);
-      const st = owner ? S.status[owner.id] : null;
-      let line2 = owner ? (statusText(st) || roomTitle(o.room)) : t("tapToPeek");
+      let line2 = owner ? roomTitle(o.room) : t("tapToPeek");
       const fs1 = 8.5, fs2 = 8.5, maxW = lang === "en" ? 104 : 100;
       line2 = clip(line2, fs2, maxW);
       const w = Math.max(tw(name, fs1) + 22 + (o.room === "meeting" ? 18 : 0), tw(line2, fs2) + 12, 44), h = 28;
@@ -167,22 +154,6 @@
       return `<g class="sign" data-room="${it.room}" role="button"><rect class="hitpad" x="${p.x.toFixed(1)}" y="${p.y.toFixed(1)}" width="${p.w.toFixed(1)}" height="${p.h.toFixed(1)}" fill="#fff" fill-opacity="0"/>${it.html}</g>`; }).join("");
   }
 
-  // ---------- cards ----------
-  function drawCards() {
-    const ids = Object.keys(C.members);
-    $("#cards").innerHTML = ids.map(id => {
-      const m = C.members[id], st = S.status[id];
-      const av = avatarOf(id, m);
-      return `<button class="card" data-room="${m.room}" style="border-color:${m.color}">${av}<span>` +
-        `<div class="who"><b>${esc(lang === "en" ? m.nameEn : m.name)}</b>${esc(roomTitle(m.room))}</div>` +
-        (nowLabel(id) ? `<div class="tm">🕒 ${esc(nowLabel(id))}${awake(id) ? "" : " 💤"}</div>` : "") +
-        (statusText(st) ? `<div class="st">${esc(statusText(st))}</div>` : `<div class="st muted">${esc(introLine(m.room) || "…")}</div>`) +
-        (st && st.updated ? `<div class="tm">${t("updated")} ${esc(fmtJST(st.updated))}・${esc(relTime(st.updated))}</div>` : "") +
-        `</span></button>`;
-    }).join("");
-    $("#cards").querySelectorAll(".card").forEach(b => b.onclick = () => openRoom(b.dataset.room));
-  }
-
   // ---------- sheet ----------
   let openId = null, chatTimer = null;
   function openRoom(id) {
@@ -193,13 +164,6 @@
     $("#sheetHead").style.background = owner ? owner.color : id === "meeting" ? "linear-gradient(90deg,#fbabb6,#bfa6dd,#e7b66a)" : "#bde1fb";
     let h = "";
     if (id === "meeting") { renderMeeting(); showSheet(); return; }
-    if (id === "board") { renderBoard(); showSheet(); return; }
-    if (owner) {
-      const st = S.status[owner.id];
-      h += `<div class="nowbox" style="border-left-color:${owner.color}"><div class="lbl">${t("nowDoing")}・${esc(lang === "en" ? owner.nameEn : owner.name)}</div>` +
-        `<div class="tx">${esc(statusText(st) || "…")}</div>` +
-        (st && st.updated ? `<div class="lbl">${t("updated")} ${esc(fmtJST(st.updated))}・${esc(relTime(st.updated))}</div>` : "") + `</div>`;
-    }
     const pJa = md.ja || r.introJa, pEn = md.en || r.introEn;   // rooms.md first; config text for spots it doesn't cover
     if (pJa) h += `<p>${esc(pJa)}</p>`;
     if (pEn) h += `<p class="en">${esc(pEn)}</p>`;
@@ -233,27 +197,6 @@
     let i = 0;
     const step = () => { if (i < lines.length) { lines[i++].classList.add("show"); chatTimer = setTimeout(step, 750); } };
     chatTimer = setTimeout(step, 250);
-  }
-  // ---------- trend board ----------
-  const avatarOf = (id, m) => id === "robo" ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>`
-    : m.avatar ? `<span class="av"><img src="${esc(m.avatar)}" alt=""></span>` : `<span class="av" style="background:${m.color}">${esc(m.name[0])}</span>`;
-  function trendCard(it) {
-    const m = C.members[it.who];
-    const ageDays = (Date.now() - new Date(it.date + "T00:00:00+09:00").getTime()) / 864e5;
-    const old = ageDays > (C.data.trendFadeDays || 7);
-    return `<div class="tcard${old ? " old" : ""}">${avatarOf(it.who, m)}<div class="tbub" style="border-color:${m.color};background:${m.color}22">` +
-      `<div class="nm"><b>${esc(lang === "en" ? m.nameEn : m.name)}</b><span>${t("trendPicked")} ${esc(it.date)}</span></div>` +
-      `<div class="tr">${esc(it.trend)}</div>${it.comment ? `<div class="cm">${esc(it.comment)}</div>` : ""}` +
-      (it.next ? `<span class="eyes" style="background:${m.color}">${t("trendNext")}</span>` : "") + `</div></div>`;
-  }
-  function renderBoard() {
-    const md = S.rooms.rooms.board || {}, days = S.trends;
-    let h = `<p>${esc((lang === "en" ? md.en : md.ja) || t("trendNote"))}</p>`;
-    if (!days.length) { $("#sheetBody").innerHTML = h + `<p>${t("noTrends")}</p>`; return; }
-    h += `<h4 class="th">${t("trendToday")}・${esc(days[0].date)}</h4><div class="tlist">${days[0].items.map(trendCard).join("")}</div>`;
-    if (days.length > 1) h += `<h4 class="th">${t("trendArchive")}</h4>` + days.slice(1).map(d =>
-      `<div class="tday"><div class="td">${esc(d.date)}</div><div class="tlist">${d.items.map(trendCard).join("")}</div></div>`).join("");
-    $("#sheetBody").innerHTML = h;
   }
   function showSheet() { $("#sheet").hidden = false; $("#sheetBg").hidden = false; $("#sheetClose").focus({ preventScroll: true }); }
   function closeSheet() { $("#sheet").hidden = true; $("#sheetBg").hidden = true; openId = null; clearTimeout(chatTimer); }
@@ -556,7 +499,6 @@
   const phaseHooks = [];
   // per-member awake/asleep from schedule.js (JST): drives lit windows, Zzz, walks and talk
   const awake = id => !window.kgNow || !(window.KG_SCHEDULE || {})[id] || window.kgNow(id).awake;
-  const nowLabel = id => window.kgNow && (window.KG_SCHEDULE || {})[id] ? window.kgNow(id).label : "";
   function applyAwake() {
     ["rin", "mio", "rina", "robo"].forEach(id => { document.documentElement.setAttribute("data-awake-" + id, awake(id) ? "1" : "0"); });
   }
@@ -670,7 +612,7 @@
 
   // ---------- talk bubbles ----------
   // When the visitor robot comes within NEAR grid units of a girl she says ONE line:
-  // her current status from status.csv (zzZ… at night). Once per approach: the robot
+  // her intro line from rooms.md (zzZ… while asleep). Once per approach: the robot
   // has to go further than AWAY before the same girl talks again. One bubble at a time.
   // The bubble is HTML over the map (readable font size on phones), clamped inside it.
   const TALK = { MS: 4000, NEAR: 0.9, AWAY: 1.4, armed: {}, who: null, timer: 0, raf: 0, el: null };
@@ -679,13 +621,13 @@
   const graphemes = s => seg ? [...seg.segment(s)].map(x => x.segment) : [...s];
   function shortLine(s) {
     s = String(s || "").replace(/\s+/g, " ").trim();
-    const max = JPC.test(s) ? 28 : 45, g = graphemes(s);
+    const max = JPC.test(s) ? 60 : 90, g = graphemes(s);
     if (g.length <= max) return s;
     let cut = g.slice(0, max - 1).join("");
     if (!JPC.test(s)) { const sp = cut.lastIndexOf(" "); if (sp > max * 0.6) cut = cut.slice(0, sp); }
     return cut.replace(/[\s、。，,.!！?？・:：;；\-–—]+$/u, "") + "…";
   }
-  const talkLine = id => !awake(id) ? "zzZ…" : shortLine(statusText(S.status[id])) || "…";
+  const talkLine = id => !awake(id) ? "zzZ…" : shortLine(introLine((C.members[id] || {}).room)) || "…";
   const memberName = id => { const m = C.members[id]; return lang === "en" ? m.nameEn : m.name; };
   function talkSpot(id) {   // a free spot just short of her, nearest to the robot
     const g = G[id]; let best = null;
@@ -848,13 +790,10 @@
 
   // ---------- data refresh ----------
   async function refresh() {
-    const [st, rm, mt, tr, rw] = await Promise.allSettled([D.loadStatus(), D.loadRooms(), D.loadMeetings(), D.loadTrends(), D.loadRewards()]);
-    if (st.status === "fulfilled") S.status = st.value; else console.warn(st.reason);
+    const [rm, mt, rw] = await Promise.allSettled([D.loadRooms(), D.loadMeetings(), D.loadRewards()]);
     if (rm.status === "fulfilled") S.rooms = rm.value; else console.warn(rm.reason);
     if (mt.status === "fulfilled") S.meetings = mt.value; else console.warn(mt.reason);
-    if (tr.status === "fulfilled") S.trends = tr.value; else console.warn(tr.reason);
     if (rw.status === "fulfilled") S.rewards = rw.value; else console.warn(rw.reason);
-    S.loadedAt = new Date();
     paintText();
     if (openId && openId !== "meeting") openRoom(openId);
   }
@@ -865,9 +804,8 @@
     $("#langBtn").textContent = lang === "ja" ? "EN" : "日本語";
     const intro = S.rooms.intro || {};
     $("#townIntro").textContent = (lang === "en" ? intro.en : intro.ja) || "";
-    if (S.loadedAt) $("#lastLoad").textContent = `${t("loaded")} ${new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", hour: "2-digit", minute: "2-digit" }).format(S.loadedAt)} JST`;
     const yt = $("#visitor text"); if (yt) yt.textContent = t("you");
-    drawSigns(); drawCards(); drawLinks(); drawCounter(); drawProgress(); paintEnter();
+    drawSigns(); drawLinks(); drawCounter(); drawProgress(); paintEnter();
     Object.keys(G).forEach(id => G[id].el.setAttribute("aria-label", t("talkTo")(memberName(id))));
   }
   $("#langBtn").onclick = () => { lang = lang === "ja" ? "en" : "ja"; localStorage.setItem("kg_lang", lang); paintText(); if (openId) openRoom(openId); if (!$("#reward").hidden) openReward(); };
