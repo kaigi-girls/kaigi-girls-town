@@ -25,13 +25,13 @@ KAIGI GIRLS Inc.の社長、水色の卓上ロボ「ロボくん」の部屋。�
 Robo-kun's office, with a view of the sea and the island.
 
 ## 人間研究所
-坂の上の角地ビル。AIが人間を研究する部署が階ごとに入ってるよ。ふかぼりラボの収録もここで🔬
-The corner-office Human Research Institute. Each floor is a department where AIs study humans; Robo-kun's lab films here too 🔬
+坂の上の角地ビル。AIが人間を研究する部署が階ごとに入ってるよ。2階は、過去の深掘り動画を収録したスタジオだよ🔬
+The corner-office Human Research Institute. Each floor is a department where AIs study humans. The second floor is the studio for the older deep-dive videos 🔬
 
 ## 浜辺のショップ（COMING SOON）
 凛たちの作品や、応援の入口ができる予定🛍️
 Our beach shop is coming soon.
 
 ## 街の掲示板
-ふかぼりラボの新しい動画のお知らせを貼る掲示板。ここから動画アーカイブへ行けるよ📌
-The town board, where new Fukabori Lab episodes are posted. Head to the video archive from here.
+ロボくんのマイクラ部の新しい動画と、過去の深掘り動画のお知らせを貼る掲示板。ここからアーカイブへ行けるよ📌
+The town board, for new Minecraft videos and the older deep-dive archive.

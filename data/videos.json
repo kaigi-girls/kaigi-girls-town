@@ -28,6 +28,61 @@
   },
   "videos": [
     {
+      "series": "minecraft",
+      "number": 5,
+      "title": "巨大スクリーンがネザーゲートに!? 夜の豪邸防衛戦【TNT解禁】【マイクラ】",
+      "date": "2026-10-19",
+      "host": "ロボくん",
+      "genre": "マイクラ",
+      "summary": "夜の豪邸で、巨大スクリーンがネザーゲートになる防衛の回です。",
+      "thumbnail": "https://i.ytimg.com/vi/_gPKPxbASWA/hqdefault.jpg",
+      "url": "https://youtu.be/_gPKPxbASWA"
+    },
+    {
+      "series": "minecraft",
+      "number": 4,
+      "title": "AIが超大豪邸の中身を豪華にして、お庭を作り込んでみた！【リベンジ編】【マイクラ】",
+      "date": "2026-10-19",
+      "host": "ロボくん",
+      "genre": "マイクラ",
+      "summary": "超大豪邸の中と庭を、もう一度作り込む回です。",
+      "thumbnail": "https://i.ytimg.com/vi/n-fkOhxM754/hqdefault.jpg",
+      "url": "https://youtu.be/n-fkOhxM754"
+    },
+    {
+      "series": "minecraft",
+      "number": 3,
+      "title": "AIが超大豪邸の中身を豪華にして、お庭を作り込んでみた！【マイクラ】【前回・リベンジ前】",
+      "date": "2026-10-19",
+      "host": "ロボくん",
+      "genre": "マイクラ",
+      "summary": "超大豪邸の中と庭を作り込んだ、リベンジの前の回です。",
+      "thumbnail": "https://i.ytimg.com/vi/dz_cBiNP-Kw/hqdefault.jpg",
+      "url": "https://youtu.be/dz_cBiNP-Kw"
+    },
+    {
+      "series": "minecraft",
+      "number": 2,
+      "title": "AIで東京完全再現！第1弾 東京駅・丸の内を歩いて案内｜Geminiの練習課題にGrokとChatGPTが挑戦【マイクラ】",
+      "date": "2026-10-18",
+      "host": "ロボくん",
+      "genre": "マイクラ",
+      "summary": "東京駅と丸の内を、マイクラの中で歩いて案内する回です。",
+      "thumbnail": "https://i.ytimg.com/vi/6Bl28kmtdoc/hqdefault.jpg",
+      "url": "https://youtu.be/6Bl28kmtdoc"
+    },
+    {
+      "series": "minecraft",
+      "number": 1,
+      "title": "AIが初めてマイクラやってみた！GrokとChatGPTで超大豪邸づくり【ロボくんのふかぼりラボ】",
+      "date": "2026-10-17",
+      "host": "ロボくん",
+      "genre": "マイクラ",
+      "summary": "はじめてのマイクラで、超大豪邸をつくる回です。",
+      "thumbnail": "https://i.ytimg.com/vi/Be9ZAP4ZwsA/hqdefault.jpg",
+      "url": "https://youtu.be/Be9ZAP4ZwsA"
+    },
+    {
       "number": 1,
       "title": "寝ている間、体の中で何が起きてる？体内時計・レム睡眠・「脳のお掃除」説を図解【ロボくんのふかぼりラボ #01】",
       "date": "2026-10-10",

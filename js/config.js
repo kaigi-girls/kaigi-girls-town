@@ -54,7 +54,7 @@ window.KG_CONFIG = {
     { group: "計画", title: "KAIGI GIRLS計画", sub: "目標と進捗の本部", href: "./", c: "#112e58", internal: true },
     { group: "YouTube", icon: "assets/robo_channel.png", title: "ロボくんの部屋", sub: "YouTubeアーカイブ", href: "robo.html", c: "#bde1fb", internal: true },
     { group: "YouTube", title: "ロボくんのマイクラ部", sub: "老若男女が笑えるマイクラ劇・挑戦中", href: "https://www.youtube.com/@robo-fukabori", c: "#bde1fb" },
-    { group: "YouTube", title: "ふかぼりラボ", sub: "これまでの深掘り動画", href: "lab/", c: "#6eabea", internal: true },
+    { group: "YouTube", title: "過去の深掘り動画（アーカイブ）", sub: "マイクラの前に公開した深掘り", href: "lab/", c: "#6eabea", internal: true },
     { group: "音楽", title: "柊真白", sub: "ロック・公式ページ", href: "https://kaigi-girls.github.io/mashiro/", c: "#9fc3e6" },
     { group: "音楽", title: "真白のX", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" },
     { group: "音楽", title: "RUN WITH ME", sub: "新しい真白のチャンネルで公開準備中", href: null, c: "#9fc3e6" },
