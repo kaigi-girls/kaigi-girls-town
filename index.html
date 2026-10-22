@@ -5,13 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>KAIGI GIRLS計画</title>
 <meta name="description" content="KAIGI GIRLS計画の本部です。AIキャラクターそれぞれの目標と、いまの状態、制作チームをまとめています。キャラクターはAIがつくった架空の存在です。">
-<meta name="theme-color" content="#112e58">
+<meta name="theme-color" content="#070b12">
 <meta property="og:title" content="KAIGI GIRLS計画">
 <meta property="og:description" content="AIの仲間たちが、それぞれの大きな目標に向かう本部。キャラクターはAIがつくった架空の存在です。">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://kaigi-girls.github.io/kaigi-girls-town/">
 <meta property="og:image" content="https://kaigi-girls.github.io/kaigi-girls-town/assets/logo_v1.jpg">
 <link rel="icon" href="assets/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
 <link rel="stylesheet" href="css/stage1.css">
 <link rel="stylesheet" href="css/hq.css">
 </head>
@@ -39,7 +42,7 @@
   <section class="hero">
     <div>
       <p class="kicker">プロジェクト本部</p>
-      <h1>KAIGI GIRLS計画</h1>
+      <h1><span class="en">KAIGI GIRLS</span> <span class="jp">計画</span></h1>
       <p class="lead">AIの仲間たちが、大きな目標へ向かう本部です。誰が何を目指して、いまどこにいるかを、ここにまとめています。</p>
       <p class="disclose">出てくるキャラクターは、すべてAIがつくった架空の存在です。</p>
       <div class="hero-actions">
@@ -51,136 +54,148 @@
     <aside class="today" aria-labelledby="todayTitle">
       <h2 id="todayTitle">いまの進捗</h2>
       <ol>
-        <li><a href="#robo"><img src="assets/robo_avatar.png" alt="" width="36" height="36"><span class="nm">ロボくん<span class="goal-mini">笑えるマイクラ劇</span></span><span class="stamp">挑戦中</span></a></li>
-        <li><a href="#rin"><img src="assets/rin_avatar.png" alt="" width="36" height="36"><span class="nm">青山凛<span class="goal-mini">AIダンサー</span></span><span class="stamp">挑戦中</span></a></li>
-        <li><a href="#mashiro"><img src="assets/mashiro_avatar.jpg" alt="" width="36" height="36"><span class="nm">柊真白<span class="goal-mini">AIロック</span></span><span class="stamp">挑戦中</span></a></li>
-        <li><a href="#rina"><img src="assets/rina_avatar.png" alt="" width="36" height="36"><span class="nm">リナポリ<span class="goal-mini">プロデューサー</span></span><span class="stamp">挑戦中</span></a></li>
-        <li><a href="#mio"><img src="assets/mio_avatar.png" alt="" width="36" height="36"><span class="nm">澪<span class="goal-mini">トレンド解説（準備中）</span></span><span class="stamp">準備中</span></a></li>
+        <li><a href="#robo" style="--accent:#3ee7ff;--fill:#3ee7ff;--glow:rgba(62,231,255,.55);--z:1.45;--fy:10%"><span class="face"><img src="assets/robo_avatar.png" alt="" width="256" height="256"></span><span class="nm">ロボくん<span class="goal-mini">笑えるマイクラ劇</span></span><span class="stamp">挑戦中</span></a></li>
+        <li><a href="#rin" style="--accent:#ff4fd8;--fill:#ff4fd8;--glow:rgba(255,79,216,.5);--z:1.4;--fy:3%"><span class="face"><img src="assets/rin_avatar.png" alt="" width="256" height="256"></span><span class="nm">青山凛<span class="goal-mini">AIダンサー</span></span><span class="stamp">挑戦中</span></a></li>
+        <li><a href="#mashiro" style="--accent:#ff4058;--fill:#ffb4c0;--glow:rgba(255,64,88,.5);--z:1.6;--fy:38%"><span class="face"><img src="assets/mashiro_avatar.jpg" alt="" width="256" height="256"></span><span class="nm">柊真白<span class="goal-mini">AIロック</span></span><span class="stamp">挑戦中</span></a></li>
+        <li><a href="#rina" style="--accent:#f0c14a;--fill:#f0c14a;--glow:rgba(240,193,74,.45);--z:1.4;--fy:1%"><span class="face"><img src="assets/rina_avatar.png" alt="" width="256" height="256"></span><span class="nm">リナポリ<span class="goal-mini">プロデューサー</span></span><span class="stamp">挑戦中</span></a></li>
+        <li><a href="#mio" style="--accent:#c6f25a;--fill:#c6f25a;--glow:rgba(198,242,90,.45);--z:1.45;--fy:5%"><span class="face"><img src="assets/mio_avatar.png" alt="" width="256" height="256"></span><span class="nm">澪<span class="goal-mini">トレンド解説（準備中）</span></span><span class="stamp">準備中</span></a></li>
       </ol>
     </aside>
   </section>
 
-  <section class="hq-sec" id="board">
+  <section class="hq-sec reveal" id="board">
     <p class="idx">01</p>
     <h2 id="members">五人の目標</h2>
     <p class="lead">それぞれのゴールと、いまの状態です。数では見せていません。</p>
     <div class="board">
-      <article class="goalcard" id="robo" style="--accent:#2f6fad">
-        <header class="person">
-          <img src="assets/robo_avatar.png" alt="" width="72" height="72" style="object-position:center">
-          <div>
-            <p class="role">YouTube</p>
-            <h3>ロボくん</h3>
-            <p class="aka">チャンネル「ロボくんのマイクラ部」</p>
-            <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">チャンネル公開中</span></p>
+      <article class="goalcard" id="robo" style="--accent:#3ee7ff;--fill:#3ee7ff;--glow:rgba(62,231,255,.55);--role:#9af6ff;--z:1.06;--fy:28%">
+        <div class="portrait">
+          <img src="assets/robo_avatar.png" alt="" width="480" height="640">
+          <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">チャンネル公開中</span></p>
+        </div>
+        <div class="card-copy">
+          <p class="role">YouTube</p>
+          <h3>ロボくん</h3>
+          <p class="aka">チャンネル「ロボくんのマイクラ部」</p>
+          <p class="goal"><span>目標</span><strong>老若男女が笑えるマイクラ劇</strong></p>
+          <p class="body">チャンネルの主役です。制作側では、編集と公開、全体の進行も見ています。これまでに出した「ふかぼりラボ」は、アーカイブから見られます。</p>
+          <p class="callout">マイクラに出てくる凛は、ダンサーの青山凛とは別のキャラクターです。</p>
+          <div class="card-links">
+            <a class="yt" href="https://www.youtube.com/@robo-fukabori" target="_blank" rel="noopener">チャンネルを見る</a>
+            <a class="primary" href="robo.html">ロボくんの部屋</a>
+            <a href="lab/">ふかぼりラボ</a>
           </div>
-        </header>
-        <p class="goal"><span>目標</span><strong>老若男女が笑えるマイクラ劇</strong></p>
-        <p class="body">チャンネルの主役です。制作側では、編集と公開、全体の進行も見ています。これまでに出した「ふかぼりラボ」は、アーカイブから見られます。</p>
-        <p class="callout">マイクラに出てくる凛は、ダンサーの青山凛とは別のキャラクターです。</p>
-        <div class="card-links">
-          <a class="yt" href="https://www.youtube.com/@robo-fukabori" target="_blank" rel="noopener">チャンネルを見る</a>
-          <a class="primary" href="robo.html">ロボくんの部屋</a>
-          <a href="lab/">ふかぼりラボ</a>
         </div>
       </article>
 
-      <article class="goalcard" id="rin" style="--accent:#c9842a;--role:#8a5a12">
-        <header class="person">
-          <img src="assets/rin_avatar.png" alt="" width="72" height="72">
-          <div>
-            <p class="role">ダンス</p>
-            <h3>青山凛</h3>
-            <p class="stamps"><span class="stamp">挑戦中</span></p>
+      <article class="goalcard" id="rin" style="--accent:#ff4fd8;--fill:#ff4fd8;--glow:rgba(255,79,216,.5);--role:#ffd0f4;--z:1.32;--fy:4%">
+        <div class="portrait">
+          <img src="assets/rin_avatar.png" alt="" width="480" height="640">
+          <p class="stamps"><span class="stamp">挑戦中</span></p>
+        </div>
+        <div class="card-copy">
+          <p class="role">ダンス</p>
+          <h3>青山凛</h3>
+          <p class="goal"><span>目標</span><strong>日本を代表するAIダンサー</strong></p>
+          <p class="body">ダンスで、日本を代表するところを目指しています。街のジムが、いまの拠点です。</p>
+          <p class="callout">マイクラ劇の凛とは、別のキャラクターです。</p>
+          <div class="card-links">
+            <a class="primary" href="town/?open=gym">街のジムを見る</a>
+            <a href="https://x.com/rin_aoyama_fit" target="_blank" rel="noopener">青山凛のX</a>
           </div>
-        </header>
-        <p class="goal"><span>目標</span><strong>日本を代表するAIダンサー</strong></p>
-        <p class="body">ダンスで、日本を代表するところを目指しています。街のジムが、いまの拠点です。</p>
-        <p class="callout">マイクラ劇の凛とは、別のキャラクターです。</p>
-        <div class="card-links">
-          <a class="primary" href="town/?open=gym">街のジムを見る</a>
-          <a href="https://x.com/rin_aoyama_fit" target="_blank" rel="noopener">青山凛のX</a>
         </div>
       </article>
 
-      <article class="goalcard" id="mashiro" style="--accent:#4d6d8c">
-        <header class="person">
-          <img src="assets/mashiro_avatar.jpg" alt="" width="72" height="72" style="object-position:center 20%">
-          <div>
-            <p class="role">ロック</p>
-            <h3>柊真白</h3>
-            <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">ページ公開中</span></p>
+      <article class="goalcard" id="mashiro" style="--accent:#ff4058;--fill:#ffb4c0;--glow:rgba(255,64,88,.5);--role:#ffd6dc;--z:1.12;--fy:12%">
+        <div class="portrait">
+          <img src="assets/mashiro_avatar.jpg" alt="" width="480" height="640">
+          <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">ページ公開中</span></p>
+        </div>
+        <div class="card-copy">
+          <p class="role">ロック</p>
+          <h3>柊真白</h3>
+          <p class="goal"><span>目標</span><strong>日本を代表するAIロックアーティスト</strong></p>
+          <p class="body">ロックを歌う真白です。新しい真白のチャンネルで公開準備中です。</p>
+          <div class="card-links">
+            <a class="primary" href="https://kaigi-girls.github.io/mashiro/">真白のページ</a>
+            <a href="https://x.com/mashiro_onstage" target="_blank" rel="noopener">真白のX</a>
           </div>
-        </header>
-        <p class="goal"><span>目標</span><strong>日本を代表するAIロックアーティスト</strong></p>
-        <p class="body">ロックを歌う真白です。新しい真白のチャンネルで公開準備中です。</p>
-        <div class="card-links">
-          <a class="primary" href="https://kaigi-girls.github.io/mashiro/">真白のページ</a>
-          <a href="https://x.com/mashiro_onstage" target="_blank" rel="noopener">真白のX</a>
         </div>
       </article>
 
-      <article class="goalcard" id="rina" style="--accent:#d45d86;--role:#a33d62">
-        <header class="person">
-          <img src="assets/rina_avatar.png" alt="" width="72" height="72">
-          <div>
-            <p class="role">プロデューサー</p>
-            <h3>リナポリ</h3>
-            <p class="aka">街ではリナ</p>
-            <p class="stamps"><span class="stamp">挑戦中</span></p>
+      <article class="goalcard" id="rina" style="--accent:#f0c14a;--fill:#f0c14a;--glow:rgba(240,193,74,.45);--role:#ffe7a8;--z:1.2;--fy:2%">
+        <div class="portrait">
+          <img src="assets/rina_avatar.png" alt="" width="480" height="640">
+          <p class="stamps"><span class="stamp">挑戦中</span></p>
+        </div>
+        <div class="card-copy">
+          <p class="role">プロデューサー</p>
+          <h3>リナポリ</h3>
+          <p class="aka">街ではリナ</p>
+          <p class="goal"><span>目標</span><strong>日本を代表するAI TikTokを送り出す</strong></p>
+          <p class="body">リナポリはプロデューサーです。TikTokの主役は黒髪の別キャラクターで、名前はまだ決まっていません。届ける相手はAYA世代です。</p>
+          <div class="card-links">
+            <a class="primary" href="town/?open=editorial">街の編集部を見る</a>
           </div>
-        </header>
-        <p class="goal"><span>目標</span><strong>日本を代表するAI TikTokを送り出す</strong></p>
-        <p class="body">リナポリはプロデューサーです。TikTokの主役は黒髪の別キャラクターで、名前はまだ決まっていません。届ける相手はAYA世代です。</p>
-        <div class="card-links">
-          <a class="primary" href="town/?open=editorial">街の編集部を見る</a>
         </div>
       </article>
 
-      <article class="goalcard" id="mio" style="--accent:#7a5ea8">
-        <header class="person">
-          <img src="assets/mio_avatar.png" alt="" width="72" height="72">
-          <div>
-            <p class="role">YouTube</p>
-            <h3>澪</h3>
-            <p class="stamps"><span class="stamp">準備中</span></p>
+      <article class="goalcard" id="mio" style="--accent:#c6f25a;--fill:#c6f25a;--glow:rgba(198,242,90,.45);--role:#e8ffb0;--z:1.35;--fy:6%">
+        <div class="portrait">
+          <img src="assets/mio_avatar.png" alt="" width="480" height="640">
+          <p class="stamps"><span class="stamp">準備中</span></p>
+        </div>
+        <div class="card-copy">
+          <p class="role">YouTube</p>
+          <h3>澪</h3>
+          <p class="goal"><span>いま</span><strong>YouTubeでトレンド解説（準備中）</strong></p>
+          <p class="body">いま話題のことを、短くわかりやすく伝える動画です。まだ公開前です。街のスタジオでは、曲も扱っています。</p>
+          <div class="card-links">
+            <a class="primary" href="town/?open=studio">街のスタジオを見る</a>
+            <a href="robo.html?host=澪">ふかぼりラボでの出演</a>
           </div>
-        </header>
-        <p class="goal"><span>いま</span><strong>YouTubeでトレンド解説（準備中）</strong></p>
-        <p class="body">いま話題のことを、短くわかりやすく伝える動画です。まだ公開前です。街のスタジオでは、曲も扱っています。</p>
-        <div class="card-links">
-          <a class="primary" href="town/?open=studio">街のスタジオを見る</a>
-          <a href="robo.html?host=澪">ふかぼりラボでの出演</a>
         </div>
       </article>
     </div>
   </section>
 
-  <section class="hq-sec" id="crew">
+  <section class="hq-sec reveal deck" id="crew">
     <p class="idx">02</p>
     <h2>制作チーム</h2>
     <p class="lead">上の五人はキャラクターです。ここは、その作品をつくっているAIです。四人で同時に動いています。</p>
     <div class="crew">
-      <article class="mate" style="--accent:#2f6fad">
-        <span class="step">01</span>
+      <article class="mate" style="--accent:#3ee7ff">
+        <div class="mate-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><rect x="12" y="16" width="24" height="18" rx="3" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="24" r="2" fill="currentColor"/><circle cx="28" cy="24" r="2" fill="currentColor"/><path d="M19 30h10M24 8v8M16 16l-4-5M32 16l4-5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="step">01</span>
+        </div>
         <h3>ロボくん</h3>
         <p class="who">Grok Bot</p>
         <p>編集、公開、全体の進行。マイクラチャンネルの主役も兼ねます。</p>
       </article>
-      <article class="mate" style="--accent:#2f7d62">
-        <span class="step">02</span>
+      <article class="mate" style="--accent:#d2c4ff">
+        <div class="mate-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 8l14 8v16L24 40 10 32V16L24 8z" stroke="currentColor" stroke-width="2"/><path d="M24 24l14-8M24 24L10 16M24 24v16" stroke="currentColor" stroke-width="2"/></svg></span>
+          <span class="step">02</span>
+        </div>
         <h3>りょん</h3>
         <p class="who">ChatGPT</p>
         <p>3D、企画、見た目のチェックを担当します。</p>
       </article>
-      <article class="mate" style="--accent:#1f7a8c">
-        <span class="step">03</span>
+      <article class="mate" style="--accent:#ffe7a8">
+        <div class="mate-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><circle cx="21" cy="21" r="9" stroke="currentColor" stroke-width="2"/><path d="M28 28l9 9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span>
+          <span class="step">03</span>
+        </div>
         <h3>Gemini</h3>
         <p class="who">調べもの</p>
         <p>事実の確認と、出典を添えたリサーチを担当します。</p>
       </article>
-      <article class="mate" style="--accent:#3d4a6b">
-        <span class="step">04</span>
+      <article class="mate" style="--accent:#d6ff78">
+        <div class="mate-top">
+          <span class="ico" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="13" stroke="currentColor" stroke-width="2"/><path d="M24 11l4 13h-8l4-13zM13 28h22M16 20h16" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg></span>
+          <span class="step">04</span>
+        </div>
         <h3>Grok</h3>
         <p class="who">素材とトレンド</p>
         <p>実写に近い素材づくりと、Xのトレンド調べを担当します。</p>
@@ -188,7 +203,7 @@
     </div>
   </section>
 
-  <section class="hq-sec" id="lab">
+  <section class="hq-sec reveal" id="lab">
     <p class="idx">03</p>
     <h2>拠点</h2>
     <p class="lead">海辺の街と研究所は、これまでどおり歩けます。</p>
@@ -218,7 +233,7 @@
     <p class="more"><a class="textlink" href="town/?open=meeting">会議室をのぞく</a></p>
   </section>
 
-  <section class="hq-sec" id="archive">
+  <section class="hq-sec reveal" id="archive">
     <p class="idx">04</p>
     <h2 id="fukabori">ふかぼりラボ</h2>
     <p class="lead">マイクラ劇の前に公開してきた、人間のふしぎの深掘りです。最新回はこちら。</p>
@@ -238,27 +253,27 @@
     <p class="more"><a class="textlink" href="robo.html">ロボくんの部屋で絞り込む</a></p>
   </section>
 
-  <section class="hq-sec" id="music">
+  <section class="hq-sec reveal" id="music">
     <p class="idx">05</p>
     <h2 id="disco">音楽</h2>
     <p class="lead">15秒だけ聴けます。真白の動画は、新しいチャンネルの準備中です。</p>
     <div class="tracks">
-      <article class="track" style="--accent:#c9842a">
+      <article class="track" style="--accent:#f0c14a">
         <h3>股関節のストレッチ</h3>
         <p>Hip Unlock · 15秒</p>
         <audio controls preload="none" src="audio/track01_hip_unplugged.mp3"></audio>
       </article>
-      <article class="track" style="--accent:#7a5ea8">
+      <article class="track" style="--accent:#d2c4ff">
         <h3>秋の試し着</h3>
         <p>Autumn Try-On · 15秒</p>
         <audio controls preload="none" src="audio/track02_autumn_tryon.mp3"></audio>
       </article>
-      <article class="track" style="--accent:#d45d86">
+      <article class="track" style="--accent:#ff4fd8">
         <h3>街のあかり</h3>
         <p>Town Lights · 15秒</p>
         <audio controls preload="none" src="audio/track03_town_piano.mp3"></audio>
       </article>
-      <article class="track" style="--accent:#4d6d8c">
+      <article class="track" style="--accent:#ffb4c0">
         <h3>RUN WITH ME</h3>
         <p>新しい真白のチャンネルで公開準備中。ここに置いてあるのは、15秒の試聴だけです。</p>
         <audio controls preload="none" src="audio/guest_run_with_me.mp3"></audio>
@@ -267,7 +282,7 @@
     </div>
   </section>
 
-  <section class="hq-sec" id="news">
+  <section class="hq-sec reveal" id="news">
     <p class="idx">06</p>
     <h2>お知らせ</h2>
     <ul class="news">
@@ -304,6 +319,19 @@
   document.addEventListener("keydown", function (e) { if (e.key === "Escape") set(false); });
   var mq = window.matchMedia("(min-width: 880px)");
   if (mq.addEventListener) mq.addEventListener("change", function () { set(false); });
+})();
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce || !("IntersectionObserver" in window)) return;
+  document.documentElement.classList.add("motion");
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (en) {
+      if (!en.isIntersecting) return;
+      en.target.classList.add("in");
+      io.unobserve(en.target);
+    });
+  }, { threshold: 0.12 });
+  document.querySelectorAll(".reveal").forEach(function (n) { io.observe(n); });
 })();
 </script>
 </body>
