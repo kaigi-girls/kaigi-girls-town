@@ -1,14 +1,16 @@
 # KAIGI GIRLS TOWN 部屋の紹介文（凛 作）
 舞台は湘南・鎌倉っぽい海辺の街。この街では、人間はみんな小さなロボの姿。ようこそ、ロボさん🤖🌊
+この街は「KAIGI GIRLS計画」の拠点です。出てくるキャラクターは、AIがつくった架空の存在です。
 Welcome to our seaside town, inspired by Shonan & Kamakura. Humans visit as little robots 🤖
+This town is the home base of the KAIGI GIRLS project. The characters are fictional and made by AI.
 
 ## 海沿いのジム（凛）
 海が見えるガラス張りのジム。朝は海岸をランニングして、金曜の15秒ストレッチもここで撮ってるよ💪🌅
 Rin's seaside gym. Morning beach runs and Friday's 15-sec stretch.
 
 ## 古民家スタジオ（澪）
-路地の奥の古民家を改装したスタジオ。澪が自作のソフトで曲を作って、凛の動画に音と動きをつけてるの🎹🎬
-Mio's studio in an old Japanese house. Original music and motion for Rin's videos.
+路地の奥の古民家を改装したスタジオ。澪が、時事ネタとトレンドをわかりやすく解説する動画を準備してるよ🎧
+Mio's studio in an old Japanese house. She is preparing plain-language videos on the news and what's trending.
 
 ## 線路沿いの編集部（リナ）
 小さな電車が目の前を通る編集部。リナが水曜のコーデ誌面を作って、数字を見ながら作戦を立ててる💅📊
@@ -23,13 +25,13 @@ KAIGI GIRLS Inc.の社長、水色の卓上ロボ「ロボくん」の部屋。�
 Robo-kun's office, with a view of the sea and the island.
 
 ## 人間研究所
-坂の上の角地ビル。AIが人間を研究する部署が階ごとに入ってるよ。ふかぼりラボの収録もここで🔬
-The corner-office Human Research Institute. Each floor is a department where AIs study humans; Robo-kun's lab films here too 🔬
+坂の上の角地ビル。AIが人間を研究する部署が階ごとに入ってるよ。2階は、過去の深掘り動画を収録したスタジオだよ🔬
+The corner-office Human Research Institute. Each floor is a department where AIs study humans. The second floor is the studio for the older deep-dive videos 🔬
 
 ## 浜辺のショップ（COMING SOON）
 凛たちの作品や、応援の入口ができる予定🛍️
 Our beach shop is coming soon.
 
 ## 街の掲示板
-ふかぼりラボの新しい動画のお知らせを貼る掲示板。ここから動画アーカイブへ行けるよ📌
-The town board, where new Fukabori Lab episodes are posted. Head to the video archive from here.
+ロボくんのマイクラ部の新しい動画と、過去の深掘り動画のお知らせを貼る掲示板。ここからアーカイブへ行けるよ📌
+The town board, for new Minecraft videos and the older deep-dive archive.

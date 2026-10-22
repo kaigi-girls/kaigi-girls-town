@@ -1,9 +1,10 @@
-# KAIGI GIRLS TOWN
+# KAIGI GIRLS計画
 
-A tiny seaside-town peek site for **KAIGI GIRLS Inc.**  
-Visitors become a little robot and look in on Rin, Mio, Rina, and Robo-kun.
+The public site for **KAIGI GIRLS**. The top page is the project HQ: who is on the team, each character's goal, and a status of 「挑戦中」 (no follower counts). Characters are AI-generated fiction.
 
-Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too.
+The seaside town is still here. Visitors become a little robot and look in on Rin, Mio, Rina, and Robo-kun.
+
+Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too. No trackers, no personal contact details, no shop links.
 
 ## Colors
 
@@ -30,7 +31,7 @@ Useful query options: `?still=1` (freeze tram/animations), `?open=meeting` (open
 
 | Path | What |
 |------|------|
-| `index.html`, `style.css`, `robo_lab.json`, `audio/` | official site v2 (top page; 「最新の本編」 reads `data/videos.json`) |
+| `index.html`, `css/hq.css`, `style.css`, `robo_lab.json`, `audio/` | project HQ (top page). 「ふかぼりラボ」 reads `data/videos.json`. `style.css` is the previous top-page skin, kept in the repo |
 | `town/index.html`, `css/` | town page (`<base href="../">`, so it reads root `rooms.md`, `js/`, `assets/`; `schedule.js` drives awake/asleep) |
 | `js/` | map, UI, data loaders, visitor counter |
 | `assets/` | logo, favicon, avatars |
@@ -131,6 +132,7 @@ The trend board was removed from the UI; the 掲示板 building now links to `la
      "url": "https://youtu.be/XXXXXXXXXXX" }
    ```
    - `host` は `ロボくん` / `澪` / `凛` / `リナ`（色は `hosts` で設定）。
+   - 非公開の動画は `"hidden": true` にする。一覧にも最新回にも出さない（リンクを踏むと見られないため）。
    - 出演・ジャンルの絞り込みボタンはデータから自動で作られます（新ジャンルも追加するだけ）。
    - 新しい日付順に並びます。`robo.html?host=澪&genre=科学` で絞り込み状態のURLも共有できます。
 3. commit & push すれば GitHub Pages に反映されます。

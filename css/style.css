@@ -50,7 +50,7 @@ main{padding:0 10px 10px}
 .foot{padding:10px 16px 28px;padding-bottom:max(28px,env(safe-area-inset-bottom));text-align:center}
 .links{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:6px 0 12px}
 .links a,.links span{display:inline-flex;align-items:center;gap:6px;padding:9px 16px;border-radius:99px;background:#fff;border:1.5px solid var(--navy);color:var(--navy);text-decoration:none;font-size:13px;font-weight:700}
-.links span{opacity:.55;border-style:dashed}
+.links span{opacity:.85;border-style:dashed}
 .counter{display:inline-block;font-size:12px;background:#fff;border-radius:99px;padding:6px 14px;box-shadow:0 2px 8px rgba(17,46,88,.06)}
 .counter b{font-size:15px;margin:0 3px}
 .counter small{display:block;font-size:10px;color:var(--muted)}

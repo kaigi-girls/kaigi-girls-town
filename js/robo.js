@@ -6,7 +6,7 @@
   try { D = await (await fetch("data/videos.json", { cache: "no-cache" })).json(); }
   catch (e) { $("#vgrid").innerHTML = "<p>動画リストを読み込めませんでした。</p>"; return; }
   if (D.channel && D.channel.url) $("#channelLink").href = D.channel.url;
-  const vids = (D.videos || []).slice().sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.number || 0) - (a.number || 0));
+  const vids = (D.videos || []).filter(v => !v.hidden).slice().sort((a, b) => (b.date || "").localeCompare(a.date || "") || (b.number || 0) - (a.number || 0));
   const hosts = D.hosts || {};
   const uniq = k => [...new Set(vids.map(v => v[k]).filter(Boolean))];
   const params = new URLSearchParams(location.search);
