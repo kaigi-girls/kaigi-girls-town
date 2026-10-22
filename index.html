@@ -17,6 +17,26 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700&family=Zen+Kaku+Gothic+New:wght@700;900&display=swap">
 <link rel="stylesheet" href="css/stage1.css">
 <link rel="stylesheet" href="css/hq.css">
+<script>
+(function () {
+  if (!window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  document.documentElement.classList.add("reduce");
+  function tame(v) {
+    v.removeAttribute("autoplay");
+    v.preload = "none";
+    v.querySelectorAll("source").forEach(function (s) { s.remove(); });
+  }
+  new MutationObserver(function (list) {
+    list.forEach(function (m) {
+      m.addedNodes.forEach(function (n) {
+        if (!n || n.nodeType !== 1) return;
+        if (n.matches && n.matches("video.bgvid")) tame(n);
+        if (n.querySelectorAll) n.querySelectorAll("video.bgvid").forEach(tame);
+      });
+    });
+  }).observe(document.documentElement, { childList: true, subtree: true });
+})();
+</script>
 </head>
 <body class="hq">
 <a class="skip" href="#board">物語へ進む</a>
@@ -48,78 +68,125 @@
   <div class="story" id="board">
     <p class="bridge" id="members">それぞれのゴールと、いまの状態です。数では見せていません。</p>
 
-    <article class="chapter" id="mashiro" style="--accent:#ff4058;--fill:#ffb4c0;--glow:rgba(255,64,88,.42);--role:#ffd6dc;--nat:360px">
+    <article class="chapter film" id="mashiro" style="--accent:#ff4058;--fill:#ffb4c0;--glow:rgba(255,64,88,.42);--role:#ffd6dc;--nat:1792px;--stillw:1792;--stillh:1008">
       <div class="chapter-sticky">
-        <p class="role">ロック</p>
-        <h2>柊真白</h2>
-        <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">ページ公開中</span></p>
-        <div class="stage">
-          <img class="still" src="assets/mashiro_avatar.jpg" alt="" width="360" height="360">
-          <video class="slot" muted loop playsinline preload="none" poster="assets/mashiro_avatar.jpg" width="360" height="360" aria-hidden="true"></video>
+        <div class="bg" aria-hidden="true">
+          <img class="bgstill" src="assets/media/mashiro_loop1_poster.webp" alt="" width="1280" height="720">
+          <video class="bgvid" muted loop playsinline autoplay preload="metadata" poster="assets/media/mashiro_loop1_poster.webp" width="1280" height="720">
+            <source src="assets/media/mashiro_loop1.webm" type="video/webm">
+            <source src="assets/media/mashiro_loop1.mp4" type="video/mp4">
+          </video>
+          <img class="bgstill alt" src="assets/media/mashiro_loop2_poster.webp" alt="" width="1280" height="720">
+          <video class="bgvid alt" muted loop playsinline preload="none" poster="assets/media/mashiro_loop2_poster.webp" width="1280" height="720">
+            <source src="assets/media/mashiro_loop2.webm" type="video/webm">
+            <source src="assets/media/mashiro_loop2.mp4" type="video/mp4">
+          </video>
+          <div class="shade"></div>
         </div>
-        <div class="copy">
-          <p class="line">日本を代表するAIロックアーティストへ。</p>
-          <p class="body">ロックを歌う真白です。新しい真白のチャンネルで公開準備中です。</p>
-          <div class="card-links">
-            <a class="primary" href="https://kaigi-girls.github.io/mashiro/">真白のページ</a>
-            <a href="https://x.com/mashiro_onstage" target="_blank" rel="noopener">真白のX</a>
+        <div class="plate">
+          <p class="role">ロック</p>
+          <h2>柊真白</h2>
+          <p class="stamps"><span class="stamp">挑戦中</span><span class="stamp live">ページ公開中</span></p>
+          <div class="stage">
+            <img class="still" src="assets/media/mashiro_hero.webp" alt="ステージで歌う柊真白" width="1792" height="1008">
+          </div>
+          <div class="copy">
+            <p class="line">日本を代表する<wbr>AIロック<span class="keep">アーティスト</span>へ。</p>
+            <p class="body">ロックを歌う真白です。新しい真白のチャンネルで公開準備中です。</p>
+            <div class="card-links">
+              <a class="primary" href="https://kaigi-girls.github.io/mashiro/">真白のページ</a>
+              <a href="https://x.com/mashiro_onstage" target="_blank" rel="noopener">真白のX</a>
+            </div>
           </div>
         </div>
       </div>
     </article>
 
-    <article class="chapter" id="rin" style="--accent:#ff4fd8;--fill:#ff4fd8;--glow:rgba(255,79,216,.4);--role:#ffd0f4;--nat:400px">
+    <article class="chapter film" id="rin" style="--accent:#ff4fd8;--fill:#ff4fd8;--glow:rgba(255,79,216,.4);--role:#ffd0f4;--nat:1792px;--stillw:1792;--stillh:1008">
       <div class="chapter-sticky">
-        <p class="role">ダンス</p>
-        <h2>青山凛</h2>
-        <p class="stamps"><span class="stamp">挑戦中</span></p>
-        <div class="stage">
-          <img class="still" src="assets/rin_avatar_x.jpg" alt="" width="400" height="400">
-          <video class="slot" muted loop playsinline preload="none" poster="assets/rin_avatar_x.jpg" width="400" height="400" aria-hidden="true"></video>
+        <div class="bg" aria-hidden="true">
+          <img class="bgstill" src="assets/media/rin_loop1_poster.webp" alt="" width="1280" height="720">
+          <video class="bgvid" muted loop playsinline autoplay preload="metadata" poster="assets/media/rin_loop1_poster.webp" width="1280" height="720">
+            <source src="assets/media/rin_loop1.webm" type="video/webm">
+            <source src="assets/media/rin_loop1.mp4" type="video/mp4">
+          </video>
+          <img class="bgstill alt" src="assets/media/rin_loop2_poster.webp" alt="" width="1280" height="720">
+          <video class="bgvid alt" muted loop playsinline preload="none" poster="assets/media/rin_loop2_poster.webp" width="1280" height="720">
+            <source src="assets/media/rin_loop2.webm" type="video/webm">
+            <source src="assets/media/rin_loop2.mp4" type="video/mp4">
+          </video>
+          <div class="shade"></div>
         </div>
-        <div class="copy">
-          <p class="line">日本を代表するAIダンサーへ。</p>
-          <p class="body">ダンスで、日本を代表するところを目指しています。街のジムが、いまの拠点です。</p>
-          <p class="callout">マイクラ劇の凛とは、別のキャラクターです。</p>
-          <div class="card-links">
-            <a class="primary" href="town/?open=gym">街のジムを見る</a>
-            <a href="https://x.com/rin_aoyama_fit" target="_blank" rel="noopener">青山凛のX</a>
+        <div class="plate">
+          <p class="role">ダンス</p>
+          <h2>青山凛</h2>
+          <p class="stamps"><span class="stamp">挑戦中</span></p>
+          <div class="stage">
+            <img class="still" src="assets/media/rin_hero.webp" alt="屋上でジャンプする青山凛" width="1792" height="1008">
+          </div>
+          <div class="copy">
+            <p class="line">日本を代表する<wbr>AI<span class="keep">ダンサー</span>へ。</p>
+            <p class="body">ダンスで、日本を代表するところを目指しています。街のジムが、いまの拠点です。</p>
+            <p class="callout">マイクラ劇の凛とは、別のキャラクターです。</p>
+            <div class="card-links">
+              <a class="primary" href="town/?open=gym">街のジムを見る</a>
+              <a href="https://x.com/rin_aoyama_fit" target="_blank" rel="noopener">青山凛のX</a>
+            </div>
           </div>
         </div>
       </div>
     </article>
 
-    <article class="chapter" id="rina" style="--accent:#f0c14a;--fill:#f0c14a;--glow:rgba(240,193,74,.38);--role:#ffe7a8;--nat:256px">
+    <article class="chapter film tall" id="rina" style="--accent:#f0c14a;--fill:#f0c14a;--glow:rgba(240,193,74,.38);--role:#ffe7a8;--nat:1152px;--stillw:1152;--stillh:1712">
       <div class="chapter-sticky">
-        <p class="role">プロデューサー</p>
-        <h2>リナポリ</h2>
-        <p class="aka">街ではリナ</p>
-        <p class="stamps"><span class="stamp">挑戦中</span></p>
-        <div class="stage">
-          <img class="still" src="assets/rina_avatar.png" alt="" width="256" height="256">
-          <video class="slot" muted loop playsinline preload="none" poster="assets/rina_avatar.png" width="256" height="256" aria-hidden="true"></video>
+        <div class="bg" aria-hidden="true">
+          <img class="bgstill" src="assets/media/c1_loop1_poster.webp" alt="" width="720" height="1280">
+          <video class="bgvid" muted loop playsinline autoplay preload="metadata" poster="assets/media/c1_loop1_poster.webp" width="720" height="1280">
+            <source src="assets/media/c1_loop1.webm" type="video/webm">
+            <source src="assets/media/c1_loop1.mp4" type="video/mp4">
+          </video>
+          <img class="bgstill alt" src="assets/media/c1_loop2_poster.webp" alt="" width="720" height="1280">
+          <video class="bgvid alt" muted loop playsinline preload="none" poster="assets/media/c1_loop2_poster.webp" width="720" height="1280">
+            <source src="assets/media/c1_loop2.webm" type="video/webm">
+            <source src="assets/media/c1_loop2.mp4" type="video/mp4">
+          </video>
+          <div class="shade"></div>
         </div>
-        <div class="copy">
-          <p class="line">日本を代表するAI TikTokを送り出す。</p>
-          <p class="body">リナポリはプロデューサーです。TikTokの主役は黒髪の別キャラクターで、名前はまだ決まっていません。届ける相手はAYA世代です。</p>
-          <div class="card-links">
-            <a class="primary" href="town/?open=editorial">街の編集部を見る</a>
+        <div class="plate">
+          <div class="name-row">
+            <img class="mini" src="assets/rina_avatar.png" alt="" width="256" height="256">
+            <div>
+              <p class="role">プロデューサー</p>
+              <h2>リナポリ</h2>
+              <p class="aka">街ではリナ</p>
+            </div>
+          </div>
+          <p class="stamps"><span class="stamp">挑戦中</span></p>
+          <div class="stage">
+            <img class="still" src="assets/media/c1_hero.webp" alt="黒髪のTikTokの主役" width="1152" height="1712">
+          </div>
+          <div class="copy">
+            <p class="line">日本を代表する<wbr>AI <span class="keep">TikTok</span>を<wbr>送り出す。</p>
+            <p class="caption">リナポリがプロデュースする、TikTokの新しい主役です。名前は近日発表です。</p>
+            <p class="body">リナポリはプロデューサーです。TikTokの主役は黒髪の別キャラクターで、名前はまだ決まっていません。届ける相手はAYA世代です。</p>
+            <div class="card-links">
+              <a class="primary" href="town/?open=editorial">街の編集部を見る</a>
+            </div>
           </div>
         </div>
       </div>
     </article>
 
-    <article class="chapter" id="mio" style="--accent:#c6f25a;--fill:#c6f25a;--glow:rgba(198,242,90,.35);--role:#e8ffb0;--nat:256px">
+    <article class="chapter" id="mio" style="--accent:#c6f25a;--fill:#c6f25a;--glow:rgba(198,242,90,.35);--role:#e8ffb0;--nat:720px;--stillw:720;--stillh:720">
       <div class="chapter-sticky">
         <p class="role">YouTube</p>
         <h2>澪</h2>
         <p class="stamps"><span class="stamp">準備中</span></p>
         <div class="stage">
-          <img class="still" src="assets/mio_avatar.png" alt="" width="256" height="256">
-          <video class="slot" muted loop playsinline preload="none" poster="assets/mio_avatar.png" width="256" height="256" aria-hidden="true"></video>
+          <img class="still" src="assets/media/mio_hero.png" alt="ヘッドセットをつけた澪" width="720" height="720">
         </div>
         <div class="copy">
-          <p class="line">YouTubeでトレンド解説（準備中）。</p>
+          <p class="line"><span class="keep">YouTube</span>で<wbr><span class="keep">トレンド解説</span>（準備中）。</p>
           <p class="body">いま話題のことを、短くわかりやすく伝える動画です。まだ公開前です。街のスタジオでは、曲も扱っています。</p>
           <div class="card-links">
             <a class="primary" href="town/?open=studio">街のスタジオを見る</a>
@@ -140,7 +207,7 @@
           <video class="slot" muted loop playsinline preload="none" width="200" height="200" aria-hidden="true"></video>
         </div>
         <div class="copy">
-          <p class="line">老若男女が笑えるマイクラ劇へ。</p>
+          <p class="line">老若男女が笑える<wbr><span class="keep">マイクラ劇</span>へ。</p>
           <p class="body">チャンネルの主役です。制作側では、編集と公開、全体の進行も見ています。これまでに出した「ふかぼりラボ」は、アーカイブから見られます。</p>
           <p class="callout">マイクラに出てくる凛は、ダンサーの青山凛とは別のキャラクターです。</p>
           <div class="card-links">
@@ -328,6 +395,59 @@
     });
   }, { threshold: 0.12 });
   document.querySelectorAll(".chapter .copy, .reveal").forEach(function (n) { io.observe(n); });
+})();
+(function () {
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var chapters = document.querySelectorAll(".chapter.film");
+  function play(v) {
+    if (!v || reduce) return;
+    var p = v.play();
+    if (p && p.catch) p.catch(function () {});
+  }
+  function pause(v) { if (v) { try { v.pause(); } catch (e) {} } }
+  chapters.forEach(function (ch) {
+    ch.querySelectorAll("video.bgvid").forEach(function (v) {
+      v.addEventListener("playing", function () { v.classList.add("is-on"); });
+    });
+  });
+  function show(ch) {
+    var main = ch.querySelector("video.bgvid:not(.alt)");
+    var alt = ch.querySelector("video.bgvid.alt");
+    var on = ch.classList.contains("swap");
+    if (reduce) return;
+    if (on) { pause(main); play(alt); }
+    else { pause(alt); play(main); }
+  }
+  if ("IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) {
+          en.target.querySelectorAll("video.bgvid").forEach(pause);
+          return;
+        }
+        show(en.target);
+      });
+    }, { rootMargin: "10% 0px", threshold: 0.2 });
+    chapters.forEach(function (ch) { io.observe(ch); });
+  }
+  var ticking = false;
+  function update() {
+    ticking = false;
+    chapters.forEach(function (ch) {
+      var r = ch.getBoundingClientRect();
+      var span = ch.offsetHeight - window.innerHeight;
+      var seen = span > 0 ? Math.min(1, Math.max(0, -r.top / span)) : 0;
+      var on = seen > 0.45;
+      if (on !== ch.classList.contains("swap")) {
+        ch.classList.toggle("swap", on);
+        if (r.bottom > 0 && r.top < window.innerHeight) show(ch);
+      }
+    });
+  }
+  window.addEventListener("scroll", function () {
+    if (!ticking) { ticking = true; requestAnimationFrame(update); }
+  }, { passive: true });
+  update();
 })();
 </script>
 </body>
