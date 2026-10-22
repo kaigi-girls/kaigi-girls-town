@@ -1,8 +1,10 @@
 (function(){
 var YT='https://www.youtube.com/@robo-fukabori?sub_confirmation=1';
+if(!document.body.classList.contains('hq')){
 var bar=document.createElement('div');bar.className='subbar';
-bar.innerHTML='<span>ロボくんの深掘りチャンネル（ふかぼりラボ）</span><a href="'+YT+'" target="_blank" rel="noopener">▶ YouTubeで登録</a>';
+bar.innerHTML='<span>YouTube「ロボくんのマイクラ部」</span><a href="'+YT+'" target="_blank" rel="noopener">▶ YouTubeで登録</a>';
 document.body.appendChild(bar);
+}
 var base=document.currentScript?document.currentScript.src.replace(/js\/stage1\.js.*$/,''):'';
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 // main episodes only: numbered, no kind (MV etc.), not a Short
@@ -33,10 +35,11 @@ data.then(function(d){
 }).catch(function(){el.innerHTML='<p>動画リストを読み込めませんでした。<a href="https://www.youtube.com/@robo-fukabori">YouTubeで見る</a></p>'});
 })();
 (function(){
+if(document.body.classList.contains('hq'))return;
 var s=document.querySelector('script[src*="stage1.js"]');var base=s?s.src.replace(/js\/stage1\.js.*$/,''):'';
-var L=[['トップ',''],['人間研究所','institute.html'],['部署カード（トップ）','#lab'],['最新の本編','#latest'],['ふかぼりラボ 最新動画','#fukabori'],['動画アーカイブ','lab/'],['街を歩く','town/'],['ロボくんの部屋','robo.html'],['NEWS','#news'],['MEMBERS','#members'],['DISCOGRAPHY','#disco']];
+var L=[['計画のトップ',''],['進捗ボード','#board'],['制作チーム','#crew'],['海辺の街','town/'],['人間研究所','institute.html'],['ロボくんの部屋','robo.html'],['動画アーカイブ','lab/'],['音楽','#music'],['お知らせ','#news']];
 var top=document.createElement('div');top.className='s1-top';
-top.innerHTML='<span>KAIGI GIRLS TOWN</span><button type="button" class="s1-mbtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="s1-menu">≡</button>';
+top.innerHTML='<span>KAIGI GIRLS計画</span><button type="button" class="s1-mbtn" aria-label="メニューを開く" aria-expanded="false" aria-controls="s1-menu">≡</button>';
 var ov=document.createElement('div');ov.className='s1-ov';ov.hidden=true;
 ov.innerHTML='<nav id="s1-menu" class="s1-menu" role="dialog" aria-modal="true" aria-label="メニュー"><button type="button" class="s1-close" aria-label="メニューを閉じる">×</button><ul>'+L.map(function(l){var h=l[1].charAt(0)==='#'?base+l[1]:base+l[1];return '<li><a href="'+h+'">'+l[0]+'</a></li>'}).join('')+'</ul></nav>';
 document.body.insertBefore(top,document.body.firstChild);document.body.appendChild(ov);

@@ -51,10 +51,14 @@ window.KG_CONFIG = {
   // コンテンツ hub (index.html #contents). Add a card = add one object. href: null => 準備中.
   // group = section heading. c = card accent color.
   contents: [
-    { group: "YouTube", icon: "assets/robo_channel.png", title: "ロボくんの部屋", sub: "ロボくんの深掘り動画アーカイブ", href: "robo.html", c: "#bde1fb", internal: true },
-    { group: "YouTube", title: "YouTubeチャンネル", sub: "@robo-fukabori", href: "https://www.youtube.com/@robo-fukabori", c: "#bde1fb" },
+    { group: "計画", title: "KAIGI GIRLS計画", sub: "目標と進捗の本部", href: "./", c: "#112e58", internal: true },
+    { group: "YouTube", icon: "assets/robo_channel.png", title: "ロボくんの部屋", sub: "YouTubeアーカイブ", href: "robo.html", c: "#bde1fb", internal: true },
+    { group: "YouTube", title: "ロボくんのマイクラ部", sub: "老若男女が笑えるマイクラ劇・挑戦中", href: "https://www.youtube.com/@robo-fukabori", c: "#bde1fb" },
+    { group: "YouTube", title: "ふかぼりラボ", sub: "これまでの深掘り動画", href: "lab/", c: "#6eabea", internal: true },
+    { group: "音楽", title: "柊真白", sub: "ロック・公式ページ", href: "https://kaigi-girls.github.io/mashiro/", c: "#9fc3e6" },
     { group: "音楽", title: "真白のX", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" },
-    { group: "音楽", title: "RUN WITH ME（MV）", sub: "柊真白 / YouTube", href: "https://youtu.be/obhO8MeWjVM", c: "#9fc3e6" }
+    { group: "音楽", title: "RUN WITH ME（MV）", sub: "柊真白", href: "https://youtu.be/obhO8MeWjVM", c: "#9fc3e6" },
+    { group: "街", title: "人間研究所", sub: "階ごとの部署", href: "institute.html", c: "#3f86d6", internal: true }
   ],
 
   // Footer links. href: null => shown as "準備中 / coming soon" (not clickable).

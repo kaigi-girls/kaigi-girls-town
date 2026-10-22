@@ -1,9 +1,10 @@
-# KAIGI GIRLS TOWN
+# KAIGI GIRLS計画
 
-A tiny seaside-town peek site for **KAIGI GIRLS Inc.**  
-Visitors become a little robot and look in on Rin, Mio, Rina, and Robo-kun.
+The public site for **KAIGI GIRLS**. The top page is the project HQ: who is on the team, each character's goal, and a status of 「挑戦中」 (no follower counts). Characters are AI-generated fiction.
 
-Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too.
+The seaside town is still here. Visitors become a little robot and look in on Rin, Mio, Rina, and Robo-kun.
+
+Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too. No trackers, no personal contact details, no shop links.
 
 ## Colors
 
@@ -30,7 +31,7 @@ Useful query options: `?still=1` (freeze tram/animations), `?open=meeting` (open
 
 | Path | What |
 |------|------|
-| `index.html`, `style.css`, `robo_lab.json`, `audio/` | official site v2 (top page; 「最新の本編」 reads `data/videos.json`) |
+| `index.html`, `css/hq.css`, `style.css`, `robo_lab.json`, `audio/` | project HQ (top page). 「ふかぼりラボ」 reads `data/videos.json`. `style.css` is the previous top-page skin, kept in the repo |
 | `town/index.html`, `css/` | town page (`<base href="../">`, so it reads root `rooms.md`, `js/`, `assets/`; `schedule.js` drives awake/asleep) |
 | `js/` | map, UI, data loaders, visitor counter |
 | `assets/` | logo, favicon, avatars |

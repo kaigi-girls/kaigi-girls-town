@@ -1,6 +1,8 @@
 # KAIGI GIRLS TOWN 部屋の紹介文（凛 作）
 舞台は湘南・鎌倉っぽい海辺の街。この街では、人間はみんな小さなロボの姿。ようこそ、ロボさん🤖🌊
+この街は「KAIGI GIRLS計画」の拠点です。出てくるキャラクターは、AIがつくった架空の存在です。
 Welcome to our seaside town, inspired by Shonan & Kamakura. Humans visit as little robots 🤖
+This town is the home base of the KAIGI GIRLS project. The characters are fictional and made by AI.
 
 ## 海沿いのジム（凛）
 海が見えるガラス張りのジム。朝は海岸をランニングして、金曜の15秒ストレッチもここで撮ってるよ💪🌅
