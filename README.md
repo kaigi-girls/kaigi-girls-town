@@ -132,6 +132,7 @@ The trend board was removed from the UI; the 掲示板 building now links to `la
      "url": "https://youtu.be/XXXXXXXXXXX" }
    ```
    - `host` は `ロボくん` / `澪` / `凛` / `リナ`（色は `hosts` で設定）。
+   - 非公開の動画は `"hidden": true` にする。一覧にも最新回にも出さない（リンクを踏むと見られないため）。
    - 出演・ジャンルの絞り込みボタンはデータから自動で作られます（新ジャンルも追加するだけ）。
    - 新しい日付順に並びます。`robo.html?host=澪&genre=科学` で絞り込み状態のURLも共有できます。
 3. commit & push すれば GitHub Pages に反映されます。

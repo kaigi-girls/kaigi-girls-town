@@ -9,7 +9,7 @@ var base=document.currentScript?document.currentScript.src.replace(/js\/stage1\.
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
 // main episodes only: numbered, no kind (MV etc.), not a Short
 function ytId(u){var m=/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([\w-]{11})/.exec(u||'');return m?m[1]:''}
-function isMain(v){return !!v.number&&!v.kind&&!/\/shorts\//.test(v.url||'')&&ytId(v.url)!=='obhO8MeWjVM'}
+function isMain(v){return !v.hidden&&!!v.number&&!v.kind&&!/\/shorts\//.test(v.url||'')&&ytId(v.url)!=='obhO8MeWjVM'}
 function newest(a,b){return (b.date||'').localeCompare(a.date||'')||((+b.number||0)-(+a.number||0))}
 var data=fetch(base+'data/videos.json').then(function(r){if(!r.ok)throw new Error('videos.json '+r.status);return r.json()});
 // トップ「最新の本編」
@@ -24,7 +24,7 @@ if(lt)data.then(function(d){
 var el=document.getElementById('vlist');if(!el)return;
 var limit=+el.dataset.limit||0,mainOnly=el.dataset.main==='1';
 data.then(function(d){
- var vs=(d.videos||[]).filter(function(v){return !mainOnly||isMain(v)}).sort(newest);
+ var vs=(d.videos||[]).filter(function(v){return !v.hidden&&(!mainOnly||isMain(v))}).sort(newest);
  function draw(g){var l=vs.filter(function(v){return !g||v.genre===g});if(limit)l=l.slice(0,limit);
   el.innerHTML=l.map(function(v){var c=(d.hosts&&d.hosts[v.host])||{};return '<a class="vcard" href="'+esc(v.url)+'" target="_blank" rel="noopener" style="border-top:4px solid '+esc(c.deep||'#3f86d6')+'"><img loading="lazy" src="'+(/^https?:/.test(v.thumbnail)?'':base)+esc(v.thumbnail)+'" alt=""><div><b>'+(v.number?'#'+esc(v.number)+' ':(v.kind?esc(v.kind)+' ':''))+esc(v.title)+'</b>'+esc(v.summary)+'<br><small>'+esc(v.date)+' · '+esc(v.host)+' · '+esc(v.genre)+'</small></div></a>'}).join('')||'<p>動画はまだありません。</p>'}
  var f=document.getElementById('vfilter');

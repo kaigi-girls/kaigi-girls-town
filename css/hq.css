@@ -28,6 +28,50 @@ body.hq {
 }
 
 body.hq a { color: inherit; }
+/* `a` の指定は .btn より強い。地の色の上でも AA を満たす色を、ボタン側で明示する。 */
+body.hq a.btn,
+body.hq a.btn:visited,
+body.hq a.btn:hover,
+body.hq a.btn:active,
+body.hq a.s1-subbtn,
+body.hq a.s1-subbtn:visited,
+body.hq a.s1-subbtn:hover,
+body.hq a.s1-subbtn:active,
+body.hq .card-links a.primary,
+body.hq .card-links a.primary:visited,
+body.hq .card-links a.primary:hover,
+body.hq .card-links a.yt,
+body.hq .card-links a.yt:visited,
+body.hq .card-links a.yt:hover {
+  color: #fff;
+}
+body.hq a.btn { background: #112e58; border-color: #112e58; }
+body.hq a.btn.ghost,
+body.hq a.btn.ghost:visited,
+body.hq a.btn.ghost:hover,
+body.hq a.btn.ghost:active {
+  color: #112e58;
+  background: #fff;
+  border-color: #112e58;
+}
+body.hq a.s1-subbtn,
+body.hq a.s1-subbtn:hover,
+body.hq .card-links a.yt,
+body.hq .card-links a.yt:hover {
+  background: #b01018;
+  border-color: #b01018;
+}
+body.hq a.textlink,
+body.hq a.textlink:visited,
+body.hq a.s1-archlink,
+body.hq a.s1-archlink:visited {
+  color: #1d4f86;
+}
+body.hq a.s1-archlink { border-color: #1d4f86; }
+body.hq .s1-latest-thumb i {
+  background: #b01018;
+  color: #fff;
+}
 body.hq img { max-width: 100%; }
 body.hq :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
 body.hq ::selection { background: #bde1fb; }
@@ -80,7 +124,7 @@ body.hq .hq-brand img {
   height: 34px;
   max-width: 48px;
   flex: none;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: 6px;
   background: #fff;
 }
@@ -145,7 +189,7 @@ body.hq .hq-brand img {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .18em;
-  color: var(--blue);
+  color: #1d4f86;
 }
 .hero h1 {
   margin: 2px 0 0;
@@ -236,7 +280,7 @@ body.hq .today img {
   font-size: 12px;
   font-weight: 800;
   letter-spacing: .16em;
-  color: var(--honey);
+  color: #8a5a12;
 }
 .hq-sec h2 { margin: 0; font-size: 24px; color: var(--navy); letter-spacing: .04em; }
 .hq-sec .lead { margin: 6px 0 14px; color: var(--muted); font-size: 15px; }
@@ -262,7 +306,7 @@ body.hq .person img {
   flex: none;
   box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--accent, var(--blue));
 }
-.role { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--accent, var(--blue)); }
+.role { margin: 0; font-size: 12px; font-weight: 800; letter-spacing: .08em; color: var(--role, var(--accent, #1d4f86)); }
 .person h3 { margin: 0; font-size: 20px; line-height: 1.3; }
 .aka { margin: 0; font-size: 13px; color: var(--muted); }
 .stamps { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 0; }

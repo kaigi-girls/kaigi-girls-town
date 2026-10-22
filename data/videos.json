@@ -65,7 +65,9 @@
       "genre": "美容・科学",
       "summary": "",
       "thumbnail": "https://i.ytimg.com/vi/Y3xsAPb1JyM/hqdefault.jpg",
-      "url": "https://youtu.be/Y3xsAPb1JyM"
+      "url": "https://youtu.be/Y3xsAPb1JyM",
+      "hidden": true,
+      "note": "非公開のためサイトには出さない。ショートも非公開。"
     },
     {
       "number": 5,
@@ -75,7 +77,9 @@
       "genre": "スポーツ・からだ",
       "summary": "股関節ってどこにある？凛といっしょに、ボールと受け皿のしくみと座りっぱなしの本当を深掘りするよ。",
       "thumbnail": "https://i.ytimg.com/vi/FLhOSoSx060/hqdefault.jpg",
-      "url": "https://youtu.be/FLhOSoSx060"
+      "url": "https://youtu.be/FLhOSoSx060",
+      "hidden": true,
+      "note": "非公開のためサイトには出さない。ショートも非公開。"
     },
     {
       "title": "柊真白 - RUN WITH ME（ロボくんのふかぼりラボ エンディングテーマ）Official Music Video",
@@ -85,7 +89,9 @@
       "summary": "",
       "thumbnail": "https://i.ytimg.com/vi/obhO8MeWjVM/hqdefault.jpg",
       "url": "https://youtu.be/obhO8MeWjVM",
-      "kind": "MV"
+      "kind": "MV",
+      "hidden": true,
+      "note": "非公開。新しい真白のチャンネルで公開準備中。ショート3本も非公開のため載せていない。"
     }
   ]
 }

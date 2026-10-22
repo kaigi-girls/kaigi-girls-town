@@ -57,7 +57,7 @@ window.KG_CONFIG = {
     { group: "YouTube", title: "ふかぼりラボ", sub: "これまでの深掘り動画", href: "lab/", c: "#6eabea", internal: true },
     { group: "音楽", title: "柊真白", sub: "ロック・公式ページ", href: "https://kaigi-girls.github.io/mashiro/", c: "#9fc3e6" },
     { group: "音楽", title: "真白のX", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" },
-    { group: "音楽", title: "RUN WITH ME（MV）", sub: "柊真白", href: "https://youtu.be/obhO8MeWjVM", c: "#9fc3e6" },
+    { group: "音楽", title: "RUN WITH ME", sub: "新しい真白のチャンネルで公開準備中", href: null, c: "#9fc3e6" },
     { group: "街", title: "人間研究所", sub: "階ごとの部署", href: "institute.html", c: "#3f86d6", internal: true }
   ],
 
