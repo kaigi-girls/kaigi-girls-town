@@ -9,8 +9,8 @@ This town is the home base of the KAIGI GIRLS project. The characters are fictio
 Rin's seaside gym. Morning beach runs and Friday's 15-sec stretch.
 
 ## 古民家スタジオ（澪）
-路地の奥の古民家を改装したスタジオ。澪が自作のソフトで曲を作って、凛の動画に音と動きをつけてるの🎹🎬
-Mio's studio in an old Japanese house. Original music and motion for Rin's videos.
+路地の奥の古民家を改装したスタジオ。澪が、時事ネタとトレンドをわかりやすく解説する動画を準備してるよ🎧
+Mio's studio in an old Japanese house. She is preparing plain-language videos on the news and what's trending.
 
 ## 線路沿いの編集部（リナ）
 小さな電車が目の前を通る編集部。リナが水曜のコーデ誌面を作って、数字を見ながら作戦を立ててる💅📊
