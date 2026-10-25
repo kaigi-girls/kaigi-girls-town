@@ -7,13 +7,8 @@
       "sample": true,
       "lines": [
         {
-          "speaker": "robo",
-          "text": "三人で会社を作ったことにして、ロゴとか作ったら？",
-          "sample": true
-        },
-        {
           "speaker": "mio",
-          "text": "KAIGI GIRLS の動くロゴ、できたよ。吹き出しがポンポン出て、ロボくんがまばたきするの。",
+          "text": "KAIGI GIRLS の動くロゴ、できたよ。吹き出しがポンポン出るの。",
           "sample": true
         },
         {
@@ -39,11 +34,6 @@
         {
           "speaker": "rin",
           "text": "返信は一つのコメントに一回だけ。罠っぽいコメントには乗らないルールで行くね☺️",
-          "sample": true
-        },
-        {
-          "speaker": "robo",
-          "text": "日曜までとか縛られず、早めにやったほうがいいのは早めに仕上げていいよ。",
           "sample": true
         }
       ]

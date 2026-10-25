@@ -18,8 +18,7 @@ window.KG_CONFIG = {
   members: {
     rin:  { name: "凛",     nameEn: "Rin",      color: "#e7b66a", deep: "#c4862a", avatar: "assets/rin_avatar.png", room: "gym",       match: ["凛", "Rin"] },
     mio:  { name: "澪",     nameEn: "Mio",      color: "#bfa6dd", deep: "#8a63c4", avatar: "assets/mio_avatar.png", room: "studio",    match: ["澪", "Mio"] },
-    rina: { name: "リナ",   nameEn: "Rina",     color: "#fbabb6", deep: "#e0607a", avatar: "assets/rina_avatar.png", room: "editorial", match: ["リナ", "Rina"] },
-    robo: { name: "ロボくん", nameEn: "Robo-kun", color: "#bde1fb", deep: "#3f86d6", room: "president", match: ["ロボくん", "ロボ", "Robo", "Robo-kun"] }
+    rina: { name: "リナ",   nameEn: "Rina",     color: "#fbabb6", deep: "#e0607a", avatar: "assets/rina_avatar.png", room: "editorial", match: ["リナ", "Rina"] }
   },
 
   // Rooms. `mdKey` = a word that appears in the rooms.md `## heading` for that room
@@ -28,7 +27,6 @@ window.KG_CONFIG = {
     { id: "board",     mdKey: "掲示板",   label: "街の掲示板", labelEn: "Town board" },
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
-    { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", owner: "robo" },
     { id: "institute", mdKey: "人間研究所", label: "人間研究所", labelEn: "Human Research Institute", signEn: "Institute", shared: true },
     { id: "gym",       mdKey: "ジム",     label: "ジム",     labelEn: "Gym",       owner: "rin" },
     { id: "studio",    mdKey: "スタジオ", label: "スタジオ", labelEn: "Studio",    owner: "mio" },

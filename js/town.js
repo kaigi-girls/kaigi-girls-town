@@ -1,6 +1,6 @@
 /* KAIGI GIRLS TOWN — isometric seaside town (Shonan/Kamakura-ish, fictional) */
 (function () {
-  const { makeIso, robotSVG, NAVY } = window.KG_ISO;
+  const { makeIso, NAVY } = window.KG_ISO;
   const VB = { w: 400, h: 392 };
   const iso = makeIso({ cx: 186, oy: 108, hw: 20.5, hh: 10.25 });
   const { P, pts, poly, tile, box, onL, onR, gable, cyl, blob, tree, pine, bush, tram, girl } = iso;
@@ -164,7 +164,7 @@
     add({ id: "meeting", room: "meeting", ...cf, svg: s, top: HILL + 33 });
     add({ x: 0.45, y: 1.75, w: .2, d: .2, svg: tree(0.55, 1.85, HILL, 0.8, "#9ad48f") });
 
-    // human research institute (corner office, 5 floors) between cafe and Robo office
+    // human research institute (corner office, 5 floors) beside the cafe
     s = "";
     const hi = { x: 3.55, y: 0.4, w: 2.5, d: 1.35, z: HILL };
     s += box({ ...hi, h: 28, left: "#f4f7fb", right: "#dbe6f2", top: null });
@@ -181,19 +181,6 @@
     s += tile(hi.x - 0.05, hi.y - 0.05, hi.w + 0.1, hi.d + 0.1, HILL + 28, "#c5d8ec");
     s += tile(hi.x + 0.35, hi.y + 0.25, 1.8, 0.85, HILL + 28.4, "#eef4fa"); // roof deck hint
     add({ id: "institute", room: "institute", ...hi, svg: s, top: HILL + 30 });
-
-    // president's office (robot light blue), window facing the sea & island
-    s = "";
-    const pr = { x: 6.7, y: 0.45, w: 1.9, d: 1.3, z: HILL };
-    s += box({ ...pr, h: 20, left: "#d9eefc", right: "#bcdcf3", top: "#a8d1f2" });
-    s += onL(pr.y + pr.d, 6.9, 7.85, HILL + 6, HILL + 17, "#ffffff"); s += onL(pr.y + pr.d, 6.97, 7.78, HILL + 7, HILL + 16, "#7fc0ef", "none", 'class="win"');
-    s += onL(pr.y + pr.d, 8.05, 8.45, HILL, HILL + 11, NAVY, "none", 'opacity=".85"');
-    s += onR(pr.x + pr.w, 0.7, 1.5, HILL + 8, HILL + 16, "#7fc0ef", "none", 'class="win lit"');   // Robo-kun works late: lit at night
-    // roof rim + antenna like the logo robot
-    s += tile(pr.x, pr.y, pr.w, 0.08, HILL + 20, "#8cbfe8"); 
-    { const a = P(7.65, 1.1, HILL + 20), b = P(7.65, 1.1, HILL + 30); s += `<line x1="${a[0]}" y1="${a[1]}" x2="${b[0]}" y2="${b[1]}" stroke="${NAVY}" stroke-width="1.4"/><circle cx="${b[0]}" cy="${b[1]}" r="2.6" fill="${NAVY}"/>`; }
-    add({ id: "president", room: "president", ...pr, svg: s, top: HILL + 30 });
-    { const p = P(7.45, 1.95, HILL); add({ x: 7.35, y: 1.85, w: .2, d: .2, svg: `<g transform="translate(${p[0]},${p[1]})">${robotSVG({ scale: 0.62, headset: true, pen: true })}</g>` }); }
 
     // block trees
     add({ x: 0.4, y: 3.5, w: .2, d: .2, svg: tree(0.5, 3.6, 0, 1.1) });
@@ -402,7 +389,7 @@
     // windows that stay lit at night: copy them above the colour wash so they glow warm
     const lit = svgEl.querySelector("#kgLit");
     // each member's windows glow only while she is awake (html[data-awake-*], set from schedule.js in app.js)
-    const WHO = { gym: "rin", studio: "mio", editorial: "rina", president: "robo" };
+    const WHO = { gym: "rin", studio: "mio", editorial: "rina" };
     svgEl.querySelectorAll("#kgObjs .win").forEach(p => {
       const r = p.closest("[data-room]"), who = r && WHO[r.dataset.room];
       if (!who && !p.classList.contains("lit")) return;
@@ -413,7 +400,7 @@
 
   // anchor for room signs (screen coords) and door points (grid coords)
   function roomAnchor(o) { return P(o.x + o.w / 2, o.y + o.d / 2, (o.top || 10) + (o.z || 0) * 0 + 4); }
-  const DOORS = { meeting: [2.0, 2.0], institute: [4.8, 2.0], president: [7.5, 2.05], studio: [4.78, 4.35], editorial: [8.0, 4.95],
+  const DOORS = { meeting: [2.0, 2.0], institute: [4.8, 2.0], studio: [4.78, 4.35], editorial: [8.0, 4.95],
                   gym: [1.75, 7.4], shop: [6.6, 8.45], board: [6.7, 5.05], lighthouse: [8.12, 12.57] };   // lighthouse: foot of the hill steps
 
   window.KG_TOWN = { render, iso, P, elev, VB, DOORS, roomAnchor, sortObjects, groundZ, onBridge, onIsle, BR };

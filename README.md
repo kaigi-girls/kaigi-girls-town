@@ -2,7 +2,7 @@
 
 The public site for **KAIGI GIRLS**. The top page is the project HQ: who is on the team, each character's goal, and a status of 「挑戦中」 (no follower counts). Characters are AI-generated fiction.
 
-The seaside town is still here. Visitors become a little robot and look in on Rin, Mio, Rina, and Robo-kun.
+The seaside town is still here. Visitors become tiny and look in on Rin, Mio, and Rina.
 
 Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too. No trackers, no personal contact details, no shop links.
 
@@ -13,8 +13,6 @@ Static HTML/CSS/JS — no build step. Phone-first (~390px), works on desktop too
 | Rin (凛) | honey |
 | Mio (澪) | purple |
 | Rina (リナ) | pink |
-
-(Robo-kun uses the brand robot blue.)
 
 ## Run locally
 
@@ -62,7 +60,7 @@ name,room,status_ja,status_en,updated_jst
 凛,海沿いのジム,短い日本語ステータス💛,Short English status 💛,2026-10-07 08:45
 ```
 
-- `name`: 凛 / 澪 / リナ / ロボくん  
+- `name`: 凛 / 澪 / リナ  
 - `room`: free text shown as written  
 - `status_ja` / `status_en`: what they're doing now (emoji OK; keep it short)  
 - `updated_jst`: `YYYY-MM-DD HH:MM` Japan time  
@@ -84,7 +82,7 @@ Japanese intro…
 English intro…
 ```
 
-- Each `## heading` is one room (matched by keywords such as ジム, スタジオ, 編集部, 会議室, 社長室, ショップ, 掲示板).  
+- Each `## heading` is one room (matched by keywords such as ジム, スタジオ, 編集部, 会議室, ショップ, 掲示板).  
 - Lines with Japanese → JA; other lines → EN.  
 - Text before the first `##` is the town intro.
 
@@ -107,7 +105,7 @@ English intro…
 }
 ```
 
-- `speaker`: `rin` / `mio` / `rina` / `robo`  
+- `speaker`: `rin` / `mio` / `rina`  
 - Newest `date` is shown first.  
 - `"sample": true` on a meeting or line shows a SAMPLE badge — remove it when real approved lines go in.
 
