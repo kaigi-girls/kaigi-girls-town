@@ -17,13 +17,13 @@
       hint2: "ロボを三人に近づけると、ひとこと話すよ", talkTo: n => `${n}に話しかける`, heard: "今日おはなしした",
       rewardHint: "三人とおはなしすると、今日のオフショットが見られるよ", rewardTitle: "今日のオフショット📸", rewardEmpty: "ゴール！オフショットは準備中だよ", close: "閉じる",
       enterQ: n => `${n}に入る？`, enterGo: "入る", enterNo: "やめる" },
-    en: { tagline: "Become a tiny robot and peek into our town", hint: "Tap to walk · tap a building, then “Go in” to peek",
-      meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit as tiny robots.",
-      visitors: "robots visited so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek",
+    en: {       tagline: "Become tiny and peek into our town", hint: "Tap to walk · tap a building, then “Go in” to peek",
+      meetBtn: "Peek into the meeting room", footNote: "This town and its characters are fictional. Humans visit in tiny form.",
+      visitors: "visitors so far", comingSoon: "COMING SOON", tapToPeek: "tap to peek",
       sample: "SAMPLE", sampleNote: "* Sample conversation (not a real meeting)",
       curated: "Only lines approved for publishing appear here.", replay: "Replay", you: "YOU",
       noMeeting: "No public meetings yet.", soonText: "coming soon",
-      hint2: "Walk your robot up to the girls to hear what they're up to", talkTo: n => `Talk to ${n}`, heard: "Talked today",
+      hint2: "Walk up to the girls to hear what they're up to", talkTo: n => `Talk to ${n}`, heard: "Talked today",
       rewardHint: "Talk to all three to unlock today's off-shot", rewardTitle: "Today's off-shot 📸", rewardEmpty: "Goal! Off-shots coming soon", close: "Close",
       enterQ: n => `Go into ${n}?`, enterGo: "Go in", enterNo: "Cancel" }
   };
@@ -69,7 +69,6 @@
   // to = where the pointer points (defaults to the building's roof anchor).
   const SIGN_SLOT = {
     meeting:   { cx: 207, y: 44 },
-    president: { x: 288, y: 96 },
     institute: { x: 168, y: 72 },
     studio:    { x: 22, y: 122, to: [209, 170] },
     gym:       { x: 6, y: 224, to: [84, 208] },
@@ -157,6 +156,7 @@
   // ---------- sheet ----------
   let openId = null, chatTimer = null;
   function openRoom(id) {
+    if (!C.rooms.some(r => r.id === id)) return;
     hideEnter();
     openId = id;
     const r = roomCfg(id), owner = ownerOf(id), md = S.rooms.rooms[id] || {};
@@ -183,9 +183,8 @@
     h += `<p style="margin:6px 0 2px"><b>${esc(m.date)}｜${esc(m.title)}</b>${m.sample ? `<span class="badge">${t("sample")}</span>` : ""}</p>`;
     h += `<div class="chat">` + (m.lines || []).map(l => {
       const mem = C.members[l.speaker] || { name: l.speaker, nameEn: l.speaker, color: "#eef3fa" };
-      const isRobo = l.speaker === "robo";
-      const av = isRobo ? `<span class="av"><img src="assets/robo_avatar.png" alt=""></span>` : (mem.avatar ? `<span class="av"><img src="${esc(mem.avatar)}" alt=""></span>` : `<span class="av" style="background:${mem.color}">${esc((mem.name || "?")[0])}</span>`);
-      return `<div class="line${isRobo ? " right" : ""}">${av}<div class="bub" style="background:${mem.color}">` +
+      const av = mem.avatar ? `<span class="av"><img src="${esc(mem.avatar)}" alt=""></span>` : `<span class="av" style="background:${mem.color}">${esc((mem.name || "?")[0])}</span>`;
+      return `<div class="line">${av}<div class="bub" style="background:${mem.color}">` +
         `<div class="nm">${esc(lang === "en" ? mem.nameEn : mem.name)}${l.sample && !m.sample ? ` <span class="badge">${t("sample")}</span>` : ""}</div>${esc(l.text)}</div></div>`;
     }).join("") + `</div>`;
     h += `<p class="chat-note">${m.sample ? t("sampleNote") + "<br>" : ""}${t("curated")}</p><button class="replay" id="replay">${t("replay")}</button>`;
@@ -500,7 +499,7 @@
   // per-member awake/asleep from schedule.js (JST): drives lit windows, Zzz, walks and talk
   const awake = id => !window.kgNow || !(window.KG_SCHEDULE || {})[id] || window.kgNow(id).awake;
   function applyAwake() {
-    ["rin", "mio", "rina", "robo"].forEach(id => { document.documentElement.setAttribute("data-awake-" + id, awake(id) ? "1" : "0"); });
+    ["rin", "mio", "rina"].forEach(id => { document.documentElement.setAttribute("data-awake-" + id, awake(id) ? "1" : "0"); });
   }
   function applyPhase() {
     applyAwake();

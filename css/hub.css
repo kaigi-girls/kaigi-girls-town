@@ -1,4 +1,4 @@
-/* site nav + contents hub + ロボくんの部屋 */
+/* site nav + contents hub */
 .sitenav{display:flex;gap:6px;overflow-x:auto;padding:8px 12px;scrollbar-width:none}
 .sitenav a{flex:none;text-decoration:none;color:var(--navy);background:#fff;border:1.5px solid #d6e7f7;border-radius:99px;padding:6px 12px;font-size:13px;font-weight:700}
 .sitenav a[aria-current]{background:var(--robot);border-color:var(--robot-deep)}

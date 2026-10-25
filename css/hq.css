@@ -806,7 +806,7 @@ body.hq .s1-latest-thumb img {
 
 @media (min-width: 720px) {
   .crew { grid-template-columns: 1fr 1fr; }
-  .places { grid-template-columns: 1fr 1fr 1fr; }
+  .places { grid-template-columns: minmax(0, 360px); }
   .tracks { grid-template-columns: 1fr 1fr; }
   .stage img,
   .stage video { max-height: min(34svh, var(--nat, 280px)); }
