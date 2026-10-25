@@ -25,11 +25,11 @@ window.KG_CONFIG = {
   // Rooms. `mdKey` = a word that appears in the rooms.md `## heading` for that room
   // (checked in this order, so the more specific ones come first).
   rooms: [
-    { id: "board",     mdKey: "掲示板",   label: "街の掲示板", labelEn: "Town board", link: "lab/", linkJa: "▶ 動画アーカイブを見る", linkEn: "▶ Watch the video archive" },
+    { id: "board",     mdKey: "掲示板",   label: "街の掲示板", labelEn: "Town board" },
     { id: "shop",      mdKey: "ショップ", comingSoon: true,  label: "ショップ", labelEn: "Shop" },
     { id: "meeting",   mdKey: "会議室",   label: "会議室",   labelEn: "Meeting room", shared: true },
-    { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", link: "robo.html", linkJa: "📺 YouTubeアーカイブを見る", linkEn: "📺 Watch the YouTube archive", owner: "robo" },
-    { id: "institute", mdKey: "人間研究所", label: "人間研究所", labelEn: "Human Research Institute", signEn: "Institute", link: "institute.html", linkJa: "🔬 部署をのぞく", linkEn: "🔬 Peek at the departments", shared: true },
+    { id: "president", mdKey: "社長室",   label: "ロボくんの部屋", labelEn: "Robo-kun's room", signEn: "Robo-kun", owner: "robo" },
+    { id: "institute", mdKey: "人間研究所", label: "人間研究所", labelEn: "Human Research Institute", signEn: "Institute", shared: true },
     { id: "gym",       mdKey: "ジム",     label: "ジム",     labelEn: "Gym",       owner: "rin" },
     { id: "studio",    mdKey: "スタジオ", label: "スタジオ", labelEn: "Studio",    owner: "mio" },
     { id: "editorial", mdKey: "編集部",   label: "編集部",   labelEn: "Editorial", owner: "rina" },
@@ -52,13 +52,9 @@ window.KG_CONFIG = {
   // group = section heading. c = card accent color.
   contents: [
     { group: "計画", title: "KAIGI GIRLS計画", sub: "目標と進捗の本部", href: "./", c: "#112e58", internal: true },
-    { group: "YouTube", icon: "assets/robo_channel.png", title: "ロボくんの部屋", sub: "YouTubeアーカイブ", href: "robo.html", c: "#bde1fb", internal: true },
-    { group: "YouTube", title: "ロボくんのマイクラ部", sub: "老若男女が笑えるマイクラ劇・挑戦中", href: "https://www.youtube.com/@robo-fukabori", c: "#bde1fb" },
-    { group: "YouTube", title: "過去の深掘り動画（アーカイブ）", sub: "マイクラの前に公開した深掘り", href: "lab/", c: "#6eabea", internal: true },
     { group: "音楽", title: "柊真白", sub: "ロック・公式ページ", href: "https://kaigi-girls.github.io/mashiro/", c: "#9fc3e6" },
     { group: "音楽", title: "真白のX", sub: "@mashiro_onstage", href: "https://x.com/mashiro_onstage", c: "#dfe7f2" },
-    { group: "音楽", title: "RUN WITH ME", sub: "新しい真白のチャンネルで公開準備中", href: null, c: "#9fc3e6" },
-    { group: "街", title: "人間研究所", sub: "階ごとの部署", href: "institute.html", c: "#3f86d6", internal: true }
+    { group: "音楽", title: "RUN WITH ME", sub: "新しい真白のチャンネルで公開準備中", href: null, c: "#9fc3e6" }
   ],
 
   // Footer links. href: null => shown as "準備中 / coming soon" (not clickable).
